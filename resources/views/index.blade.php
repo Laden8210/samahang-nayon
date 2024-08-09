@@ -9,7 +9,10 @@
 </head>
 
 <body>
-    <nav class="flex drop-shadow h-auto bg-white p-2 justify-between">
+
+
+
+     <nav class="flex drop-shadow h-auto bg-white p-2 justify-between">
         <div class="flex justify-normal items-center">
             <img src="{{ asset('img/logo.jpg') }}" class="mx-2 w-10">
             Samahang Nayon
@@ -30,14 +33,14 @@
 
             <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                 <h1 class="text-2xl font-bold mb-2">Welcome back</h1>
-                <p class="text-gray-400 mb-20">Login to your account</p>
-                <div class="relative mb-4">
+                <p class="text-gray-400 mb-5">Login to your account</p>
+                <div class="relative mb-5">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                         <i class="fas fa-envelope text-gray-400"></i>
                     </span>
                     <input type="text"
                         class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10 rounded-lg w-full focus:outline-none"
-                        placeholder="What is your email?">
+                        placeholder="Enter your email?">
                 </div>
 
                 <div class="relative">
@@ -45,7 +48,7 @@
                         <i class="fas fa-lock text-gray-400"></i>
                     </span>
                     <input type="password"
-                        class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10 rounded-lg w-full focus:outline-none"
+                        class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10  rounded-lg w-full focus:outline-none"
                         placeholder="Enter your password">
                     <span class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fas fa-eye text-gray-400"></i>
@@ -58,7 +61,7 @@
                             class="mx-1 mt-1">
                         <p>Remember me</p>
                     </div>
-                    <div><a href="#" class="text-cyan-400">Forgot password?</a></div>
+                    <div><a href="{{route('forget-password')}}" class="text-cyan-400">Forgot password?</a></div>
                 </div>
 
                 <button class="bg-cyan-400 text-white px-4 py-2 rounded-lg w-full hover:bg-cyan-500 hover:text-gray-100">Continue</button>
