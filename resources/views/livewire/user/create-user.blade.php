@@ -1,7 +1,6 @@
 <div>
 
-    <form wire:submit.prevent="createRoom">
-
+    <form wire:submit.prevent="createUser">
 
 
         @csrf
@@ -18,11 +17,24 @@
 
                 </div>
 
-                <div class="flex justify-normal p-2 w-full">
+                <div class="grid grid-cols-3 p-2 w-full">
 
-                    <div class="w-1/3 mx-2">
+                    <div class=" mx-2">
 
-                        <x-text-field1 name="firstname" placeholder="Enter First Name" model="firstname" label="First Name" />
+                        <x-text-field1 name="firstname" placeholder="Enter First Name" model="firstname"
+                            label="First Name" />
+                        @error('firstname')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                    <div class="mx-2">
+
+                        <x-text-field1 name="middlename" placeholder="Enter Middle Name" model="middlename"
+                            label="Middle Name" />
                         @error('middlename')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
@@ -31,21 +43,11 @@
 
                     </div>
 
-                    <div class="w-1/3 mx-2">
+                    <div class=" mx-2">
 
-                        <x-text-field1 name="middlename" placeholder="Enter Middle Name" model="middlename" label="Middle Name" />
-                        @error('middlename')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
-
-                    </div>
-
-                    <div class="w-1/3 mx-2">
-
-                        <x-text-field1 name="lastname" placeholder="Enter Last Name" model="lastname" label="Last Name" />
-                        @error('rate')
+                        <x-text-field1 name="lastname" placeholder="Enter Last Name" model="lastname"
+                            label="Last Name" />
+                        @error('lastname')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
@@ -56,12 +58,13 @@
                 </div>
 
 
-                <div class="flex justify-normal p-2 w-full">
+                <div class="grid grid-cols-3 p-2 w-full">
 
-                    <div class="w-1/3 mx-2">
+                    <div class=" mx-2">
 
-                        <x-text-field1 name="email" placeholder="Enter Email" model="email" label="Email" />
-                        @error('rate')
+                        <x-text-field1 name="contactNumber" placeholder="Enter Contact Number" model="contactNumber"
+                            label="Contact Number" />
+                        @error('contactNumber')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
@@ -69,20 +72,90 @@
 
                     </div>
 
-                    <div class="w-1/3 mx-2">
+                    <div class="mx-2">
+
+                        <x-text-field1 name="email" placeholder="Enter Email Address" model="email"
+                            label="Email Address" />
+                        @error('email')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                    <div class=" mx-2">
+
+                        <x-text-field1 name="street" placeholder="Enter Street" model="street" label="Street" />
+                        @error('street')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                </div>
+
+
+                <div class="grid grid-cols-3 p-2 w-full">
+
+                    <div class=" mx-2">
+
+                        <x-text-field1 name="city" placeholder="Enter City" model="city" label="City" />
+                        @error('city')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                    <div class="mx-2">
+
+                        <x-text-field1 name="province" placeholder="Enter Province" model="province"
+                            label="Province" />
+                        @error('province')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                    <div class="mx-2">
+
+                        <x-text-field1 name="dob" type="date" placeholder="Enter Birthdate" model="dob"
+                            label="Birhtdate" />
+                        @error('dob')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                </div>
+
+
+                <div class="grid grid-cols-3 p-2 w-full">
+
+
+
+                    <div class=" mx-2">
                         <x-combobox name="gender" model="gender" placeholder="Select Gender" :options="['Male', 'Female']" />
 
-                        @error('roomType')
+                        @error('gender')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
                         @enderror
                     </div>
 
-                    <div class="w-1/3 mx-2">
-                        <x-combobox name="gender" model="gender" placeholder="Select Position" :options="['System Administrator', 'Manger', 'Receptionist']" />
+                    <div class=" mx-2">
+                        <x-combobox name="position" model="position" placeholder="Select Position" :options="['System Administrator', 'Manger', 'Receptionist']" />
 
-                        @error('roomType')
+                        @error('position')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
@@ -90,38 +163,23 @@
                     </div>
 
 
-                </div>
-
-                <div class="justify-end flex p-1">
-
-                    <div class="grid grid-row-2 grid-flow-col gap-2">
-                        <button type="button" onclick="document.getElementById('roomModal').style.display = 'block';"
-                            class="bg-red-400 font-medium text-white px-2 py-1 rounded ">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded ">
-                            Create
-                        </button>
+                    <div class="flex items-end justify-end mx-2">
+                        <div class="flex gap-2">
+                            <a href="{{route('user')}}"
+                                class="bg-red-400 font-medium text-white px-2 py-1 rounded">
+                                Cancel
+                        </a>
+                            <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">
+                                Create
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-
-
-                @if (session()->has('message'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4"
-                        role="alert">
-
-                        <span class="block sm:inline">{{ session('message') }}</span>
-                    </div>
-                @endif
-
             </div>
-
-            @if ($errors->any())
-                <div class="mb-4">
-                    <x-success-message-modal />
-                </div>
+            @if (session()->has('message'))
+                <x-success-message-modal message="{{ session('message') }}" />
             @endif
+
 
     </form>
 

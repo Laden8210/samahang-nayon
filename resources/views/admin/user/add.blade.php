@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Room ')
+@section('title', 'Add User ')
 @section('content')
     <div class="">
         @livewire('user.create-user')

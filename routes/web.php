@@ -20,13 +20,17 @@ Route::get('admin/', [DashboardController::class, 'index']);
 
 
 Route::get('admin/booking', [BookingController::class, 'index'])->name('booking');
+Route::get('admin/booking/create', [BookingController::class, 'create'])->name('createBooking');
+Route::get('admin/booking/booking-details', [BookingController::class, 'bookingDetails'])->name('booking-details');
 
 
 Route::get('admin/rooms', [RoomController::class, 'index'])->name('rooms');
 Route::get('admin/rooms/add', [RoomController::class, 'addRoom'])->name('addRoom');
+Route::get('admin/rooms/update/{roomId}', [RoomController::class, 'updateRoom'])->name('updateRoom');
 
 Route::get('admin/user', [UserController::class, 'index'])->name('user');
 Route::get('admin/user/add', [UserController::class, 'addUser'])->name('addUser');
+Route::get('admin/user/update/{userId}', [UserController::class, 'updateUser'])->name('updateUser');
 
 Route::get('forget-password', [ForgetPasswordController::class, 'index'])->name('forget-password');
 Route::get('reset-password', [ForgetPasswordController::class, 'resetPassword'])->name('reset-password');

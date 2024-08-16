@@ -11,4 +11,16 @@ class BookingController extends Controller
     {
         return view('admin.booking.index');
     }
+
+
+    public function create()
+    {
+        return view('admin.booking.create');
+    }
+
+    public function bookingDetails(){
+        return view('admin.booking.booking-details');
+    }
+
+
 }

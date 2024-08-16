@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use Database\Seeders\PersonalInformationTable;
 use Livewire\Component;
 use App\Models\PersonalInformation;
+use App\Models\Employee;
 
 class UserTable extends Component
 {
@@ -13,7 +14,7 @@ class UserTable extends Component
     public function render()
     {
         return view('livewire.user.user-table', [
-            'users' => PersonalInformation::search($this->search)->paginate(10)
+            'users' => Employee::search($this->search)->paginate(10)
         ]);
     }
 

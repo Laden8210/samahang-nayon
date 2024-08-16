@@ -1,10 +1,9 @@
 <div class="mt-1">
 
-    <label class="text-slate-500 fs-4 px-1">{{$placeholder}} </label>
+    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{$placeholder}} </label>
     <select name="{{ $name }}"
         wire:model="{{ $model }}"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
-        <option disabled  selected>{{ $placeholder }}</option>
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
         @foreach($options as $option)
             <option value="{{ $option }}">{{ $option }}</option>
         @endforeach

@@ -26,30 +26,27 @@
             <tbody>
                 @foreach ($users as $user)
                     <tr class="text-center">
-                        <td class="py-3">{{ $user->personal_id }}</td>
-                        <td class="py-3">{{ $user->username }}</td>
+                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
+                        <td class="py-3">{{ $user->FirstName }}</td>
                         <td class="py-3">
-                            {{ $user->first_name . ' ' . $user->middle_name[0] . '. ' . $user->last_name }}
+                            {{ $user->FirstName . ' ' . $user->MiddleName[0] . '. ' . $user->LastName }}
                         </td>
-                        <td class="py-3">{{ $user->role }}</td>
-                        <td class="py-3">{{ $user->email }}</td>
-                        <td class="py-3">{{ $user->phone }}</td>
+                        <td class="py-3">{{ $user->Position }}</td>
+                        <td class="py-3">{{ utf8_encode($user->EmailAddress) }}</td>
+                        <td class="py-3">{{ $user->ContactNumber }}</td>
                         <td class="py-3">
-
-
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown-{{$user->personal_id}}"
+                            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown-{{$user->UserAccountId}}"
                                 class="px-4 py-2 rounded-full text-cyan-500 hover:bg-cyan-100"
                                 type="button">
                                 <i class="fas fa-ellipsis-h"></i>
                             </button>
 
-                            <!-- Dropdown menu -->
-                            <div id="dropdown-{{$user->personal_id}}"
+                            <div id="dropdown-{{$user->UserAccountId}}"
                                 class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="dropdownDefaultButton">
                                     <li>
-                                        <a href="#"
+                                        <a href="{{ route('updateUser',$user->UserAccountId) }}"
                                             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update</a>
                                     </li>
                                     <li>
