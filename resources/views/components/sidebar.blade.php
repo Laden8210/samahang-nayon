@@ -1,4 +1,4 @@
-<nav class="w-60 h-full fixed p-2 items-center shadow align-middle overflow-x-auto">
+<nav class="h-full fixed p-2 items-center align-middle">
     <div class="flex justify-normal items-center">
         <img src="{{ asset('img/logo.jpg') }}" class="mx-2 w-10">
         <h1 class="text-2x font-bold">Samahang Nayon</h1>
@@ -27,7 +27,7 @@
 
     <hr>
 
-    <ul class="items-center pt-3 text-gray-700">
+    {{-- <ul class="items-center pt-3 text-gray-700">
         <li class="mb-2 font-bold ">
             Others
         </li>
@@ -36,5 +36,5 @@
         <x-menu-item title="Message" url="#" icon="fas fa-home mx-2" />
         <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
 
-    </ul>
+    </ul> --}}
 </nav>

@@ -28,16 +28,6 @@ return new class extends Migration
         });
 
 
-        Schema::create('useraccounts', function(Blueprint $table){
-            $table->id('UserAccountId');
-            $table->string('Username', 255);
-            $table->string('EmailAddress', 255);
-            $table->string('Password', 255);
-            $table->string('AccountType', 255);
-            $table->string('Status', 12);
-            $table->date('DateCreated');
-            $table->time('TimeCreated');
-        });
 
         Schema::create('guests', function(Blueprint $table){
             $table->id('GuestId');
@@ -51,7 +41,10 @@ return new class extends Migration
             $table->string('Gender', 255);
             $table->string('ContactNumber', 12);
             $table->string('EmailAddress', 255);
-            $table->foreignId('UserAccountId');
+            $table->string('Username', 255);
+            $table->string('Password', 255);
+            $table->date('DateCreated');
+            $table->time('TimeCreated');
         });
 
         Schema::create('employees', function(Blueprint $table){
@@ -69,6 +62,10 @@ return new class extends Migration
             $table->string('Province', 255);
             $table->string('EmailAddress', 255);
             $table->foreignId('UserAccountId');
+            $table->string('Username', 255);
+            $table->string('Password', 255);
+            $table->date('DateCreated');
+            $table->time('TimeCreated');
         });
 
         Schema::create('reservations', function(Blueprint $table){

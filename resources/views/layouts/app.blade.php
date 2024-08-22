@@ -11,14 +11,14 @@
 
 </head>
 <body>
-    <div class="flex h-screen">
+    <div class="grid grid-cols-12">
         <!-- Sidebar -->
-        <div class="w-60">
+        <div class="col-span-2">
             <x-sidebar />
         </div>
 
         <!-- Main Content Area -->
-        <div class="flex flex-col flex-grow">
+        <div class="col-span-10 flex flex-col flex-grow">
             <!-- Header Bar -->
             <div>
                 <x-header-bar class="shadow-lg" id="mainHeader" />

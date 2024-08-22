@@ -25,7 +25,7 @@
                            class="h-20 bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow translate hover:scale-105 duration-100 hover:shadow-xl">
                             {{$i}}
                         </a>
-                        <!-- Custom Tooltip -->
+
                         <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
                             <div class="bg-gray-800 text-white text-xs rounded py-1 px-2">
                                 Booking details for item {{$i}}
