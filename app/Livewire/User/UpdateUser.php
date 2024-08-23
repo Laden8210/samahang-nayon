@@ -32,7 +32,7 @@ class UpdateUser extends Component
 
     public function mount($userId)
     {
-        $user = Employee::where('UserAccountId', $userId)->firstOrFail();
+        $user = Employee::where('EmployeeId', $userId)->firstOrFail();
         $this->firstname = $user->FirstName;
         $this->middlename = $user->MiddleName;
         $this->lastname = $user->LastName;
@@ -64,21 +64,21 @@ class UpdateUser extends Component
             'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
         ]);
 
-        $user = UserAccount::where('UserAccountId', $this->userId)->firstOrFail();
+        $user = Employee::where('EmployeeId', $this->userId)->firstOrFail();
 
-        $user->employee->update([
+        $user->update([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
             'LastName' => $this->lastname,
             'ContactNumber' => $this->contactNumber,
-            'EmailAddress' => $this->email,
+            'email' => $this->email,
             'Street' => $this->street,
             'City' => $this->city,
             'Province' => $this->province,
             'Birthdate' => $this->dob,
             'Gender' => $this->gender,
             'Position' => $this->position,
-        ])->where;
+        ]);
 
         session()->flash('message', 'User updated successfully!');
 

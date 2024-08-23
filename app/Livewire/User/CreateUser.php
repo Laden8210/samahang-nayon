@@ -2,7 +2,7 @@
 
 namespace App\Livewire\User;
 
-
+use App\Models\Employee;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use App\Models\UserAccount;
@@ -51,22 +51,13 @@ class CreateUser extends Component
 
         $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
 
-        $user = UserAccount::create([
-            'Username' => $this->email,
-            'EmailAddress' => $this->email,
-            'Password' => Hash::make($defaultPassword),
-            'AccountType' => 'User',
-            'Status' => 'Active',
-            'DateCreated' => now()->format('Y-m-d'),
-            'TimeCreated' => now()->format('H:i:s'),
-        ]);
 
-        $user->employees()->create([
+        Employee::create([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
             'LastName' => $this->lastname,
             'ContactNumber' => $this->contactNumber,
-            'EmailAddress' => $this->email,
+            'email' => $this->email,
             'Street' => $this->street,
             'City' => $this->city,
             'Province' => $this->province,
@@ -74,9 +65,14 @@ class CreateUser extends Component
             'Gender' => $this->gender,
             'Position' => $this->position,
             'Status' => 'Active',
+            'Username' => $this->email,
+            'email' => $this->email,
+            'password' => "password",
+            'DateCreated' => now()->format('Y-m-d'),
+            'TimeCreated' => now()->format('H:i:s'),
         ]);
 
-        session()->flash('message', 'User created successfully!');
+        session()->flash('message', 'User created successfully!'.$defaultPassword);
 
         $this->reset();
     }

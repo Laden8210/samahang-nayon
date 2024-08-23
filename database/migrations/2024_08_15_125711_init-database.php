@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::create('roompictures', function(Blueprint $table){
             $table->id('RoomPictureId');
             $table->foreignId('RoomId');
-            $table->binary('PictureFile');
+            $table->longText('PictureFile')->charset('binary');
         });
 
 
@@ -60,10 +60,9 @@ return new class extends Migration
             $table->string('Street', 255);
             $table->string('City', 255);
             $table->string('Province', 255);
-            $table->string('EmailAddress', 255);
-            $table->foreignId('UserAccountId');
+            $table->string('email', 255);
             $table->string('Username', 255);
-            $table->string('Password', 255);
+            $table->string('password', 255);
             $table->date('DateCreated');
             $table->time('TimeCreated');
         });
@@ -84,7 +83,7 @@ return new class extends Migration
         Schema::create('amenities', function(Blueprint $table){
             $table->id('AmenitiesId');
             $table->string('Name');
-            $table->integer('Quantity');
+            $table->integer('Price');
         });
 
         Schema::create('reservationamenities', function(Blueprint $table){

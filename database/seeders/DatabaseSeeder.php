@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
 
         // $this->call(PersonalInformationTable::class);
         Room::factory(10)->create();
-        // UserAccount::factory(10)->create();
-        Employee::factory(5)->create();
+
     }
 }

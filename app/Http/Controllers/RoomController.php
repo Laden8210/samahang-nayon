@@ -38,13 +38,11 @@ class RoomController extends Controller
         $rooms = Room::with('roomPictures')->get();
 
         $roomsWithImages = $rooms->map(function ($room) {
-            // Convert each room's pictures to base64
+
             $pictures = $room->roomPictures->map(function ($picture) {
-                // Ensure you are storing the correct relative path in the database
-                // Adjust this path as necessary based on where your images are stored
+
                 $filePath = storage_path('app/public/' . $picture->PictureFile);
 
-                // Check if the file exists and is valid
                 if (file_exists($filePath) && !is_null($picture->PictureFile)) {
                     return [
                         'id' => $picture->id,
@@ -53,7 +51,7 @@ class RoomController extends Controller
                 }
                 return [
                     'id' => $picture->id,
-                    'PictureFile' => null, // Handle missing or invalid files
+                    'PictureFile' => null,
                 ];
             });
 
@@ -85,7 +83,17 @@ class RoomController extends Controller
         });
 
         return response()->json($imagesWithBase64);
+    }
 
+
+    public function viewRoom($roomId){
+        try {
+            $decryptedId = Crypt::decrypt($roomId);
+            $room = Room::findOrFail($decryptedId);
+            return view('admin.room.view', compact('room'));
+        } catch (DecryptException $e) {
+            return redirect()->route('admin.room.index')->with('error', 'Invalid Room ID.');
+        }
     }
 
 

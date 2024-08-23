@@ -9,6 +9,8 @@ class RoomTable extends Component
 {
     public $search = '';
     protected $listeners = ['refreshComponent' => '$refresh'];
+
+
     public function render()
     {
         return view('livewire.room.room-table'

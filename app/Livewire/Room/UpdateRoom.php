@@ -17,7 +17,7 @@ class UpdateRoom extends Component
     public $capacity;
     public $description;
     public $pictures = [];
-    public $existingPictures; // Keep it as a collection
+    public $existingPictures;
     public $room;
 
     public function render()
@@ -34,9 +34,7 @@ class UpdateRoom extends Component
         $this->roomType = $room->RoomType;
         $this->capacity = $room->Capacity;
         $this->description = $room->Description;
-
-        // Load existing pictures from the roomPictures relationship
-        $this->existingPictures = $room->roomPictures; // Store the collection directly
+        $this->existingPictures = $room->roomPictures;
     }
 
     public function updateRoom()

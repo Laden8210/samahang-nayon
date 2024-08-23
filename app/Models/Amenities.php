@@ -8,17 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Amenities extends Model
 {
     use HasFactory;
-    use HasFactory;
 
     protected $primaryKey = 'AmenitiesId';
+    public $timestamps = false;
 
     protected $fillable = [
         'Name',
-        'Quantity'
+        'Price'
     ];
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('Name', 'like', '%' . $value . '%')
+            ->orWhere('Price', 'like', '%' . $value . '%');
+    }
+
 
     public function reservationAmenities()
     {
         return $this->hasMany(ReservationAmenities::class, 'AmenitiesId');
     }
+
 }

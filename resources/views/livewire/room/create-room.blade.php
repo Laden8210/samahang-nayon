@@ -25,8 +25,14 @@
                 <div class="flex justify-normal p-2 w-full">
 
                     <div class="w-1/2 mx-2">
-                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="['das', 'dasd']" />
-
+                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="[
+                            ' Single bed',
+                            'Two single beds',
+                            'Two double beds',
+                            'Matrimonial',
+                            'Family',
+                            'King size ',
+                        ]" />
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
@@ -138,7 +144,7 @@
             </div>
 
             @if (session()->has('message'))
-                <x-success-message-modal />
+                <x-success-message-modal message="{{ session('message') }}" />
             @endif
 
         </div>

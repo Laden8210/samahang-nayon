@@ -25,7 +25,7 @@
                 <div class="flex justify-normal p-2 w-full">
 
                     <div class="w-1/2 mx-2">
-                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="['das', 'dasd']" />
+                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="[' Single bed', 'Two single beds', 'Two double beds', 'Matrimonial', 'Family', 'King size ']" />
 
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i
@@ -62,7 +62,7 @@
                     <div class="w-1/2 mx-2">
 
                         <x-text-field1 name="room_number" placeholder="Room Number" model="roomNumber"
-                            label="Enter the room number" type="number" />
+                            label="Enter the room number" type="number" isReadOnly="true" />
 
                         @error('roomNumber')
                             <p class="text-red-500 text-xs italic mt-1"><i
@@ -77,8 +77,8 @@
 
                     <x-text-area name="description" model="description" placeholder="Description" class="h-full" />
                     @error('description')
-                        <p class="text-red-500 text-xs italic mt-1"><i
-                                class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                        <p class="text-red-500 text-xs italic mt-1">
+                            <i class="fas fa-exclamation-circle"></i>{{ $message }}
                         </p>
                     @enderror
 
@@ -156,8 +156,6 @@
             @endif
 
         </div>
-
-
 
     </form>
 

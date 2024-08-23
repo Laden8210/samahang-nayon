@@ -153,7 +153,7 @@
                     </div>
 
                     <div class=" mx-2">
-                        <x-combobox name="position" model="position" placeholder="Select Position" :options="['System Administrator', 'Manger', 'Receptionist']" />
+                        <x-combobox name="position" model="position" placeholder="Select Position" :options="['System Administrator', 'Manager', 'Receptionist']" />
 
                         @error('position')
                             <p class="text-red-500 text-xs italic mt-1"><i
