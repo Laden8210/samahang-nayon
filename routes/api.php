@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\RoomController;
+use App\Http\Controllers\API\GuestAPIController;
+use App\Http\Controllers\API\RoomAPIController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::get('/rooms', [RoomAPIController::class, 'getRoom']);
+Route::post('/rooms/image', [RoomAPIController::class, 'getImage']);
 
 
-Route::get('/room', [RoomController::class, 'getImage']);
+Route::get('user/users', [GuestAPIController::class, 'getAllUser']);
+Route::post('user/createUser', [GuestAPIController::class, 'create']);

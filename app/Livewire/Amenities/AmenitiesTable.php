@@ -38,14 +38,22 @@ class AmenitiesTable extends Component
 
     public function createAmenities()
     {
-        Amenities::create([
+        $this->validate([
+            'name' => 'required',
+            'price' => 'required'
+        ]);
+
+        $amenities = Amenities::create([
             'Name' => $this->name,
             'Price' => $this->price
         ]);
-        $this->dispatch('close-modal');
-        session()->flash('message', 'Amenities Created successfully.');
-        $this->name = '';
-        $this->price = '';
+        if($amenities){
+            $this->dispatch('close-modal');
+            session()->flash('message', 'Amenities Created successfully.');
+            $this->name = '';
+            $this->price = '';
+        }
+
     }
 
     public function update()

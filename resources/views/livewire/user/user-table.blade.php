@@ -10,7 +10,7 @@
         </span>
     </div>
 
-    <div class="w-full flex p-2 justify-center" wire:poll>
+    <div class="w-full flex p-2 justify-center">
         <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
             <thead class="text-xs uppercase bg-gray-100 ">
                 <tr class="text-center">

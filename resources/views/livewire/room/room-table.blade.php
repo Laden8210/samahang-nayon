@@ -12,7 +12,7 @@
 
     <div class="flex p-2 justify-center">
 
-        <div class="grid grid-cols-2 gap-x-5 gap-y-4 overflow-auto max-h-screen min-h-screen p-2">
+        <div class="grid grid-cols-2 gap-x-5 gap-y-4 overflow-auto  p-2">
             @foreach ($rooms as $room)
                 <div
                     class=" w-full min-w-full max-w-full
@@ -82,13 +82,13 @@
 
                             <div class="grid grid-cols-3 text-xs mt-1 relative bottom-1">
                                 <div>
-                                    <span><i class="fas fa-money-bill-wave-alt"></i> 100</span>
+                                    <span class="font-bold">Price:</span> {{$room->RoomPrice}}
                                 </div>
 
                                 <div>
-                                    <span>Room Type</span>
+                                    <span class="font-bold">Capacity:</span> {{$room->Capacity}}
                                 </div>
-                                <div><span>Room Number:</span></div>
+                                <span class="font-bold">Room Number:</span> {{$room->RoomNumber}}
                             </div>
                         </div>
                     </div>

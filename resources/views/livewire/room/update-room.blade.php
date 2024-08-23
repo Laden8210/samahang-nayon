@@ -4,11 +4,10 @@
         @csrf
         <div class="justify-between flex p-1">
             <h1 class="text-2xl font-bold p-2">Room</h1>
-            <div class="p-2">
-                <button type="button" onclick="document.getElementById('roomModal').style.display = 'block';"
-                    class="bg-red-400 font-medium text-white px-2 py-1 rounded ">
+            <div class="p-2 flex gap-2">
+                <a href="{{ route('rooms') }}" class="bg-red-400 font-medium text-white px-2 py-1 rounded ">
                     Cancel
-                </button>
+                </a>
                 <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded ">
                     Update
                 </button>

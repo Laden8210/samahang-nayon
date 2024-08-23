@@ -33,59 +33,6 @@ class RoomController extends Controller
         }
     }
 
-    public function getRoomList()
-    {
-        $rooms = Room::with('roomPictures')->get();
-
-        $roomsWithImages = $rooms->map(function ($room) {
-
-            $pictures = $room->roomPictures->map(function ($picture) {
-
-                $filePath = storage_path('app/public/' . $picture->PictureFile);
-
-                if (file_exists($filePath) && !is_null($picture->PictureFile)) {
-                    return [
-                        'id' => $picture->id,
-                        'PictureFile' => 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath)),
-                    ];
-                }
-                return [
-                    'id' => $picture->id,
-                    'PictureFile' => null,
-                ];
-            });
-
-            return [
-                'RoomId' => $room->RoomId,
-                'RoomNumber' => $room->RoomNumber,
-                'RoomType' => $room->RoomType,
-                'Capacity' => $room->Capacity,
-                'Description' => $room->Description,
-                'Status' => $room->Status,
-                'Pictures' => $pictures,
-            ];
-        });
-
-        return response()->json($roomsWithImages);
-    }
-
-
-    public function getImage()
-    {
-        $images = RoomPictures::all();
-
-        $imagesWithBase64 = $images->map(function ($image) {
-            return [
-                'RoomPictureId' => $image->RoomPictureId,
-                'RoomId' => $image->RoomId,
-                'PictureFile' => base64_encode($image->PictureFile),
-            ];
-        });
-
-        return response()->json($imagesWithBase64);
-    }
-
-
     public function viewRoom($roomId){
         try {
             $decryptedId = Crypt::decrypt($roomId);

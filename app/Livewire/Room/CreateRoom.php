@@ -69,6 +69,9 @@ class CreateRoom extends Component
         $this->roomType = '';
         $this->capacity = '';
         $this->description = '';
+
+        sleep(1);
+        return redirect()->route('rooms');
     }
 
     public function removePicture($index)

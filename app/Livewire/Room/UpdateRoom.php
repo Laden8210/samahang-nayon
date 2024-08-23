@@ -81,6 +81,9 @@ class UpdateRoom extends Component
         $this->capacity = '';
         $this->description = '';
         $this->pictures = [];
+
+        sleep(2);
+        return redirect()->route('rooms');
     }
 
     public function removeExistingPicture($index)

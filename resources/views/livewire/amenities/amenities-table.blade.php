@@ -8,11 +8,21 @@
                     <div class="col-span-2">
                         <x-text-field1 name="name" placeholder="Type amenities name" model="name" label="Name"
                             type="text" />
+                            @error('name')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
                     </div>
                     <div class="col-span-2">
 
                         <x-text-field1 name="price" placeholder="Type amenities price" model="price" label="Price"
                             type="number" />
+                            @error('price')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
                     </div>
                 </div>
                 <button type="submit"
@@ -35,7 +45,7 @@
             </span>
         </div>
 
-        <div class="w-full flex p-2 justify-center" wire:poll>
+        <div class="w-full flex p-2 justify-center">
             <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
                 <thead class="text-xs uppercase bg-gray-100 ">
                     <tr class="text-center">

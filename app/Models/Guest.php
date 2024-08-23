@@ -24,13 +24,12 @@ class Guest extends Model
         'Gender',
         'ContactNumber',
         'EmailAddress',
-        'UserAccountId'
+        'password',
+        'DateCreated',
+        'TimeCreated',
     ];
 
-    public function userAccount()
-    {
-        return $this->belongsTo(UserAccount::class, 'UserAccountId');
-    }
+
 
     public function reservations()
     {

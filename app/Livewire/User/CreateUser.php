@@ -9,6 +9,7 @@ use App\Models\UserAccount;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Rules\Age;
 
 class CreateUser extends Component
 {
@@ -33,12 +34,17 @@ class CreateUser extends Component
                 'firstname' => 'required|string|max:255',
                 'middlename' => 'nullable|string|max:255',
                 'lastname' => 'required|string|max:255',
-                'contactNumber' => 'required|string|max:15',
+                'contactNumber' => [
+                    'required',
+                    'string',
+                    'max:12',
+                    'regex:/^(?:\+63|0)9\d{9}$/',
+                ],
                 'email' => 'required|email|unique:users,email',
-                'street' => 'nullable|string|max:255',
+                'street' => 'required|string|max:255',
                 'city' => 'required|string|max:255',
                 'province' => 'required|string|max:255',
-                'dob' => 'required|date',
+                'dob' => ['required|date',new Age],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
             ]

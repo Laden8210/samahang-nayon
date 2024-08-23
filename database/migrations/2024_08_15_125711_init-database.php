@@ -33,7 +33,7 @@ return new class extends Migration
             $table->id('GuestId');
             $table->string('FirstName', 255);
             $table->string('LastName', 255);
-            $table->string('MiddleName', 255);
+            $table->string('MiddleName', 255)->nullable();
             $table->string('Street', 255);
             $table->string('City', 255);
             $table->string('Province', 255);
@@ -41,7 +41,6 @@ return new class extends Migration
             $table->string('Gender', 255);
             $table->string('ContactNumber', 12);
             $table->string('EmailAddress', 255);
-            $table->string('Username', 255);
             $table->string('Password', 255);
             $table->date('DateCreated');
             $table->time('TimeCreated');
@@ -51,7 +50,7 @@ return new class extends Migration
             $table->id('EmployeeId');
             $table->string('FirstName', 255);
             $table->string('LastName', 255);
-            $table->string('MiddleName', 255);
+            $table->string('MiddleName', 255)->nullable();
             $table->string('Position', 32);
             $table->string('Status', 12);
             $table->string('ContactNumber', 12);
