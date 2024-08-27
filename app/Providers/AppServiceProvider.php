@@ -9,6 +9,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    protected $namespace = 'App\Http\Controllers';
     public function register(): void
     {
         //
