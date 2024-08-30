@@ -10,7 +10,7 @@
     class="fixed z-50 inset-0">
     <div x-on:click="open = false" class="fixed inset-0 bg-gray-300 opacity-40">
     </div>
-    <div class="bg-white rounded m-auto fixed inset-0 max-w-xl h-fit p-5">
+    <div class="bg-white rounded m-auto fixed inset-0 max-w-4xl h-fit p-5">
         <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                 {{ $title ?? ""}}

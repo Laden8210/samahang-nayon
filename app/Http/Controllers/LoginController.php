@@ -27,19 +27,18 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('admin');
-            dd(Auth::attempt($credentials), $credentials);
+
         }
 
-
-        dd(Auth::attempt($credentials), $credentials);
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->withInput($request->only('email'));
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
-        return redirect('/');
+        dd($request->session()->all());
+        // Auth::logout();
+        // return redirect('/');
     }
 }

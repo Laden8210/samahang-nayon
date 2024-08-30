@@ -1,9 +1,9 @@
 <div>
     <form class="p-2" wire:submit.prevent="saveBooking">
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-3 gap-5">
 
             <div class="col-span-2">
-                <div class="w-full bg-slate-50 shadow rounded p-2">
+                <div class="w-full bg-white shadow rounded p-2">
 
                     <div class="m-4">
                         <div class="flex justify-between">
@@ -11,6 +11,7 @@
 
                             <div>
                                 <button type="button"
+                                    x-on:click="$dispatch('open-modal', {name: 'select-customer-modal'})"
                                     class="bg-green-700 px-2 py-1 rounded shadow text-white">Search</button>
                             </div>
                         </div>
@@ -76,40 +77,59 @@
                 <div class="w-full bg-slate-50 shadow rounded p-2">
                     <div class="flex justify-between px-2">
                         <h1 class="text-lg font-bold">Reservation Summary</h1>
-                        <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class=""
-                            type="button">
+                        <button x-on:click="$dispatch('open-modal', {name: 'select-room-modal'})" type="button">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                     </div>
 
                     <div class="border border-slate-200 rounded p-2 m-1">
-                        <div class="grid grid-cols-2">
+                        <div class="grid grid-cols-2 gap-1">
                             <div>
                                 <p class="text-xs text-slate-700">CHECK IN</p>
-                                <h2 class="text-base font-semibold text-slate-800">Sun, 22, May 2024</h2>
+                                <input wire:model="checkIn"
+                                    class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none"
+                                    type="text" value="" disabled>
                             </div>
                             <div>
                                 <p class="text-xs text-slate-700">CHECK OUT</p>
-                                <h2 class="text-base font-semibold text-slate-800">Sun, 22, May 2024</h2>
+                                <input wire:model="checkOut"
+                                    class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none"
+                                    type="text" value="" disabled>
                             </div>
                         </div>
+                        <div class="grid grid-cols-2 gap-1">
+                            <div class="text-xs mt-5">
+                                <h2>TOTAL LENGHT OF STAY:</h2>
+                                <input wire:model=""
+                                    class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none"
+                                    type="text" value="" disabled>
+                            </div>
 
-                        <div class="text-xs mt-5">
-                            <h2>TOTAL LENGHT OF STAY:</h2>
-                            <span class="font-bold text-lg">3</span>
+                            <div class="text-xs mt-5">
+                                <h2>TOTAL GUEST:</h2>
+                                <input wire:model="totalGuests"
+                                    class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none"
+                                    type="text" value="" disabled>
+                            </div>
+
                         </div>
+
 
 
                         <div class="mt-5">
                             <h2 class="text-xs">YOU SELECTED</h2>
-                            <h1 class="font-bold text-lg">Room Name Here</h1>
+                            <input wire:model="selectedRoom"
+                                class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none" type="text"
+                                value="" disabled>
                         </div>
                     </div>
 
                     <div class="p-2">
                         <div class="flex justify-between pe-2 mb-2">
                             <h2 class="font-bold text-blue-950">Amenities</h2>
-                            <button type="button" class=" ">
+                            <button type="button" class=" "
+                            type="button"
+                                    x-on:click="$dispatch('open-modal', {name: 'select-amenities-modal'})">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         </div>
@@ -178,82 +198,108 @@
 
         </div>
     </form>
-    <div id="crud-modal" tabindex="-1" aria-hidden="true"
-        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative p-4 w-full max-w-md max-h-full">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Edit Booking
-                    </h3>
-                    <button type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-toggle="crud-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <form class="p-4 md:p-5">
-                    <div class="grid gap-4 mb-4 grid-cols-2">
-
-                        <div class="col-span-2 sm:col-span-1">
-                            <x-textfield1 name="firstname" placeholder="First Name" model="firstname"
-                                label="Check In" />
-                        </div>
-                        <div class="col-span-2 sm:col-span-1">
-                            <x-textfield1 name="firstname" placeholder="First Name" model="firstname"
-                                label="Check Out" />
-                        </div>
-
-                        <div class="col-span-2 sm:col-span-1">
-                            <x-textfield1 name="firstname" placeholder="Total Guest" model="firstname"
-                                label="Total Guest" />
-                        </div>
-
-                        <div class="col-span-2 sm:col-span-1">
-                            <x-combobox name="gender" model="gender" placeholder="Room Type" :options="['Single', 'Double']" />
-                        </div>
-
-                        <div class="col-span-2 bg-slate-100 h-64 rounded overflow-auto">
-
-                            @for ($i = 0; $i < 10; $i++)
-                                <div class=" p-2 bg-white m-1 rounded shadow-sm">
-                                    <div class="grid grid-cols-3">
-                                        <div class="rounded overflow-auto">
-                                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIALcAwwMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABAUBAgMGB//EAC4QAQACAQIEBAQGAwAAAAAAAAABAgMEEQUhMVESEyJBUmFxkSNCgaHB0TIzkv/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/xAAWEQEBAQAAAAAAAAAAAAAAAAAAARH/2gAMAwEAAhEDEQA/APoIDo5gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM+G3wz9gYAAAAAAAAAAAAAAAAAAAAB202nvqL+GnKI627A548d8t4pjrNrT7QstPwusbTntvPw16fdM0+DHp6eHHH1n3l1ZtakaY8OPF/rx1r9IdN2BFa3pTJG16Vt9Y3Rc3DcF+dN8c/LnH2TAFFqNFmwbzMeKnxVR3pULV8Ppl3ti2pft7S1KzYpx0vgy0tNbY7bx8mFRoAAAAREzMREbzPtAt+F6etMUZpje9uk9oKRAjRamY38mdvnMOF6Wpaa3rNZj2mHpEfW6euowzy9dY3rP8M61iiAaZAAAZpW17xSkb2mdogHTTYL6jLFKfrPaF7hxUw44pSNoj92mk09dNiisc7TztPeXZm1qQARQAAAAAAAHmgG2AABe8PvF9Jj2/LHhn9FE7abU5NNfenOJ61npKVYv2uW8Y8dr26VjdBjiuPbnivE9o2Q9XrL6n07eGkflj+UxdRgGmQABbcM0vl0868eu0emO0InDtN5+XxWj8OnX5z2XSWtSADKgAAAAAAAAAKu3Cr/lzVn612Rs2iz4udqbx3rzXoupjzQvdRo8OfeZr4b/FVVanSZdPO9o8VPa0LqYjgKgAAAA2x0tlyVpSN7WnaGq34ZpvLx+bePXaOXyhKsSsGKuDFXHXpHWe8ugMtAAAAAAAAAAAAAABMRMbTG8ACs1nDtt76ePrT+la9Kh63Q1z73x7VyftZZUsUwzatqWmtomLR1iWGmQEjR6W2pv2pH+VgdOHaXzr+ZePw6z/ANSuWKUrjpFKRtWOkMsWtyAAAAAAAAAAAAAAAAAAAAI+r0mPUxz9N46WhXW4bqInaPDaO8SuRdTFZg4XO++e0bfDX+1lSlcdYrSsVrHSIZE1cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/9k="
-                                                alt="" class="w-20">
-                                        </div>
-                                        <div class="col-span-2">
-                                            <h1>Room Name</h1>
-                                            <p class="text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                                Neque mollitia vitae, quibusdam quae cum nihil doloribus, unde,
-                                                distinctio in pariatur quos aut tenetur repudiandae consectetur ducimus
-                                                architecto odio est ut.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endfor
-
-                        </div>
-                    </div>
-                    <button type="submit"
-                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Confirm
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
 
     @if (session()->has('message'))
         <x-success-message-modal message="{{ session('message') }}" />
     @endif
+
+
+    <x-modal title="Select Customer" name="select-customer-modal">
+
+        @slot('body')
+
+            <div class="my-2">
+                <div class="grid grid-cols-1 gap-2">
+
+                    <x-textfield1 name="search" placeholder="Search Customer" model="search" label="Search Customer" />
+
+
+                </div>
+
+            </div>
+            <div class="max-h-96 overflow-auto bg-white rounded-md">
+                @foreach ($guests as $guest)
+                    <div class="p-2 shadow rounded-lg mx-1 my-4 flex justify-between items-center">
+                        <div>
+                            <p>{{ $guest->FirstName . ' ' . $guest->MiddleName . ' ' . $guest->LastName }}</p>
+                        </div>
+
+                        <div>
+                            <button wire:click="selectGuest({{ $guest->GuestId }})" type="button"
+                                class="bg-green-700 text-white px-2 py-1 rounded
+                                hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">Select</button>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        @endslot
+    </x-modal>
+
+    <x-modal title="Select Amenities" name="select-amenities-modal">
+        @slot('body')
+        @endslot
+    </x-modal>
+
+    <x-select-room-modal name="select-room-modal" title="Select Room">
+        @slot('body')
+            <form wire:submit.prevent="filterRoom">
+                <div class="flex justify-normal gap-5 rounded-lg shadow-lg p-2 mt-5">
+                    <div class="w-1/3">
+                        <x-textfield1 name="checkin" placeholder="Check In" type="date" label="Check In"
+                            model="checkIn" />
+                    </div>
+                    <div class="w-1/3">
+                        <x-textfield1 name="checkout" placeholder="Check Out" type="date" label="Check Out"
+                            model="checkOut" />
+                    </div>
+                    <div class="w-1/3">
+                        <x-combobox name="totalGuests" placeholder="Total Guest" :options="[1, 2, 3, 4, 5]" model="totalGuests" />
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-cyan-900 text-white py-2 px-2 rounded-full">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <div class="space-y-4 mt-5">
+
+                @php
+                    $groupedRooms = $rooms->groupBy(function ($room) {
+                        return floor($room->RoomNumber / 100) * 100;
+                    });
+                @endphp
+
+                @foreach ($groupedRooms as $group => $room)
+                    <div class="grid grid-cols-10 gap-2 m-2">
+
+                        @foreach ($room as $room)
+                            <div class="relative group">
+
+                                <button wire:click="selectRoom({{ $room->RoomId }})"
+                                    class="h-24 w-full bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
+                                    {{ $room->RoomNumber }}
+                                </button>
+                                <div
+                                    class="absolute bottom-full left-3/4 transform -translate-x-2/3 w-96 mb-2 hidden group-hover:block">
+
+                                    <div class="bg-gray-800 text-white text-xs rounded py-1 px-2">
+                                        <div class="h-32">
+                                            img
+                                        </div>
+                                        Booking details for item {{ $room->RoomType }}
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+            </div>
+        @endslot
+    </x-select-room-modal>
+
 
 </div>

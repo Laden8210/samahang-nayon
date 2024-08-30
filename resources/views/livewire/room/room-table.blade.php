@@ -80,7 +80,7 @@
                             </div>
 
 
-                            <div class="grid grid-cols-3 text-xs mt-1 relative bottom-1">
+                            <div class="grid grid-cols-3 text-xs relative bottom-1">
                                 <div>
                                     <span class="font-bold">Price:</span> {{$room->RoomPrice}}
                                 </div>
@@ -88,7 +88,10 @@
                                 <div>
                                     <span class="font-bold">Capacity:</span> {{$room->Capacity}}
                                 </div>
-                                <span class="font-bold">Room Number:</span> {{$room->RoomNumber}}
+                                <div>
+                                    <span class="font-bold">Room Number:</span> {{$room->RoomNumber}}</span>
+                                </div>
+
                             </div>
                         </div>
                     </div>

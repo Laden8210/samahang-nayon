@@ -26,11 +26,25 @@
             <tbody>
                 @foreach ($bookings as $booking)
                     <tr class="text-center">
-                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
-                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
-                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
-                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
-                        <td class="py-3">{{ $user->EmplooyeeId }}</td>
+                        <td class="py-3">{{ $booking->ReservationId }}</td>
+                        <td class="py-3">{{ $booking->guest->FirstName }}</td>
+                        <td class="py-3">{{ $booking->room->RoomType .' - #'. $booking->room->RoomNumber }}</td>
+                        <td class="py-3">{{ $booking->DateCheckIn }}</td>
+                        <td class="py-3">{{ $booking->DateCheckOut }}</td>
+                        <td class="py-3">
+                            @if ($booking->Status == 'Pending')
+                                <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+
+                            @endif
+                            @if ($booking->Status == 'Checked In')
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
+                            @if ($booking->Status == 'Checked Out')
+                                <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+
+                            @endif
+                        </td>
+                        {{-- <td class="py-3">{{ $user->EmplooyeeId }}</td> --}}
                 @endforeach
             </tbody>
         </table>

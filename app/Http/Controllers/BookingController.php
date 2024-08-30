@@ -15,8 +15,9 @@ class BookingController extends Controller
 
     public function create()
     {
-        return view('admin.booking.create');
+        return view('admin.booking.booking-details');
     }
+
 
     public function bookingDetails(){
         return view('admin.booking.booking-details');

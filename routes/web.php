@@ -17,6 +17,7 @@ use App\Http\Controllers\PromotionController;
 Route::get('', [LoginController::class, 'index']);
 Route::get('login', [LoginController::class, 'index']);
 Route::post('login', [LoginController::class, 'login'])->name('login');
+
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
 
@@ -33,22 +34,13 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('admin/user/add', [UserController::class, 'addUser'])->name('addUser');
 
-
-
-
-
-
-
-
-
 Route::get('forget-password', [ForgetPasswordController::class, 'index'])->name('forget-password');
 Route::get('reset-password', [ForgetPasswordController::class, 'resetPassword'])->name('reset-password');
 Route::get('password-changed', [ForgetPasswordController::class, 'passwordChanged'])->name('password-changed');
-
-
 
 Route::get('receptionist/amenities', [AmenitiesController::class, 'index'])->name('amenities');
 Route::get('receptionist/promotions', [PromotionController::class, 'index'])->name('promotions');
 Route::get('receptionist/booking', [BookingController::class, 'index'])->name('booking');
 Route::get('receptionist/booking/create', [BookingController::class, 'create'])->name('createBooking');
-Route::get('receptionist/booking/booking-details', [BookingController::class, 'bookingDetails'])->name('booking-details');
+Route::get('receptionist/booking/booking-details/{roomid}', [BookingController::class, 'bookingDetails'])->name('booking-details');
+
