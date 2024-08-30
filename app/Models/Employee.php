@@ -39,13 +39,13 @@ class Employee extends Authenticatable
         'Gender',
         'Birthdate',
         'Street',
+        'Brgy',
         'City',
         'Province',
         'email',
         'UserAccountId',
         'Username',
         'password',
-        'AccountType',
         'DateCreated',
         'TimeCreated'
     ];

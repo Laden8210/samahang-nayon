@@ -15,12 +15,14 @@ class BookingController extends Controller
 
     public function create()
     {
-        return view('admin.booking.booking-details');
+        return view('admin.booking.create');
     }
 
 
-    public function bookingDetails(){
-        return view('admin.booking.booking-details');
+    public function bookingDetails(Request $request)
+    {
+        $ReservationId = $request->ReservationId;
+        return view('admin.booking.booking-details', compact('ReservationId'));
     }
 
 

@@ -18,6 +18,7 @@ class Guest extends Model
         'LastName',
         'MiddleName',
         'Street',
+        'Brgy',
         'City',
         'Province',
         'Birthdate',

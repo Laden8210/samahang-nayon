@@ -102,6 +102,17 @@
 
                     <div class=" mx-2">
 
+                        <x-text-field1 name="brgy" placeholder="Enter Street" model="brgy" label="Brgy" />
+                        @error('brgy')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+                    <div class=" mx-2">
+
                         <x-text-field1 name="city" placeholder="Enter City" model="city" label="City" />
                         @error('city')
                             <p class="text-red-500 text-xs italic mt-1"><i
@@ -113,8 +124,7 @@
 
                     <div class="mx-2">
 
-                        <x-text-field1 name="province" placeholder="Enter Province" model="province"
-                            label="Province" />
+                        <x-text-field1 name="province" placeholder="Enter Province" model="province" label="Province" />
                         @error('province')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
@@ -123,6 +133,12 @@
 
                     </div>
 
+
+
+                </div>
+
+
+                <div class="grid grid-cols-3 p-2 w-full">
                     <div class="mx-2">
 
                         <x-text-field1 name="dob" type="date" placeholder="Enter Birthdate" model="dob"
@@ -134,11 +150,6 @@
                         @enderror
 
                     </div>
-
-                </div>
-
-
-                <div class="grid grid-cols-3 p-2 w-full">
 
 
 
@@ -163,19 +174,22 @@
                     </div>
 
 
-                    <div class="flex items-end justify-end mx-2">
-                        <div class="flex gap-2">
-                            <a href="{{route('user')}}"
-                                class="bg-red-400 font-medium text-white px-2 py-1 rounded">
-                                Cancel
+                </div>
+
+                <div class="flex items-end justify-end mx-2 mt-5">
+                    <div class="flex gap-2">
+                        <a href="{{ route('user') }}" class="bg-red-400 font-medium text-white px-2 py-1 rounded">
+                            Cancel
                         </a>
-                            <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">
-                                Create
-                            </button>
-                        </div>
+                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">
+                            Create
+                        </button>
                     </div>
                 </div>
             </div>
+
+
+
             @if (session()->has('message'))
                 <x-success-message-modal message="{{ session('message') }}" />
             @endif

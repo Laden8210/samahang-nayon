@@ -33,7 +33,7 @@ class Room extends Model
     public function roomPictures()
     {
         return $this->hasMany(RoomPictures::class, 'RoomId', 'RoomId');
-    }
+        }
 
     public function reservations()
     {

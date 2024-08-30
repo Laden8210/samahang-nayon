@@ -9,6 +9,9 @@ class Payment extends Model
 {
     use HasFactory;
     protected $primaryKey = 'PaymentId';
+    protected $table = 'payments';
+    public $timestamps = false;
+
 
     protected $fillable = [
         'GuestId',
@@ -16,8 +19,28 @@ class Payment extends Model
         'AmountPaid',
         'DateCreated',
         'TimeCreated',
-        'Status'
+        'Status',
+        'PaymentType',
+        'ReferenceNumber',
+        'Purpose'
     ];
+
+    public function scopeSearch($query, $val)
+    {
+        return $query->where('ReferenceNumber', 'like', '%'.$val.'%')
+            ->orWhere('Purpose', 'like', '%'.$val.'%')
+            ->orWhere('PaymentType', 'like', '%'.$val.'%')
+            ->orWhere('Status', 'like', '%'.$val.'%')
+            ->orWhere('AmountPaid', 'like', '%'.$val.'%')
+            ->orWhere('DateCreated', 'like', '%'.$val.'%')
+            ->orWhere('TimeCreated', 'like', '%'.$val.'%')
+            ->orWhereHas('guest', function ($query) use ($val) {
+                $query->where('FirstName', 'like', '%'.$val.'%')
+                    ->orWhere('LastName', 'like', '%'.$val.'%')
+                    ->orWhere('MiddleName', 'like', '%'.$val.'%');
+            });
+
+    }
 
     public function guest()
     {

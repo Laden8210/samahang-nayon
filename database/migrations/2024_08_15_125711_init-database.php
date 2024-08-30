@@ -35,6 +35,7 @@ return new class extends Migration
             $table->string('LastName', 255);
             $table->string('MiddleName', 255)->nullable();
             $table->string('Street', 255);
+            $table->string('Brgy', 255);
             $table->string('City', 255);
             $table->string('Province', 255);
             $table->date('Birthdate');
@@ -57,6 +58,7 @@ return new class extends Migration
             $table->string('Gender', 255);
             $table->date('Birthdate');
             $table->string('Street', 255);
+            $table->string('Brgy', 255);
             $table->string('City', 255);
             $table->string('Province', 255);
             $table->string('email', 255);
@@ -100,6 +102,9 @@ return new class extends Migration
             $table->date('DateCreated');
             $table->time('TimeCreated');
             $table->string('Status', 64);
+            $table->string('PaymentType', 64);
+            $table->string('ReferenceNumber', 64);
+            $table->string('Purpose', 255);
         });
 
         Schema::create('promotions', function(Blueprint $table){

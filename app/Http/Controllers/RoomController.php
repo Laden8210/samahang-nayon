@@ -43,6 +43,11 @@ class RoomController extends Controller
         }
     }
 
+    public function receptionistIndex()
+    {
+        return view('admin.room.receptionist-room');
+    }
+
 
 
 }

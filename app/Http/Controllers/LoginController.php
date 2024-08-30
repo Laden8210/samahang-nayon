@@ -26,7 +26,13 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('admin');
+
+            $user = Auth::user();
+            if ($user->Position === 'Manager' || $user->Position === 'System Administrator') {
+                return redirect()->intended('admin');
+            } elseif ($user->Position === 'Receptionist') {
+                return redirect()->intended('receptionist/booking');
+            }
 
         }
 
@@ -37,8 +43,8 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        dd($request->session()->all());
-        // Auth::logout();
-        // return redirect('/');
+
+        Auth::logout();
+        return redirect('/');
     }
 }

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ReservationAmenities extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+    protected $table = 'reservationamenities';
+
     protected $primaryKey = 'ReservationAmenitiesId';
 
     protected $fillable = [

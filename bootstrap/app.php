@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Middleware\PositionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,7 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \Fahlisaputra\Minify\Middleware\MinifyHtml::class,
             \Fahlisaputra\Minify\Middleware\MinifyCss::class,
             \Fahlisaputra\Minify\Middleware\MinifyJavascript::class,
+
         ]);
+        $middleware->alias([
+            'position'=> PositionMiddleware::class,]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

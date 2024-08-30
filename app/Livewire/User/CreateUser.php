@@ -25,6 +25,7 @@ class CreateUser extends Component
     public $dob;
     public $gender;
     public $position;
+    public $brgy;
 
 
     public function createUser()
@@ -40,11 +41,12 @@ class CreateUser extends Component
                     'max:12',
                     'regex:/^(?:\+63|0)9\d{9}$/',
                 ],
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email|unique:employees,email',
                 'street' => 'required|string|max:255',
+                'brgy' => 'required|string|max:255',
                 'city' => 'required|string|max:255',
                 'province' => 'required|string|max:255',
-                'dob' => ['required|date',new Age],
+                'dob' => ['required', 'date',new Age],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
             ]
@@ -58,6 +60,7 @@ class CreateUser extends Component
         $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
 
 
+
         Employee::create([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
@@ -65,6 +68,7 @@ class CreateUser extends Component
             'ContactNumber' => $this->contactNumber,
             'email' => $this->email,
             'Street' => $this->street,
+            'Brgy' => $this->brgy,
             'City' => $this->city,
             'Province' => $this->province,
             'Birthdate' => $this->dob,
@@ -78,9 +82,9 @@ class CreateUser extends Component
             'TimeCreated' => now()->format('H:i:s'),
         ]);
 
-        session()->flash('message', 'User created successfully!'.$defaultPassword);
+        session()->flash('message', 'User created successfully!');
 
-        $this->reset();
+        // $this->reset();
     }
 
     public function render()

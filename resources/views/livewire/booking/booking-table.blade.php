@@ -27,24 +27,44 @@
                 @foreach ($bookings as $booking)
                     <tr class="text-center">
                         <td class="py-3">{{ $booking->ReservationId }}</td>
-                        <td class="py-3">{{ $booking->guest->FirstName }}</td>
+                        <td class="py-3">{{ $booking->guest->FirstName.' '. $booking->guest->MiddleName .' '. $booking->guest->LastName }}</td>
                         <td class="py-3">{{ $booking->room->RoomType .' - #'. $booking->room->RoomNumber }}</td>
                         <td class="py-3">{{ $booking->DateCheckIn }}</td>
                         <td class="py-3">{{ $booking->DateCheckOut }}</td>
                         <td class="py-3">
                             @if ($booking->Status == 'Pending')
                                 <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
-
                             @endif
+                            @if ($booking->Status == 'Booked')
+                                <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
+                            @if ($booking->Status == 'Reserved')
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
+
+
                             @if ($booking->Status == 'Checked In')
                                 <span class="bg-green-200 text-green-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
                             @endif
                             @if ($booking->Status == 'Checked Out')
                                 <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
+                            @if ($booking->Status == 'Cancelled')
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
+                            @if ($booking->Status == 'No Show')
+                                <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
 
                             @endif
+
+
                         </td>
-                        {{-- <td class="py-3">{{ $user->EmplooyeeId }}</td> --}}
+                        <td class="py-3">
+
+                            <a href="{{route('bookingDetails', $booking->ReservationId)}}"
+                                class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
+
+                        </td>
                 @endforeach
             </tbody>
         </table>

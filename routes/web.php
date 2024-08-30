@@ -11,15 +11,16 @@ use App\Http\Controllers\ForgetPasswordController;
 use PHPUnit\Event\Telemetry\System;
 use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\AmenitiesController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PromotionController;
-
+use App\Http\Controllers\ReceiptController;
 
 Route::get('', [LoginController::class, 'index']);
 Route::get('login', [LoginController::class, 'index']);
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'position:System Administrator')->group(function () {
 
     Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('admin/rooms', [RoomController::class, 'index'])->name('rooms');
@@ -38,9 +39,18 @@ Route::get('forget-password', [ForgetPasswordController::class, 'index'])->name(
 Route::get('reset-password', [ForgetPasswordController::class, 'resetPassword'])->name('reset-password');
 Route::get('password-changed', [ForgetPasswordController::class, 'passwordChanged'])->name('password-changed');
 
-Route::get('receptionist/amenities', [AmenitiesController::class, 'index'])->name('amenities');
-Route::get('receptionist/promotions', [PromotionController::class, 'index'])->name('promotions');
-Route::get('receptionist/booking', [BookingController::class, 'index'])->name('booking');
-Route::get('receptionist/booking/create', [BookingController::class, 'create'])->name('createBooking');
-Route::get('receptionist/booking/booking-details/{roomid}', [BookingController::class, 'bookingDetails'])->name('booking-details');
+Route::middleware('auth', 'position:Receptionist')->group(function () {
+
+    Route::get('receptionist/amenities', [AmenitiesController::class, 'index'])->name('amenities');
+    Route::get('receptionist/promotions', [PromotionController::class, 'index'])->name('promotions');
+    Route::get('receptionist/booking', [BookingController::class, 'index'])->name('booking');
+    Route::get('receptionist/booking/create', [BookingController::class, 'create'])->name('createBooking');
+    Route::get('receptionist/booking/booking-details/{ReservationId}', [BookingController::class, 'bookingDetails'])->name('bookingDetails');
+    Route::get('receptionist/room', [RoomController::class, 'receptionistIndex'])->name('receptionistRoom');
+
+Route::get('receptionist/payment', [PaymentController::class, 'index'])->name('payment');
+
+Route::get('receptionist/payment/receipt', [ReceiptController::class, 'index'])->name('receipt');
+});
+
 

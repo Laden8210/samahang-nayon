@@ -4,6 +4,6 @@
 @section('content')
 
 
-@livewire('booking.create-booking')
+@livewire('view-booking-details', ['ReservationId' => $ReservationId])
 
 @endsection

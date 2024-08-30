@@ -12,7 +12,7 @@
             @foreach ($room as $room)
                 <div class="relative group">
 
-                    <a href="{{ route('booking-details', Crypt::encrypt($room->RoomId)) }}"
+                    <a href="{{ route('createBooking', Crypt::encrypt($room->RoomId)) }}"
                         class="h-24 bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
                         {{ $room->RoomNumber }}
                     </a>
