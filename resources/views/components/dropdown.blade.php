@@ -12,7 +12,6 @@
     x-transition:leave="transition ease-in duration-300"
     x-transition:leave-start="opacity-100 scale-100"
     x-transition:leave-end="opacity-0 scale-90"
-    id="dropdown"
     aria-labelledby="dropdownDefaultButton"
 
     class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 relative m-auto">

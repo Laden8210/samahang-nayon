@@ -4,6 +4,7 @@
         $groupedRooms = $rooms->groupBy(function ($room) {
             return floor($room->RoomNumber / 100) * 100;
         });
+
     @endphp
 
     @foreach ($groupedRooms as $group => $room)

@@ -12,6 +12,16 @@ class LoginController extends Controller
 {
     public function index()
     {
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->position == 'System Administrator') {
+                return redirect('admin/');
+            } else if ($user->position == 'Receptionist') {
+                return redirect('receptionist/booking');
+            }
+
+        }
         return view('index');
     }
 
@@ -27,13 +37,11 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-            if ($user->Position === 'Manager' || $user->Position === 'System Administrator') {
-                return redirect()->intended('admin');
-            } elseif ($user->Position === 'Receptionist') {
+            if (Auth::user()->position == 'System Administrator') {
+                return redirect()->intended('admin/');
+            } else if (Auth::user()->position == 'Receptionist') {
                 return redirect()->intended('receptionist/booking');
             }
-
         }
 
         return back()->withErrors([

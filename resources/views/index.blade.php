@@ -45,8 +45,7 @@
                         </span>
                         <input type="text"
                             class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10 rounded-lg w-full focus:outline-none"
-                            placeholder="Enter your email?"
-                            name="email">
+                            placeholder="Enter your email?" name="email">
                     </div>
 
                     <div class="relative">
@@ -72,13 +71,13 @@
 
                     <button type="submit"
                         class="bg-cyan-400 text-white px-4 py-2 rounded-lg w-full hover:bg-cyan-500 hover:text-gray-100">Continue</button>
-                        @if ($errors->has('email'))
+                    @if ($errors->has('email'))
                         <div class="text-red-500 text-sm mt-4">
                             {{ $errors->first('email') }}
                         </div>
                     @endif
                 </form>
-                </form>
+
             </div>
 
 

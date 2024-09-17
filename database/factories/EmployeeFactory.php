@@ -25,7 +25,7 @@ class EmployeeFactory extends Factory
             'City' => $this->faker->city,
             'Province' => $this->faker->state,
             'EmailAddress' => $this->faker->unique()->safeEmail,
-            'UserAccountId' => UserAccount::factory(),
+
         ];
     }
 }

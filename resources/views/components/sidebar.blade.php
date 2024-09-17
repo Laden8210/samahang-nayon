@@ -38,7 +38,7 @@
 
     {{-- admin sidebar end here --}}
     {{-- Receptionist sidebar --}}
-    @if (Auth::check() && Auth::user()->Position === 'Receptionist')
+    {{-- @if (Auth::check() && Auth::user()->Position === 'Receptionist') --}}
         <ul class="items-center pt-7">
             <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
         </ul>
@@ -51,7 +51,7 @@
             <x-menu-item title="Booking" url="{{ route('booking') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Room" url="{{ route('receptionistRoom') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Payment" url="{{ route('payment') }}" icon="fas fa-home mx-2" />
-            <x-menu-item title="Message" url="#" icon="fas fa-home mx-2" badge="true" badgeCount="1" />
+            <x-menu-item title="Message" url="{{route('message')}}" icon="fas fa-home mx-2" badge="true" badgeCount="1" />
             <x-menu-item title="Amenities" url="{{ route('amenities') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Check-in/out" url="#" icon="fas fa-home mx-2" />
             <x-menu-item title="Report" url="#" icon="fas fa-home mx-2" />
@@ -65,7 +65,7 @@
             <x-menu-item title="Calendar" url="#" icon="fas fa-home mx-2" />
             <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
         </ul>
-    @endif
+    {{-- @endif --}}
     {{-- Receptionist sidebar end here --}}
 
 </nav>

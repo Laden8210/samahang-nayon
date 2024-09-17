@@ -20,8 +20,7 @@ class Reservation extends Model
         'TimeCreated',
         'DateCheckIn',
         'DateCheckOut',
-        'Disburse',
-        'Balance',
+        'TotalCost',
         'Status'
     ];
 

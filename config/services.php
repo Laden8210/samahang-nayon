@@ -30,5 +30,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'paymongo' => [
+        'secret_key' => env('PAYMONGO_SECRET_KEY'),
+    ],
 
 ];

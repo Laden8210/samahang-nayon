@@ -10,6 +10,9 @@ class CheckInOut extends Model
     use HasFactory;
     protected $primaryKey = 'CheckInOutId';
 
+    protected $table = 'checkinouts';
+    public $timestamps = false;
+
     protected $fillable = [
         'ReservationId',
         'GuestId',

@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Booking;
 
+use App\Mail\SamahangNayonMailer;
 use App\Models\Amenities;
 use Livewire\Component;
 use App\Models\Guest;
 use App\Models\Room;
 use App\Models\Reservation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class CreateBooking extends Component
 {
@@ -37,18 +40,54 @@ class CreateBooking extends Component
 
     public $total;
     public $paymentAmount;
+    public $paymentType;
+
+    public $availableRooms;
+
+    public function mount()
+    {
+        $this->checkIn = Carbon::today()->format('Y-m-d');
+        $this->checkOut = Carbon::today()->addDay()->format('Y-m-d');  // Default to one day after check-in
+        $this->availableRooms = $this->getAvailableRooms();
+    }
 
     public function render()
     {
         return view('livewire.booking.create-booking', [
             'guests' => Guest::all(),
-            'rooms' => Room::all(),
+            'rooms' => $this->availableRooms,  // Use available rooms here
             'amenities' => Amenities::all(),
         ]);
     }
 
+    public function updated($propertyName)
+    {
+        if ($propertyName === 'checkIn' || $propertyName === 'checkOut') {
+            $this->availableRooms = $this->getAvailableRooms();
+        }
+    }
+
+    public function getAvailableRooms()
+    {
+        $checkIn = Carbon::parse($this->checkIn);
+        $checkOut = Carbon::parse($this->checkOut);
+
+        return Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->whereNull('reservations.RoomId') // Room has no reservation
+                    ->orWhere('reservations.Status', 'Checked Out') // Reservation has checked out
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('reservations.DateCheckOut', '<', $checkIn) // Reservation check-out is before the new check-in
+                              ->orWhere('reservations.DateCheckIn', '>', $checkOut); // Reservation check-in is after the new check-out
+                    });
+            })
+            ->select('rooms.*')
+            ->get();
+    }
+
     public function saveBooking()
     {
+
         if ($this->selectedGuestId) {
             $guest = Guest::find($this->selectedGuestId);
         } else {
@@ -79,26 +118,11 @@ class CreateBooking extends Component
         $reservation->GuestId = $guest->GuestId;
         $reservation->DateCheckIn = $this->checkIn;
         $reservation->DateCheckOut = $this->checkOut;
-        $reservation->Disburse = $this->total;
+        $reservation->TotalCost =  $room->RoomPrice * $this->lengthOfStay;
+        $reservation->Status = 'Booking';
 
-        $purpose="";
-        if ($this->paymentAmount) {
-            $reservation->Balance = $this->total - $this->paymentAmount;
-        } else {
-            $reservation->Balance = $this->total;
-        }
+        $purpose = "";
 
-        if ($this->paymentAmount >= $this->total) {
-            $reservation->Status = 'Booked';
-            $purpose = 'Full Payment';
-        } elseif ($this->paymentAmount >= 0.3 * $this->total) {
-
-            $reservation->Status = 'Reserved';
-            $purpose = 'Partial Payment';
-        } else {
-            $reservation->Status = 'Unpaid';
-            $purpose = 'Partial Payment';
-        }
         $reservation->DateCreated = date('Y-m-d');
         $reservation->TimeCreated = date('H:i:s');
         $reservation->save();
@@ -108,21 +132,50 @@ class CreateBooking extends Component
                 return [
                     'AmenitiesId' => $amenity['id'],
                     'Quantity' => $amenity['quantity'],
+                    'TotalCost' => $amenity['price'] * $amenity['quantity'],
                 ];
             })
         );
-        $reservation->payments()->create([
-            'GuestId' => $guest->GuestId,
-            'AmountPaid' => $this->paymentAmount,
-            'DateCreated' => date('Y-m-d'),
-            'TimeCreated' => date('H:i:s'),
-            'Status' => 'Confirmed`',
-            'PaymentType' => 'Cash',
-            'ReferenceNumber' => $this->generateReferenceNumber(),
-            'Purpose' => $purpose,
 
-        ]);
-        session()->flash('message', 'Room Booking created successfully.');
+
+
+        if ($this->paymentType == 'Gcash') {
+            $paymentLink = route('online-payment', ['reservationId' => $reservation->ReservationId]);
+            try {
+                Mail::to('domingo.laden@gmail.com')->send(new SamahangNayonMailer($paymentLink));
+                session()->flash('message', 'Room Booking created successfully and email sent.');
+            } catch (\Exception $e) {
+                session()->flash('error', 'Failed to send email: ' . $e->getMessage());
+            }
+            // $reservation->payments()->create([
+            //     'GuestId' => $guest->GuestId,
+            //     'AmountPaid' => $this->paymentAmount ?? 0,
+            //     'DateCreated' => date('Y-m-d'),
+            //     'TimeCreated' => date('H:i:s'),
+            //     'Status' => 'Pending`',
+            //     'PaymentType' => $this->paymentType,
+            //     'ReferenceNumber' => $this->generateReferenceNumber(),
+            //     'Purpose' => $purpose,
+            // ]);
+            // $this->reset();
+
+
+            // session()->flash('message', 'Room Booking created successfully.');
+        } else {
+            $reservation->payments()->create([
+                'GuestId' => $guest->GuestId,
+                'AmountPaid' => $this->paymentAmount ?? 0,
+                'DateCreated' => date('Y-m-d'),
+                'TimeCreated' => date('H:i:s'),
+                'Status' => 'Confirmed`',
+                'PaymentType' => $this->paymentType,
+                'ReferenceNumber' => $this->generateReferenceNumber(),
+                'Purpose' => $purpose,
+            ]);
+            $this->reset();
+
+            session()->flash('message', 'Room Booking created successfully.');
+        }
     }
 
     public function filterRoom()
@@ -152,37 +205,45 @@ class CreateBooking extends Component
         $this->selectedGuestId = $guestId;
     }
 
-    public function selectAmenity($amenityId, $quantity)
+    public function updateAmenityQuantity($amenityId, $change)
     {
         $amenity = Amenities::find($amenityId);
 
-        if ($amenity && $quantity > 0) {
+        if ($amenity) {
+            $currentQuantity = $this->quantity[$amenityId] ?? 0;
+            $newQuantity = $currentQuantity + $change;
 
-            $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenity->AmenitiesId);
+            if ($newQuantity > 0) {
+                $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
 
-            if ($index !== false) {
-
-                $this->selectedAmenities[$index]['quantity'] = $quantity;
+                if ($index !== false) {
+                    $this->selectedAmenities[$index]['quantity'] = $newQuantity;
+                } else {
+                    $this->selectedAmenities[] = [
+                        'id' => $amenityId,
+                        'name' => $amenity->Name,
+                        'price' => $amenity->Price,
+                        'quantity' => $newQuantity,
+                    ];
+                }
             } else {
-
-                $this->selectedAmenities[] = [
-                    'id' => $amenity->AmenitiesId,
-                    'name' => $amenity->Name,
-                    'price' => $amenity->Price,
-                    'quantity' => $quantity,
-                ];
+                $this->selectedAmenities = array_filter($this->selectedAmenities, fn($item) => $item['id'] !== $amenityId);
             }
 
+            $this->quantity[$amenityId] = $newQuantity > 0 ? $newQuantity : null;
             $this->total = $this->computeTotal();
         }
     }
 
 
 
+
+
+
     public function selectRoom($roomId)
     {
         $room = Room::find($roomId);
-        $this->selectedRoom = $room->RoomType . ' - ' . $room->RoomNumber;
+        $this->selectedRoom = $room;
         $this->selectedRoomId = $roomId;
         $this->dispatch('close-modal');
 
@@ -198,15 +259,13 @@ class CreateBooking extends Component
         $room = Room::find($this->selectedRoomId);
 
         if ($room) {
-            $total = $room->RoomPrice * $this->lengthOfStay;
+            $this->total = $room->RoomPrice * $this->lengthOfStay;
         }
 
-
-        $total = 0;
         foreach ($this->selectedAmenities as $amenity) {
-            $total += $amenity['price'] * $amenity['quantity'];
+            $this->total += $amenity['price'] * $amenity['quantity'];
         }
-        return $total;
+        return $this->total;
     }
 
     public function generateReferenceNumber()

@@ -49,7 +49,8 @@ class CreateUser extends Component
                 'dob' => ['required', 'date',new Age],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
-            ]
+            ],
+
         );
 
         $birthdate = new \DateTime($this->dob);

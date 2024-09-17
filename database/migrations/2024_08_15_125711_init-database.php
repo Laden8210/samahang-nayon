@@ -76,7 +76,7 @@ return new class extends Migration
             $table->time('TimeCreated');
             $table->date('DateCheckIn');
             $table->date('DateCheckOut');
-            $table->decimal('Disburse', 10, 2);;
+            $table->decimal('TotalCost', 10, 2);;
             $table->decimal('Balance', 10, 2);
             $table->string('Status', 64);
         });
@@ -92,6 +92,7 @@ return new class extends Migration
             $table->foreignId('ReservationId');
             $table->foreignId('AmenitiesId');
             $table->integer('Quantity');
+            $table->decimal('TotalCost', 10, 2);
         });
 
         Schema::create('payments', function(Blueprint $table){

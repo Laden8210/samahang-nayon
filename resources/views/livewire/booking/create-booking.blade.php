@@ -18,23 +18,23 @@
 
                         <div class="grid gap-4 mb-4 grid-cols-4">
                             <div class="col-span-2">
-                                <x-textfield1 name="firstname" placeholder="First Name" model="firstname"
+                                <x-text-field1 field1 name="firstname" placeholder="First Name" model="firstname"
                                     label="First Name" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="middlename" placeholder="Middle Name" model="middlename"
+                                <x-text-field1 field1 name="middlename" placeholder="Middle Name" model="middlename"
                                     label="Middle Name" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="lastname" placeholder="Last Name" model="lastname"
+                                <x-text-field1 field1 name="lastname" placeholder="Last Name" model="lastname"
                                     label="Last Name" />
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
-                                <x-textfield1 name="dob" placeholder="First Name" model="dob" type="date"
-                                    label="Birthdate" />
+                                <x-text-field1 field1 name="dob" placeholder="First Name" model="dob"
+                                    type="date" label="Birthdate" />
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
@@ -42,28 +42,31 @@
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="street" placeholder="Street" model="street" label="Street" />
+                                <x-text-field1 field1 name="street" placeholder="Street" model="street"
+                                    label="Street" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="brgy" placeholder="Brgy" model="brgy" label="Brgy" />
+                                <x-text-field1 field1 name="brgy" placeholder="Brgy" model="brgy" label="Brgy" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="city" placeholder="City" model="city" label="City" />
+                                <x-text-field1 field1 name="city" placeholder="City" model="city" label="City" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="province" placeholder="Povince" model="province" label="Province" />
+                                <x-text-field1 field1 name="province" placeholder="Povince" model="province"
+                                    label="Province" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="email" placeholder="Email" model="email" label="Email" />
+                                <x-text-field1 field1 name="email" placeholder="Email" model="email"
+                                    label="Email" />
                             </div>
 
                             <div class="col-span-2">
-                                <x-textfield1 name="contactnumber" placeholder="Contact Number" model="contactnumber"
-                                    label="Contact Number" />
+                                <x-text-field1 field1 name="contactnumber" placeholder="Contact Number"
+                                    model="contactnumber" label="Contact Number" />
                             </div>
 
                         </div>
@@ -118,9 +121,10 @@
 
                         <div class="mt-5">
                             <h2 class="text-xs">YOU SELECTED</h2>
-                            <input wire:model="selectedRoom"
-                                class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none" type="text"
-                                value="" disabled>
+
+                            <p class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none tex">
+                                {{$selectedRoom->RoomType ?? 'No Room Selected'}}
+                            </p>
                         </div>
                     </div>
 
@@ -152,12 +156,12 @@
                         <h2 class="font-bold">Payment Method</h2>
                         <div class="grid grid-rows-2 gap-2 mt-5">
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Gcash">
+                                <input type="radio" value="Gcash" name="payment-type" wire:model="paymentType">
                                 <label for="">Gcash</label>
                             </div>
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Gcash">
+                                <input type="radio" value="Cash" name="payment-type" wire:model="paymentType">
                                 <label for="">Cash</label>
                             </div>
 
@@ -175,16 +179,17 @@
                             @if (!$selectedRoom)
                                 <p>No Room Selected</p>
                             @else
-
-                                <p>{{ $selectedRoom }}</p>
-                                <p>Price Here</p>
+                                <p>{{ $selectedRoom->RoomType }}</p>
+                                <p>{{ $selectedRoom->RoomPrice }}</p>
                             @endif
 
                         </div>
-                        <div class="flex justify-between text-xs">
+                        <div class="grid grid-flow-row text-xs">
                             @foreach ($selectedAmenities as $amenity)
-                            <p>{{ $amenity['name'].' x '.$amenity['quantity']  }}</p>
-                            <p>{{ $amenity['price'] }}</p>
+                                <div class="flex justify-between">
+                                    <p>{{ $amenity['name'] . ' x ' . $amenity['quantity'] }}</p>
+                                    <p>{{ $amenity['price'] }}</p>
+                                </div>
                             @endforeach
 
                         </div>
@@ -192,10 +197,11 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
-                            <p>{{$total}}</p>
+                            <p>{{ $total }}</p>
                         </div>
                         <div>
-                            <x-textfield1 name="paymentAmount" placeholder="Enter Amount" model="paymentAmount" />
+                            <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount"
+                                model="paymentAmount" />
 
                         </div>
                     </div>
@@ -222,7 +228,8 @@
             <div class="my-2">
                 <div class="grid grid-cols-1 gap-2">
 
-                    <x-textfield1 name="search" placeholder="Search Customer" model="search" label="Search Customer" />
+                    <x-text-field1 field1 name="search" placeholder="Search Customer" model="search"
+                        label="Search Customer" />
 
 
                 </div>
@@ -252,7 +259,7 @@
             <div class="my-2">
                 <div class="grid grid-cols-1 gap-2">
 
-                    <x-textfield1 name="search" placeholder="Search Amenities" model="search"
+                    <x-text-field1 -field1 name="search" placeholder="Search Amenities" model="search"
                         label="Search Customer" />
                 </div>
 
@@ -263,25 +270,29 @@
                         <div>
                             <p class="text-slate-800">{{ $amenity->Name }}</p>
                         </div>
-
-                        <div>
-
-                                <input
-                                 wire:model.defer="quantity.{{ $amenity->AmenitiesId }}" type="number"
-                                name="quantity[{{ $amenity->AmenitiesId }}]"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"/>
-                        </div>
-
-                        <div>
-
-                            <button wire:click="selectAmenity({{ $amenity->AmenitiesId }}, {{ $quantity[$amenity->AmenitiesId] ?? 0 }})"
-                                type="button"
-                                class="bg-green-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">
-                                Add
-                            </button>
+                        <div class="flex justify-evenly gap-2 w-1/3 items-center">
+                            <div>
+                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }}, -1)"
+                                    type="button"
+                                    class="bg-red-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-red-900 duration-75 transition-all hover:text-slate-950">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <input wire:model.defer="quantity.{{ $amenity->AmenitiesId }}" type="number"
+                                    name="quantity[{{ $amenity->AmenitiesId }}]" min="0"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" />
+                            </div>
+                            <div>
+                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }}, 1)" type="button"
+                                    class="bg-green-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endforeach
+
             </div>
         @endslot
     </x-modal>
@@ -290,58 +301,51 @@
         @slot('body')
             <form wire:submit.prevent="filterRoom">
                 <div class="flex justify-normal gap-5 rounded-lg shadow-lg p-2 mt-5">
-                    <div class="w-1/3">
-                        <x-textfield1 name="checkin" placeholder="Check In" type="date" label="Check In"
-                            model="checkIn" />
-                    </div>
-                    <div class="w-1/3">
-                        <x-textfield1 name="checkout" placeholder="Check Out" type="date" label="Check Out"
+
+                    <div class="w-1/2">
+                        <x-text-field1 field1 name="checkout" placeholder="Check Out" type="date" label="Check Out"
                             model="checkOut" />
                     </div>
-                    <div class="w-1/3">
-                        <x-combobox name="totalGuests" placeholder="Total Guest" :options="[1, 2, 3, 4, 5]" model="totalGuests" />
+                    <div class="w-1/2">
+                        <x-combobox name="totalGuests" placeholder="Total Guest" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" model="totalGuests" />
                     </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full bg-cyan-900 text-white py-2 px-2 rounded-full">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                        </button>
-                    </div>
+
                 </div>
 
             </form>
             <div class="space-y-4 mt-5">
-
                 @php
+
+                    $rooms = $rooms ?? collect();
+
+
                     $groupedRooms = $rooms->groupBy(function ($room) {
                         return floor($room->RoomNumber / 100) * 100;
                     });
                 @endphp
 
-                @foreach ($groupedRooms as $group => $room)
-                    <div class="grid grid-cols-10 gap-2 m-2">
-
-                        @foreach ($room as $room)
-                            <div class="relative group">
-
-                                <button wire:click="selectRoom({{ $room->RoomId }})"
-                                    class="h-24 w-full bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
-                                    {{ $room->RoomNumber }}
-                                </button>
-                                <div
-                                    class="absolute bottom-full left-3/4 transform -translate-x-2/3 w-96 mb-2 hidden group-hover:block">
-
-                                    <div class="bg-gray-800 text-white text-xs rounded py-1 px-2">
-                                        <div class="h-32">
-                                            img
-                                        </div>
-                                        Booking details for item {{ $room->RoomType }}
-                                    </div>
-
-                                </div>
-                            </div>
-                        @endforeach
+                @if ($rooms->isEmpty())
+                    <div class="bg-red-200 text-red-800 p-2 rounded-lg">
+                        <p>No Rooms Available</p>
                     </div>
-                @endforeach
+                @else
+                    @foreach ($groupedRooms as $group => $roomGroup)
+                        <div class="grid grid-cols-10 gap-2 m-2">
+                            @foreach ($roomGroup as $room)
+                                <div class="relative group">
+                                    <button wire:click="selectRoom({{ $room->RoomId }})"
+                                        class="h-24 w-full bg-cyan-200 items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
+                                        <div>
+                                            <p class="text-xl font-bold">{{ $room->RoomNumber }}</p><br>
+                                            <span class="font-normal text-xs">{{ $room->RoomType }}</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endforeach
+                @endif
+
             </div>
         @endslot
     </x-select-room-modal>

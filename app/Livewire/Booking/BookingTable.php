@@ -11,7 +11,7 @@ class BookingTable extends Component
     public function render()
     {
         return view('livewire.booking.booking-table', [
-            'bookings' => Reservation::paginate(10)
+            'bookings' => Reservation::paginate(100)
         ]);
     }
 }

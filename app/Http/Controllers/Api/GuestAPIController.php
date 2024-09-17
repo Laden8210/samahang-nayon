@@ -3,15 +3,24 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Amenities;
 use App\Models\Guest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Reservation;
+use Ixudra\Curl\Facades\Curl;
+use Illuminate\Support\Facades\Http;
+use App\Models\Room;
+use Carbon\Carbon;
 
 class GuestAPIController extends Controller
 {
-
+    private $apiKey;
     public function create(Request $request)
     {
-
+        // Validate the incoming request data
         $validatedData = $request->validate([
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -26,32 +35,202 @@ class GuestAPIController extends Controller
             'password' => 'required|string|max:255',
         ]);
 
+        // Create a new guest entry
+        $guest = Guest::create([
+            'FirstName' => $validatedData['firstname'],
+            'LastName' => $validatedData['lastname'],
+            'MiddleName' => $validatedData['middlename'] ?? null,  // Handle optional field
+            'Street' => $validatedData['street'],
+            'City' => $validatedData['city'],
+            'Province' => $validatedData['province'],
+            'Birthdate' => $validatedData['birthdate'],
+            'Gender' => $validatedData['gender'],
+            'ContactNumber' => $validatedData['contactnumber'],
+            'Brgy' => $request->brgy ?? "",  // Handle optional field
+            'EmailAddress' => $validatedData['emailaddress'],
+            'password' => $validatedData['password'],
+            'DateCreated' => now()->toDateString(),
+            'TimeCreated' => now()->toTimeString(),
+        ]);
 
 
+        return response()->json(
+            [
+                'message' => 'Guest created successfully',
+                'guest' => $guest,
+                'token' => $guest->createToken('Samahang-Nayon')->plainTextToken
+            ],
+            201
+        );
+    }
 
-            $guest = Guest::create([
-                'FirstName' => $validatedData['firstname'],
-                'LastName' => $validatedData['lastname'],
-                'MiddleName' => $validatedData['middlename'],
-                'Street' => $validatedData['street'],
-                'City' => $validatedData['city'],
-                'Province' => $validatedData['province'],
-                'Birthdate' => $validatedData['birthdate'],
-                'Gender' => $validatedData['gender'],
-                'ContactNumber' => $validatedData['contactnumber'],
-                'EmailAddress' => $validatedData['emailaddress'],
-                'password' => $validatedData['password'],
-                'DateCreated' => now()->toDateString(),
-                'TimeCreated' => now()->toTimeString(),
-            ]);
+    public function login(Request $request)
+    {
+        $validatedData = $request->validate([
+            'emailaddress' => 'required|string|email|max:255',
+            'password' => 'required|string',
+        ]);
 
-            return response()->json(['message' => 'Guest created successfully'], 201);
+        $guest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
+
+        if (!$guest) {
+            return response()->json(['message' => 'Guest not found'], 404);
         }
+
+        if (!Hash::check($validatedData['password'], $guest->Password)) {
+            return response()->json(['message' => 'Invalid password'], 401);
+        }
+
+
+        $token = $guest->createToken('Samahang-Nayon')->plainTextToken;
+
+        return response()->json(['token' => $token, 'message' => 'Successfully Login'], 200);
+    }
 
 
     public function getAllUser()
     {
-        $guest = Guest::all();
-        return json_encode($guest);
+        $guest = Auth::guard('api')->user();
+        if ($guest) {
+            return response()->json($guest);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    public function createReservation(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            'room_id' => 'required|integer',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date',
+            'amenities' => 'nullable|array',
+            'amenities.*.id' => 'required_with:amenities|integer',
+            'amenities.*.name' => 'required_with:amenities|string',
+            'amenities.*.price' => 'required_with:amenities|numeric',
+            'amenities.*.quantity' => 'required_with:amenities|integer',
+        ]);
+
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $room = Room::find($validatedData['room_id']);
+
+        $checkIn = Carbon::parse($validatedData['check_in']);
+        $checkOut = Carbon::parse($validatedData['check_out']);
+        $lengthOfStay = $checkIn->diffInDays($checkOut);
+        $totalCost = $room->RoomPrice * $lengthOfStay;
+
+        $reservation = Reservation::create([
+            'GuestId' => 4,
+            'RoomId' => $validatedData['room_id'],
+            'DateCheckIn' => $validatedData['check_in'],
+            'DateCheckOut' => $validatedData['check_out'],
+            'Status' => "Booking",
+            'TotalCost' => $totalCost,
+            'DateCreated' => now()->toDateString(),
+            'TimeCreated' => now()->toTimeString(),
+        ]);
+
+
+        foreach ($validatedData['amenities'] as $amenity) {
+
+            $reservation->reservationAmenities()->create([
+                'AmenitiesId' => $amenity['id'],
+                'Quantity' => $amenity['quantity'],
+                'TotalCost' => $amenity['price'] * $amenity['quantity'],
+            ]);
+        }
+
+
+        $reservation->payments()->create([
+            'GuestId' => $guest->GuestId,
+            'AmountPaid' => $totalCost ?? 0,
+            'DateCreated' => date('Y-m-d'),
+            'TimeCreated' => date('H:i:s'),
+            'Status' => 'Confirmed',
+            'PaymentType' => 'Gcash',
+            'ReferenceNumber' => $this->generateReferenceNumber(),
+            'Purpose' => "Room Reservation",
+        ]);
+
+
+
+
+        $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
+        $data = [
+            'data' => [
+                'attributes' => [
+                    'billing' => [
+                        'name' => $guest->FirstName . ' ' . $guest->LastName,
+                        'email' => $guest->EmailAddress,
+                        'phone' => $guest->ContactNumber
+                    ],
+                    'send_email_receipt' => true,
+                    'show_description' => true,
+                    'show_line_items' => true,
+                    'description' => 'sdasd',
+                    'line_items' => [
+                        [
+                            'currency' => 'PHP',
+                            'amount' => (int)($reservation->room->RoomPrice * 100),
+
+                            'description' => 'Room Reservation',
+                            'name' => $reservation->Room->RoomType,
+                            'quantity' => $lengthOfStay
+                        ],
+                        ...$reservation->reservationAmenities->map(function ($amenity) {
+                            return [
+                                'currency' => 'PHP',
+                                'amount' => (int)($amenity->amenity->Price * 100),
+                                'description' => 'Amenity',
+                                'name' => $amenity->amenity->Name,
+                                'quantity' => $amenity->Quantity
+                            ];
+                        })
+                    ],
+                    'payment_method_types' => ['gcash'],
+                    'reference_number' => $reservation->payments->first()->ReferenceNumber,
+                ]
+            ]
+        ];
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Basic ' . $this->apiKey,
+            ])->post('https://api.paymongo.com/v1/checkout_sessions', $data);
+
+
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+
+                return response()->json([
+                    'error' => $response->body(),
+                    'status' => $response->status()
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getAmenities(){
+        $amenities = Amenities::all();
+        return response()->json($amenities);
+    }
+
+
+    public function generateReferenceNumber()
+    {
+        return 'REF-' . date('YmdHis');
     }
 }

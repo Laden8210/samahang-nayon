@@ -35,7 +35,7 @@
                             @if ($booking->Status == 'Pending')
                                 <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
                             @endif
-                            @if ($booking->Status == 'Booked')
+                            @if ($booking->Status == 'Booking')
                                 <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
                             @endif
                             @if ($booking->Status == 'Reserved')

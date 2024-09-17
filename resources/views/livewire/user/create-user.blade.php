@@ -1,8 +1,6 @@
 <div>
 
     <form wire:submit.prevent="createUser">
-
-
         @csrf
 
         <div class="flex justify-between ">

@@ -10,6 +10,8 @@ class AppServiceProvider extends ServiceProvider
      * Register any application services.
      */
     protected $namespace = 'App\Http\Controllers';
+    protected $middlewareNamespace = 'App\Http\Middleware';
+
     public function register(): void
     {
         //

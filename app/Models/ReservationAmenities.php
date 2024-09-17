@@ -16,7 +16,8 @@ class ReservationAmenities extends Model
     protected $fillable = [
         'ReservationId',
         'AmenitiesId',
-        'Quantity'
+        'Quantity',
+        'TotalCost'
     ];
 
     public function reservation()

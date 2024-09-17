@@ -14,7 +14,7 @@ class PaymentTable extends Component
     {
         return view('livewire.payment.payment-table',
         [
-            'payments' => Payment::search($this->search)->paginate(10)
+            'payments' => Payment::search($this->search)->paginate(100)
         ]);
     }
 

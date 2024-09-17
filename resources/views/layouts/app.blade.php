@@ -29,7 +29,7 @@
         </div>
 
         <main class="p-2 flex-grow ">
-            <div class="container mx-auto">
+            <div class=" mx-auto">
                 @yield('content')
             </div>
         </main>

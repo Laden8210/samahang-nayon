@@ -4,10 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
-class Guest extends Model
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class Guest extends Authenticatable
 {
     use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $primaryKey = 'GuestId';
 
@@ -30,6 +37,10 @@ class Guest extends Model
         'TimeCreated',
     ];
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 
 
     public function reservations()
