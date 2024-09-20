@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Amenities;
@@ -35,11 +35,11 @@ class GuestAPIController extends Controller
             'password' => 'required|string|max:255',
         ]);
 
-        // Create a new guest entry
+
         $guest = Guest::create([
             'FirstName' => $validatedData['firstname'],
             'LastName' => $validatedData['lastname'],
-            'MiddleName' => $validatedData['middlename'] ?? null,  // Handle optional field
+            'MiddleName' => $validatedData['middlename'] ?? null,
             'Street' => $validatedData['street'],
             'City' => $validatedData['city'],
             'Province' => $validatedData['province'],
@@ -136,19 +136,25 @@ class GuestAPIController extends Controller
         ]);
 
 
+        $totalPayment = 0;
+
         foreach ($validatedData['amenities'] as $amenity) {
+
+            $sum = $amenity['price'] * $amenity['quantity'];
+
 
             $reservation->reservationAmenities()->create([
                 'AmenitiesId' => $amenity['id'],
                 'Quantity' => $amenity['quantity'],
-                'TotalCost' => $amenity['price'] * $amenity['quantity'],
+                'TotalCost' => $sum,
             ]);
+            $totalPayment += $sum;
         }
 
 
         $reservation->payments()->create([
             'GuestId' => $guest->GuestId,
-            'AmountPaid' => $totalCost ?? 0,
+            'AmountPaid' => $totalCost + $totalPayment ?? 0,
             'DateCreated' => date('Y-m-d'),
             'TimeCreated' => date('H:i:s'),
             'Status' => 'Confirmed',
@@ -221,6 +227,47 @@ class GuestAPIController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function getReservation(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+
+        $status = $request->status;
+
+        $reservations = Reservation::where('GuestId', $guest->GuestId)
+            ->when($status, function ($query, $status) {
+                return $query->where('Status', $status);
+            })
+            ->with(['room', 'reservationAmenities', 'payments'])
+            ->get();
+
+
+        return response()->json($reservations);
+    }
+
+    public function cancelReservation(Request $request){
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $reservation = Reservation::find($request->reservation_id);
+
+        if(!$reservation){
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+
+        $reservation->update([
+            'Status' => 'Cancelled'
+        ]);
+
+        return response()->json(['message' => 'Reservation cancelled successfully'], 200);
     }
 
     public function getAmenities(){

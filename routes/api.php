@@ -1,10 +1,13 @@
 <?php
 
-use App\Http\Controllers\API\GuestAPIController;
-use App\Http\Controllers\API\RoomAPIController;
+use App\Http\Controllers\GuestAPIController;
+use App\Http\Controllers\RoomAPIController;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MessageController;
+
 
 Route::post('/rooms', [RoomAPIController::class, 'getRoom']);
 Route::post('/rooms/image', [RoomAPIController::class, 'getImage']);
@@ -24,3 +27,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::post('amenities', [GuestAPIController::class, 'getAmenities']);
 
+Route::post('message/sendGuestMessage', [MessageController::class, 'sendGuestMessage']);
+Route::post('message/getGuestMessages', [MessageController::class, 'getGuestMessages']);
+Route::post('message/retrieveUserMessage', [MessageController::class, 'retrieveUserMessage']);
+
+Route::post('reservation/getReservation', [GuestAPIController::class, 'getReservation']);
+
+Route::post('reservation/cancelReservation', [GuestAPIController::class, 'cancelReservation']);

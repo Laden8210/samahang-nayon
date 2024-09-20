@@ -53,13 +53,13 @@
                             <i class="fas fa-lock text-gray-400"></i>
                         </span>
                         <input type="password"
-                            class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10  rounded-lg w-full focus:outline-none"
+                            id="password"
+                            class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10 rounded-lg w-full focus:outline-none"
                             placeholder="Enter your password" name="password">
-                        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
-                            <i class="fas fa-eye text-gray-400"></i>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" id="toggle-password">
+                            <i class="fas fa-eye text-gray-400" id="eye-icon"></i>
                         </span>
                     </div>
-
 
                     <div class="flex justify-between items-center mb-6 py-2 ">
                         <div class="items-center flex"><input type="checkbox" name="" id=""
@@ -86,4 +86,19 @@
 
 </body>
 
+
+<script>
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eye-icon');
+
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle the eye icon
+        eyeIcon.classList.toggle('fa-eye');
+        eyeIcon.classList.toggle('fa-eye-slash');
+    });
+</script>
 </html>

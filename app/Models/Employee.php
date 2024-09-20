@@ -59,4 +59,9 @@ class Employee extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
 
+    public function report()
+    {
+        return $this->hasMany(Report::class, 'EmployeeId');
+    }
+
 }

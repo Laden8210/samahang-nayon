@@ -9,6 +9,9 @@ class DiscountedRoom extends Model
 {
     use HasFactory;
     protected $primaryKey = 'DiscountedRoomId';
+    public $table = 'discountedrooms';
+    public $timestamps = false;
+
 
     protected $fillable = [
         'RoomId',

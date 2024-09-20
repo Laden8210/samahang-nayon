@@ -16,9 +16,10 @@ use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\XenditController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReportController;
 
 Route::get('', [LoginController::class, 'index']);
-Route::get('login', [LoginController::class, 'index']);
+Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
@@ -42,7 +43,15 @@ Route::get(('admin/system-log'), [SystemLogController::class, 'index'])->name('s
 Route::get('admin/user/add', [UserController::class, 'addUser'])->name('addUser');
 
 Route::get('forget-password', [ForgetPasswordController::class, 'index'])->name('forget-password');
+
+Route::get('enter-otp', [ForgetPasswordController::class, 'enterOtp'])->name('enter-otp');
+Route::post('confirm-otp', [ForgetPasswordController::class, 'confirmOtp'])->name('confirm-otp');
+
+Route::post('request-otp', [ForgetPasswordController::class, 'requestOtp'])->name('request-otp');
+
 Route::get('reset-password', [ForgetPasswordController::class, 'resetPassword'])->name('reset-password');
+
+Route::post('confirm-change-password', [ForgetPasswordController::class, 'confirmChangePassword'])->name('confirm-change-password');
 Route::get('password-changed', [ForgetPasswordController::class, 'passwordChanged'])->name('password-changed');
 
 Route::middleware('auth', 'position:Receptionist')->group(function () {
@@ -63,7 +72,13 @@ Route::get('receptionist/payment', [PaymentController::class, 'index'])->name('p
 
 Route::get('receptionist/payment/receipt', [ReceiptController::class, 'index'])->name('receipt');
 
+Route::get('receptionist/report', [ReportController::class, 'index'])->name('report');
+
 
 Route::get('send-mail', [XenditController::class, 'index'])->name('send-mail');
 
 Route::get('online-payment/{reservationId}', [XenditController::class, 'createPayment'])->name('online-payment');
+
+
+Route::get('manager/promotions', [PromotionController::class, 'index'])->name('promotion');
+Route::get('download/report/{id}', [ReportController::class, 'downloadReport'])->name('download-report');

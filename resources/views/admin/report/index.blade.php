@@ -3,6 +3,5 @@
 @section('title', 'Promotion ')
 @section('content')
 
-
-    @livewire('promotion.promotion-table')
+    @livewire('report-table')
 @endsection

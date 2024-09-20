@@ -57,4 +57,9 @@ class Guest extends Authenticatable
     {
         return $this->hasMany(CheckInOut::class, 'GuestId');
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'GuestId');
+    }
 }

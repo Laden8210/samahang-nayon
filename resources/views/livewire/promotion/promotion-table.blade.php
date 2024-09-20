@@ -1,98 +1,255 @@
-<div class="bg-gray-50 rounded">
-    <h5 class="mx-2 font-bold px-2 pt-2">Promotion</h5>
-    <div class="relative mb-4 w-1/3 mx-3">
+<div>
 
-        <input type="text" wire:model.live.debounce.300ms = "search"
-            class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
-            placeholder="Search . . . ">
-        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
-            <i class="fas fa-search text-gray-400"></i>
-        </span>
+
+    <div class="justify-between flex p-1">
+        <h1 class="text-2xl font-bold p-2">Promotion</h1>
+        <div class="p-2">
+            <button class="bg-cyan-400 font-medium text-white px-2 py-1 rounded " x-data
+                x-on:click="$dispatch('open-modal', {name: 'add-modal'})"> Add Promotion
+            </button>
+
+        </div>
     </div>
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
-                <tr class="text-center">
-                    <th class="py-2">No</th>
-                    <th class="py-2">TYPE</th>
-                    <th class="py-2">Description</th>
-                    <th class="py-2">Capacity</th>
-                    <th class="py-2">Status</th>
-                    <th class="py-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{-- @foreach ($rooms as $room)
-                    <tr class="text-center">
-                        <td class="py-3">{{ $room->number }}</td>
-                        <td class="py-3">{{ $room->type }}</td>
-                        <td class="py-3">{{ $room->description }}</td>
-                        <td class="py-3">{{ $room->capacity }}</td>
-                        <td class="pyr-3">
-                            <span class="rounded-full bg-slate-300 text-cyan-500 px-2 py-1">{{ $room->status }}</span>
-                        </td>
-                        <td class="py-3">
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown-{{ $user->personal_id }}"
-                                class="px-4 py-2 rounded-full text-cyan-500 hover:bg-cyan-100" type="button">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-
-                            <!-- Dropdown menu -->
-                            <div id="dropdown-{{ $user->personal_id }}"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Deactivate</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody> --}}
-        </table>
+    <div class="bg-gray-50 rounded">
 
 
-    </div>
-    {{-- <div class="py-4 px-3">
-        <div class="flex justify-between items-center">
-            <div class="flex-1">
-                <p class="text-sm text-gray-700 dark:text-gray-400">
-                    Showing {{ $rooms->firstItem() }} to {{ $rooms->lastItem() }} of {{ $rooms->total() }} rooms
-                </p>
-            </div>
-            <div class="flex items-center">
-                @if ($rooms->onFirstPage())
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-l cursor-not-allowed">Previous</span>
-                @else
-                    <a href="{{ $rooms->previousPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600">Previous</a>
-                @endif
+        <h5 class="mx-2 font-bold px-2 pt-2">Promotion</h5>
+        <div class="relative mb-4 w-1/3 mx-3">
 
-                @if ($rooms->hasMorePages())
-                    <a href="{{ $rooms->nextPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600">Next</a>
-                @else
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-r cursor-not-allowed">Next</span>
-                @endif
-            </div>
+            <input type="text" wire:model.live.debounce.300ms = "search"
+                class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
+                placeholder="Search . . . ">
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <i class="fas fa-search text-gray-400"></i>
+            </span>
         </div>
 
+        <div class="w-full flex p-2 justify-center">
+            <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
+                <thead class="text-xs uppercase bg-gray-100 ">
+                    <tr class="text-center">
 
-    </div> --}}
+                        <th class="py-2">Promotion</th>
+                        <th class="py-2">Discount</th>
+                        <th class="py-2">Date</th>
+                        <th class="py-2">End</th>
+                        <th class="py-2">Date Created</th>
+                        <th class="py-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach ($promotions as $promotion)
+                        <tr class="text-center">
+                            <td class="py-2">
+                                {{ $promotion->Promotion }}
+                            </td>
+                            <td class="py-2">
+                                {{ $promotion->Discount }}
+                            </td>
+                            <td class="py-2">
+                                {{ $promotion->StartDate }}
+                            </td>
+                            <td class="py-2">
+                                {{ $promotion->EndDate }}
+                            </td>
+
+                            <td class="py-2">
+                                {{ $promotion->DateCreated }}
+                            </td>
+
+                            <td class="py-2 flex items-center gap-2 justify-center">
+                                <button type="button" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded "
+                                    wire:click="updatePromotion({{ $promotion->PromotionId }})" x-data
+                                    x-on:click="$dispatch('open-modal', {name: 'update-modal'})"> <i class="fa fa-edit"
+                                        aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="bg-red-400 font-medium text-white px-2 py-1 rounded "
+                                    x-data
+                                    x-on:click="$dispatch('open-modal', {name: 'delete-modal-{{ $promotion->PromotionId }}'})">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                                {{--
+                            <button type="button" class="bg-green-400 font-medium text-white px-2 py-1 rounded " x-data
+                                x-on:click="$dispatch('open-modal', {name: 'add-room-modal'})"> <i class="fa fa-eye"
+                                    aria-hidden="true"></i>
+                            </button> --}}
+                            </td>
+                        </tr>
+
+                        <x-modal title="Delete Amenities" name="delete-modal-{{ $promotion->PromotionId }}">
+
+                            @slot('body')
+                                <div class="p-4 md:p-5 text-center">
+                                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you
+                                        sure
+                                        you want to delete this Promotion?</h3>
+                                    <button wire:click="deletePromotion({{ $promotion->PromotionId }})" type="button"
+                                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                        Yes, I'm sure
+                                    </button>
+                                    <button
+                                        x-on:click="$dispatch('open-modal', {name: 'delete-modal-{{ $promotion->PromotionId }}'})"
+                                        type="button"
+                                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+                                        cancel</button>
+                                </div>
+                            @endslot
+                        </x-modal>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        @if (session()->has('message'))
+            <x-success-message-modal message="{{ session('message') }}" />
+        @endif
 
 
+
+        <x-modal title="Add Promotion" name="add-modal">
+            @slot('body')
+                <form wire:submit.prevent="addPromotion">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+
+                        <div class="col-span-1">
+                            <x-text-field1 name="update-name" placeholder="Enter Promotion Name" model="promotionName"
+                                label="Name" type="text" />
+                        </div>
+                        <div class="col-span-1">
+                            <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount" label="Price"
+                                type="number" />
+                        </div>
+
+                        <div class="col-span-1">
+                            <x-text-field1 name="update-name" placeholder="Enter starting date" model="startingDate"
+                                label="Name" type="date" />
+                        </div>
+                        <div class="col-span-1">
+                            <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate" label="Price"
+                                type="date" />
+                        </div>
+
+                        <div class="col-span-2 ">
+                            <x-text-area name="update-description" placeholder="Enter Description" model="description"
+                                label="Description" />
+                        </div>
+
+
+                    </div>
+
+                    <div class="my-2 rounded shadow p-2">
+                        <table class="w-full">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        Selection
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Room Type
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="bg-white border-b hover:bg-gray-50">
+                                @foreach ($rooms as $room)
+                                    <tr class="text-center">
+                                        <td class="px-6 py-4">
+                                            <input type="checkbox" wire:model="selectRoom" value="{{ $room->RoomType }}">
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $room->RoomType }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <button type="submit"
+                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Add Promotion
+                    </button>
+                </form>
+            @endslot
+        </x-modal>
+
+        <x-modal title="Update Promotion" name="update-modal">
+            @slot('body')
+                <form wire:submit.prevent="addPromotion">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+
+                        <div class="col-span-1">
+                            <x-text-field1 name="update-name" placeholder="Enter Promotion Name" model="promotionName"
+                                label="Name" type="text" />
+                        </div>
+                        <div class="col-span-1">
+                            <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount"
+                                label="Price" type="number" />
+                        </div>
+
+                        <div class="col-span-1">
+                            <x-text-field1 name="update-name" placeholder="Enter starting date" model="startingDate"
+                                label="Name" type="date" />
+                        </div>
+                        <div class="col-span-1">
+                            <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate"
+                                label="Price" type="date" />
+                        </div>
+
+                        <div class="col-span-2 ">
+                            <x-text-area name="update-description" placeholder="Enter Description" model="description"
+                                label="Description" />
+                        </div>
+
+
+                    </div>
+
+                    <div class="my-2 rounded shadow p-2">
+                        <table class="w-full">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        Selection
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Room Type
+                                    </th>
+
+
+                                </tr>
+                            </thead>
+
+                            <tbody class="bg-white border-b  hover:bg-gray-50">
+                                @foreach ($rooms as $room)
+                                    <tr class="text-center">
+                                        <td class="px-6 py-4">
+                                            <input type="checkbox" name="room" value="{{ $room->RoomId }}">
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $room->RoomType }}
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="submit"
+                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Update Promotion
+                    </button>
+                </form>
+            @endslot
+        </x-modal>
+
+
+    </div>
 </div>

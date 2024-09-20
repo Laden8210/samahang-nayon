@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,27 +12,25 @@ class RoomAPIController extends Controller
 
     public function getRoom(Request $request)
     {
-        $checkIn = $request->checkIn;
-        $checkOut = $request->checkOut;
+        $checkIn = Carbon::parse($request->checkIn);
+        $checkOut = Carbon::parse($request->checkOut);
 
-
-        $checkIn = Carbon::parse($checkIn);
-        $checkOut = Carbon::parse($checkOut);
-
-        $rooms =  Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+        $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereNull('reservations.RoomId') // Room has no reservation
-                    ->orWhere('reservations.Status', 'Checked Out') // Reservation has checked out
+                $query->whereNull('reservations.RoomId')  // Rooms with no reservations
+                    ->orWhere('reservations.Status', 'Checked Out') // Rooms that have been checked out
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
                         $query->where('reservations.DateCheckOut', '<', $checkIn)
-                            ->orWhere('reservations.DateCheckIn', '>', $checkOut); // Reservation check-in is after the new check-out
+                            ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
             ->select('rooms.*')
+            ->distinct()
             ->get();
 
         return response()->json($rooms);
     }
+
 
     public function getImage(Request $request)
     {

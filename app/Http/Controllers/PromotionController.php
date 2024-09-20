@@ -10,4 +10,5 @@ class PromotionController extends Controller
     {
         return view('admin.promotions.index');
     }
+
 }

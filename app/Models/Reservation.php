@@ -21,7 +21,9 @@ class Reservation extends Model
         'DateCheckIn',
         'DateCheckOut',
         'TotalCost',
-        'Status'
+        'Status',
+        'TotalAdult',
+        'TotalChildren',
     ];
 
     public function guest()

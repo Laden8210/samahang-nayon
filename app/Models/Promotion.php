@@ -10,6 +10,7 @@ class Promotion extends Model
     use HasFactory;
     protected $primaryKey = 'PromotionId';
 
+    public $timestamps = false;
     protected $fillable = [
         'Promotion',
         'Description',
@@ -22,5 +23,14 @@ class Promotion extends Model
     public function discountedRooms()
     {
         return $this->hasMany(DiscountedRoom::class, 'PromotionId');
+    }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('Promotion', 'like', '%' . $value . '%')
+            ->orWhere('Description', 'like', '%' . $value . '%')
+            ->orWhere('Discount', 'like', '%' . $value . '%')
+            ->orWhere('StartDate', 'like', '%' . $value . '%')
+            ->orWhere('EndDate', 'like', '%' . $value . '%');
     }
 }
