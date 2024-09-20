@@ -111,6 +111,7 @@ class GuestAPIController extends Controller
             'amenities.*.price' => 'required_with:amenities|numeric',
             'amenities.*.quantity' => 'required_with:amenities|integer',
             'sub_guests' => 'nullable|array',
+            'payment_option' => 'required|string|in:full,partial'
         ]);
 
         $guest = Auth::guard('api')->user();
@@ -165,80 +166,163 @@ class GuestAPIController extends Controller
         }
 
 
+        $partialPaymentAmount = $totalCost * 0.30;
+        if($validatedData['payment_option'] == 'partial'){
+            $reservation->payments()->create([
+                'GuestId' => $guest->GuestId,
+                'AmountPaid' => $partialPaymentAmount ?? 0,
+                'DateCreated' => date('Y-m-d'),
+                'TimeCreated' => date('H:i:s'),
+                'Status' => 'Pending',
+                'PaymentType' => 'Gcash',
+                'ReferenceNumber' => $this->generateReferenceNumber(),
+                'Purpose' => "Room Reservation",
+            ]);
 
 
-        $reservation->payments()->create([
-            'GuestId' => $guest->GuestId,
-            'AmountPaid' => $totalCost + $totalPayment ?? 0,
-            'DateCreated' => date('Y-m-d'),
-            'TimeCreated' => date('H:i:s'),
-            'Status' => 'Confirmed',
-            'PaymentType' => 'Gcash',
-            'ReferenceNumber' => $this->generateReferenceNumber(),
-            'Purpose' => "Room Reservation",
-        ]);
+            $reservation->payments()->create([
+                'GuestId' => $guest->GuestId,
+                'AmountPaid' => $totalCost + $totalPayment ?? 0,
+                'DateCreated' => date('Y-m-d'),
+                'TimeCreated' => date('H:i:s'),
+                'Status' => 'Confirmed',
+                'PaymentType' => 'Gcash',
+                'ReferenceNumber' => $this->generateReferenceNumber(),
+                'Purpose' => "Room Reservation",
+            ]);
 
-        $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
-        $data = [
-            'data' => [
-                'attributes' => [
-                    'billing' => [
-                        'name' => $guest->FirstName . ' ' . $guest->LastName,
-                        'email' => $guest->EmailAddress,
-                        'phone' => $guest->ContactNumber
-                    ],
-                    'send_email_receipt' => true,
-                    'show_description' => true,
-                    'show_line_items' => true,
-                    'description' => 'sdasd',
-                    'line_items' => [
-                        [
-                            'currency' => 'PHP',
-                            'amount' => (int)($reservation->room->RoomPrice * 100),
-
-                            'description' => 'Room Reservation',
-                            'name' => $reservation->Room->RoomType,
-                            'quantity' => $lengthOfStay
+            $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
+            $data = [
+                'data' => [
+                    'attributes' => [
+                        'billing' => [
+                            'name' => $guest->FirstName . ' ' . $guest->LastName,
+                            'email' => $guest->EmailAddress,
+                            'phone' => $guest->ContactNumber
                         ],
-                        ...$reservation->reservationAmenities->map(function ($amenity) {
-                            return [
+                        'send_email_receipt' => true,
+                        'show_description' => true,
+                        'show_line_items' => true,
+                        'description' => 'Room Reservation Partial Payment',
+                        'line_items' => [
+                            [
                                 'currency' => 'PHP',
-                                'amount' => (int)($amenity->amenity->Price * 100),
-                                'description' => 'Amenity',
-                                'name' => $amenity->amenity->Name,
-                                'quantity' => $amenity->Quantity
-                            ];
-                        })
-                    ],
-                    'payment_method_types' => ['gcash'],
-                    'reference_number' => $reservation->payments->first()->ReferenceNumber,
+                                'amount' => (int)($partialPaymentAmount * 100),
+
+                                'description' => 'Room Reservation Partial Payment',
+                                'name' => $reservation->Room->RoomType,
+                                'quantity' => 1
+                            ],
+
+                        ],
+                        'payment_method_types' => ['gcash'],
+                        'reference_number' => $reservation->payments->first()->ReferenceNumber,
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'Authorization' => 'Basic ' . $this->apiKey,
-            ])->post('https://api.paymongo.com/v1/checkout_sessions', $data);
-
+            try {
+                $response = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Basic ' . $this->apiKey,
+                ])->post('https://api.paymongo.com/v1/checkout_sessions', $data);
 
 
-            if ($response->successful()) {
-                return response()->json($response->json());
-            } else {
 
+                if ($response->successful()) {
+                    return response()->json($response->json());
+                } else {
+
+                    return response()->json([
+                        'error' => $response->body(),
+                        'status' => $response->status()
+                    ], $response->status());
+                }
+            } catch (\Exception $e) {
                 return response()->json([
-                    'error' => $response->body(),
-                    'status' => $response->status()
-                ], $response->status());
+                    'error' => $e->getMessage()
+                ], 500);
             }
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+        }else{
+
+            $reservation->payments()->create([
+                'GuestId' => $guest->GuestId,
+                'AmountPaid' => $totalCost + $totalPayment ?? 0,
+                'DateCreated' => date('Y-m-d'),
+                'TimeCreated' => date('H:i:s'),
+                'Status' => 'Confirmed',
+                'PaymentType' => 'Gcash',
+                'ReferenceNumber' => $this->generateReferenceNumber(),
+                'Purpose' => "Room Reservation",
+            ]);
+
+            $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
+            $data = [
+                'data' => [
+                    'attributes' => [
+                        'billing' => [
+                            'name' => $guest->FirstName . ' ' . $guest->LastName,
+                            'email' => $guest->EmailAddress,
+                            'phone' => $guest->ContactNumber
+                        ],
+                        'send_email_receipt' => true,
+                        'show_description' => true,
+                        'show_line_items' => true,
+                        'description' => 'Room Reservation',
+                        'line_items' => [
+                            [
+                                'currency' => 'PHP',
+                                'amount' => (int)($reservation->room->RoomPrice * 100),
+
+                                'description' => 'Room Reservation',
+                                'name' => $reservation->Room->RoomType,
+                                'quantity' => $lengthOfStay
+                            ],
+                            ...$reservation->reservationAmenities->map(function ($amenity) {
+                                return [
+                                    'currency' => 'PHP',
+                                    'amount' => (int)($amenity->amenity->Price * 100),
+                                    'description' => 'Amenity',
+                                    'name' => $amenity->amenity->Name,
+                                    'quantity' => $amenity->Quantity
+                                ];
+                            })
+                        ],
+                        'payment_method_types' => ['gcash'],
+                        'reference_number' => $reservation->payments->first()->ReferenceNumber,
+                    ]
+                ]
+            ];
+
+            try {
+                $response = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Basic ' . $this->apiKey,
+                ])->post('https://api.paymongo.com/v1/checkout_sessions', $data);
+
+
+
+                if ($response->successful()) {
+                    return response()->json($response->json());
+                } else {
+
+                    return response()->json([
+                        'error' => $response->body(),
+                        'status' => $response->status()
+                    ], $response->status());
+                }
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
         }
+
+
+
     }
 
 
