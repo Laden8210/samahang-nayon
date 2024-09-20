@@ -50,4 +50,8 @@ class Reservation extends Model
     {
         return $this->hasMany(CheckInOut::class, 'ReservationId');
     }
+
+    public function subGuests(){
+        return $this->hasMany(SubGuest::class, 'ReservationId');
+    }
 }

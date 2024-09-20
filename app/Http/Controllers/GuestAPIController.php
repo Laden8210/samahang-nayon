@@ -110,6 +110,7 @@ class GuestAPIController extends Controller
             'amenities.*.name' => 'required_with:amenities|string',
             'amenities.*.price' => 'required_with:amenities|numeric',
             'amenities.*.quantity' => 'required_with:amenities|integer',
+            'sub_guests' => 'nullable|array',
         ]);
 
         $guest = Auth::guard('api')->user();
@@ -151,6 +152,20 @@ class GuestAPIController extends Controller
             $totalPayment += $sum;
         }
 
+        foreach ($validatedData['sub_guests'] as $sub_guest) {
+            $reservation->subGuests()->create([
+                'FirstName' => $sub_guest['first_name'], // Corrected key
+                'LastName' => $sub_guest['last_name'],   // Corrected key
+                'MiddleName' => $sub_guest['middle_name'], // Corrected key
+                'ContactNumber' => $sub_guest['contact_number'], // Corrected key
+                'EmailAddress' => $sub_guest['email'], // Corrected key
+                'Birthdate' => $sub_guest['birthdate'], // Corrected key
+                'Gender' => $sub_guest['gender']
+            ]);
+        }
+
+
+
 
         $reservation->payments()->create([
             'GuestId' => $guest->GuestId,
@@ -162,9 +177,6 @@ class GuestAPIController extends Controller
             'ReferenceNumber' => $this->generateReferenceNumber(),
             'Purpose' => "Room Reservation",
         ]);
-
-
-
 
         $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
         $data = [
@@ -251,7 +263,8 @@ class GuestAPIController extends Controller
         return response()->json($reservations);
     }
 
-    public function cancelReservation(Request $request){
+    public function cancelReservation(Request $request)
+    {
         $guest = Auth::guard('api')->user();
         if (!$guest) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -259,7 +272,7 @@ class GuestAPIController extends Controller
 
         $reservation = Reservation::find($request->reservation_id);
 
-        if(!$reservation){
+        if (!$reservation) {
             return response()->json(['message' => 'Reservation not found'], 404);
         }
 
@@ -270,7 +283,8 @@ class GuestAPIController extends Controller
         return response()->json(['message' => 'Reservation cancelled successfully'], 200);
     }
 
-    public function getAmenities(){
+    public function getAmenities()
+    {
         $amenities = Amenities::all();
         return response()->json($amenities);
     }
