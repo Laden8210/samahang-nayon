@@ -111,8 +111,12 @@ class GuestAPIController extends Controller
             'amenities.*.price' => 'required_with:amenities|numeric',
             'amenities.*.quantity' => 'required_with:amenities|integer',
             'sub_guests' => 'nullable|array',
-            'payment_option' => 'required|string|in:full,partial'
+            'payment_option' => 'required|string|in:full,partial',
+            'total_adult'=>'required|integer',
+            'total_children'=>'required|integer',
         ]);
+
+
 
         $guest = Auth::guard('api')->user();
         if (!$guest) {
@@ -127,7 +131,7 @@ class GuestAPIController extends Controller
         $totalCost = $room->RoomPrice * $lengthOfStay;
 
         $reservation = Reservation::create([
-            'GuestId' => 4,
+            'GuestId' => $guest->GuestId,
             'RoomId' => $validatedData['room_id'],
             'DateCheckIn' => $validatedData['check_in'],
             'DateCheckOut' => $validatedData['check_out'],
@@ -135,7 +139,11 @@ class GuestAPIController extends Controller
             'TotalCost' => $totalCost,
             'DateCreated' => now()->toDateString(),
             'TimeCreated' => now()->toTimeString(),
+            'TotalAdult' => $validatedData['total_adult'],
+            'TotalChildren' => $validatedData['total_children'],
         ]);
+
+        return response()->json($reservation);
 
 
         $totalPayment = 0;
