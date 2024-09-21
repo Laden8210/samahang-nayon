@@ -143,7 +143,7 @@ class GuestAPIController extends Controller
             'TotalChildren' => $validatedData['total_children'],
         ]);
 
-        return response()->json($reservation);
+
 
 
         $totalPayment = 0;
