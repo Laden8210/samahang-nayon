@@ -6,7 +6,7 @@
 
 
     {{-- Admin sidebar --}}
-    @if (Auth::check() && Auth::user()->Position === 'System Administrator')
+    {{-- @if (Auth::check() && Auth::user()->Position === 'System Administrator') --}}
         <ul class="items-center pt-7">
             <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
         </ul>
@@ -34,11 +34,11 @@
             <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
 
         </ul>
-    @endif
+    {{-- @endif --}}
 
     {{-- admin sidebar end here --}}
     {{-- Receptionist sidebar --}}
-    @if (Auth::check() && Auth::user()->Position === 'Receptionist')
+    {{-- @if (Auth::check() && Auth::user()->Position === 'Receptionist') --}}
     <ul class="items-center pt-7">
         <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
     </ul>
@@ -66,12 +66,12 @@
 
         <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
     </ul>
-    @endif
+    {{-- @endif --}}
     {{-- Receptionist sidebar end here --}}
 
     {{-- Manager sidebar --}}
 
-    @if (Auth::check() && Auth::user()->Position === 'Manager')
+    {{-- @if (Auth::check() && Auth::user()->Position === 'Manager') --}}
     <ul class="items-center pt-7">
         <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
     </ul>
@@ -95,6 +95,6 @@
 
         <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
     </ul>
-    @endif
+    {{-- @endif --}}
 
 </nav>
