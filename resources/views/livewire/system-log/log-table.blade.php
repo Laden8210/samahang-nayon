@@ -17,52 +17,22 @@
                 <tr class="text-center">
                     <th class="py-2">No</th>
                     <th class="py-2">TYPE</th>
-                    <th class="py-2">USER</th>
-                    <th class="py-2">DATE</th>
+                    <th class="py-2">ACTIVITY</th>
                     <th class="py-2">DATE</th>
                     <th class="py-2">TIME</th>
                 </tr>
             </thead>
             <tbody>
-                {{-- @foreach ($logs as $log)
+                @foreach ($logs as $log)
                     <tr class="text-center">
-                        <td class="py-3">{{ $room->number }}</td>
-                        <td class="py-3">{{ $room->type }}</td>
-                        <td class="py-3">{{ $room->description }}</td>
-                        <td class="py-3">{{ $room->capacity }}</td>
-                        <td class="pyr-3">
-                            <span class="rounded-full bg-slate-300 text-cyan-500 px-2 py-1">{{ $room->status }}</span>
-                        </td>
-                        <td class="py-3">
-                            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown-{{ $room->number}}"
-                                class="px-4 py-2 rounded-full text-cyan-500 hover:bg-cyan-100" type="button">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
+                        <td class="py-2">{{ $log->id }}</td>
+                        <td class="py-2">{{ $log->action }}</td>
 
-                            <!-- Dropdown menu -->
-                            <div id="dropdown-{{ $room->number }}"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton">
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Deactivate</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</a>
-                                    </li>
-
-                                </ul>
-                            </div>
-
-                        </td>
+                        <td class="py-2">{{ $log->log }}</td>
+                        <td class="py-2">{{ $log->created_at->format('M d, Y') }}</td>
+                        <td class="py-2">{{ $log->created_at->format('h:i A') }}</td>
                     </tr>
-                @endforeach --}}
+                @endforeach
             </tbody>
         </table>
 

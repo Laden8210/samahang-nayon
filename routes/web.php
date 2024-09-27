@@ -25,22 +25,22 @@ Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth', 'position:System Administrator')->group(function () {
 
+    Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('admin/rooms', [RoomController::class, 'index'])->name('rooms');
+    Route::get('admin/rooms/add', [RoomController::class, 'addRoom'])->name('addRoom');
+    Route::get('admin/rooms/update/{roomId}', [RoomController::class, 'updateRoom'])->name('updateRoom');
+    Route::get('admin/rooms/view/{roomId}', [RoomController::class, 'viewRoom'])->name('viewRoom');
 
+    Route::get('admin/user', [UserController::class, 'index'])->name('user');
+
+    Route::get('admin/user/update/{userId}', [UserController::class, 'updateUser'])->name('updateUser');
+    Route::get(('admin/system-log'), [SystemLogController::class, 'index'])->name('system-log');
+
+    Route::get('admin/user/add', [UserController::class, 'addUser'])->name('addUser');
 });
 
-Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('admin/rooms', [RoomController::class, 'index'])->name('rooms');
-Route::get('admin/rooms/add', [RoomController::class, 'addRoom'])->name('addRoom');
-Route::get('admin/rooms/update/{roomId}', [RoomController::class, 'updateRoom'])->name('updateRoom');
-Route::get('admin/rooms/view/{roomId}', [RoomController::class, 'viewRoom'])->name('viewRoom');
-
-Route::get('admin/user', [UserController::class, 'index'])->name('user');
-
-Route::get('admin/user/update/{userId}', [UserController::class, 'updateUser'])->name('updateUser');
-Route::get(('admin/system-log'), [SystemLogController::class, 'index'])->name('system-log');
 
 
-Route::get('admin/user/add', [UserController::class, 'addUser'])->name('addUser');
 
 Route::get('forget-password', [ForgetPasswordController::class, 'index'])->name('forget-password');
 

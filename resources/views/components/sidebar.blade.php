@@ -19,7 +19,7 @@
             </li>
             <x-menu-item title="User Account Management" url="{{ route('user') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Room Managenent" url="{{ route('rooms') }}" icon="fas fa-home mx-2" />
-            <x-menu-item title="Activity Log" url="{{ route('rooms') }}" icon="fas fa-home mx-2" />
+            <x-menu-item title="Activity Log" url="{{ route('system-log') }}" icon="fas fa-home mx-2" />
 
         </ul>
 
