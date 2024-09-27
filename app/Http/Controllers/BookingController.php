@@ -26,4 +26,8 @@ class BookingController extends Controller
     }
 
 
+
+    public function checkInOut(){
+        return view('admin.booking.check-in-out');
+    }
 }

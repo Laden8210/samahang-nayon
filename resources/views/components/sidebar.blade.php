@@ -52,7 +52,7 @@
         <x-menu-item title="Message" url="{{ route('message') }}" icon="fas fa-home mx-2" badge="true"
             badgeCount="1" />
         <x-menu-item title="Amenities" url="{{ route('amenities') }}" icon="fas fa-home mx-2" />
-        <x-menu-item title="Check-in/out" url="#" icon="fas fa-home mx-2" />
+        <x-menu-item title="Check-in/out" url="{{route('check-in-out')}}" icon="fas fa-home mx-2" />
         <x-menu-item title="Report" url="{{ route('report') }}" icon="fas fa-home mx-2" />
 
     </ul>

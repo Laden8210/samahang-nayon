@@ -20,7 +20,7 @@
                     </button>
                 @endif
 
-                <button wire:click="checkIn"
+                <button x-data x-on:click="$dispatch('open-modal', {name: 'add-modal-payment'})"
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
                     Payment</button>
 
@@ -28,9 +28,36 @@
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
                     Amenities</button>
 
+                    {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
+                        class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Generate Receipt</a>
+ --}}
+
             </div>
         </div>
 
+
+        <x-modal title="Add Payment" name="add-modal-payment">
+            @slot('body')
+                <form wire:submit.prevent="addPayment">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+
+                        <div class="col-span-2">
+                            <x-text-field1 name="payment" placeholder="Enter the amnount to paid" model="payment"
+                                label="Payment " type="number" />
+                            @error('payment')
+                                <p class="text-red-500 text-xs italic mt-1">
+                                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Confirm Payment
+                    </button>
+                </form>
+            @endslot
+        </x-modal>
 
         <x-modal title="Add New Amenities" name="add-modal-amenities">
             @slot('body')
@@ -80,15 +107,65 @@
                 <div>
                     {{ $reservation->guest->FirstName . ' ' . $reservation->guest->MiddleName[0] . '. ' . $reservation->guest->LastName }}
                 </div>
+                <div class="font-bold  text-base">Contact Number</div>
+                <div>
+                    {{ $reservation->guest->ContactNumber }}
+                </div>
+
+                <div class="font-bold  text-base">Email</div>
+                <div>
+                    {{ $reservation->guest->EmailAddress }}
+                </div>
             </div>
 
             <div class="grid grid-cols-2 mt-2">
+                <div class="font-bold  text-base">Total guest</div>
+                <div>
+                    {{ 'Adults ' . $reservation->TotalAdult . ' Children' . $reservation->TotalChildren }}
+                </div>
                 <div class="font-bold  text-base">Status:</div>
                 <div>{{ $reservation->Status }}</div>
                 <div class="font-bold  text-base">Check In Date:</div>
                 <div>{{ $reservation->DateCheckIn }}</div>
                 <div class="font-bold  text-base">Check Out Date:</div>
                 <div>{{ $reservation->DateCheckOut }}</div>
+            </div>
+
+
+
+            <div class="grid grid-cols-2 mt-2">
+                <div class="font-bold  text-base">Total Room Cost</div>
+                <div> ₱
+                    {{ $reservation->TotalCost }}
+                </div>
+
+                <div class="font-bold  text-base">Total Amenities Cost</div>
+                <div>₱
+                    @php
+                        $totalAmenities = 0;
+                        foreach ($reservation->reservationAmenities as $amenity) {
+                            $totalAmenities += $amenity->TotalCost;
+                        }
+                        echo $totalAmenities;
+                    @endphp
+                </div>
+
+                <div class="font-bold  text-base">Total Payment</div>
+                <div>
+                    ₱
+                    @php
+                        $totalPayment = 0;
+                        foreach ($reservation->payments as $payment) {
+                            $totalPayment += $payment->AmountPaid;
+                        }
+                        echo  $totalPayment;
+                    @endphp</div>
+
+                <div class="font-bold  text-base">Balance</div>
+                <div>
+                    ₱{{ ($reservation->TotalCost + $totalAmenities) - $totalPayment }}
+                </div>
+
             </div>
         </div>
 

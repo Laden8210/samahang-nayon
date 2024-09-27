@@ -74,6 +74,8 @@ Route::get('receptionist/payment/receipt', [ReceiptController::class, 'index'])-
 
 Route::get('receptionist/report', [ReportController::class, 'index'])->name('report');
 
+Route::get('receptionist/check-in-out', [BookingController::class, 'checkInOut'])->name('check-in-out');
+
 
 Route::get('send-mail', [XenditController::class, 'index'])->name('send-mail');
 

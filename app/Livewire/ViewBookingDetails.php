@@ -15,6 +15,8 @@ class ViewBookingDetails extends Component
     public $amenity_id;
     public $quantity;
 
+    public $payment;
+
 
     public function render()
     {
@@ -26,6 +28,36 @@ class ViewBookingDetails extends Component
         $this->reservation = Reservation::find($ReservationId);
         $this->Amenities = Amenities::all();
 
+    }
+
+    public function addPayment()
+    {
+        $this->validate([
+            'payment' => 'required|numeric|min:1',
+        ]);
+
+        $remainingBalance = $this->reservation->TotalCost;
+
+        foreach ($this->reservation->payments as $payment) {
+            $remainingBalance -= $payment->AmountPaid;
+        }
+
+        if ($this->payment > $remainingBalance) {
+            session()->flash('message', 'Payment Exceeds Remaining Balance');
+            $this->payment = '';
+            return;
+        }
+
+        $this->reservation->payments()->create([
+            'GuestId' => $this->reservation->GuestId,
+            'AmountPaid' => $this->payment,
+            'DateCreated' => date('Y-m-d'),
+            'TimeCreated' => date('H:i:s'),
+            'Status' => 'Confirmed',
+            'PaymentType' => 'Cash',
+            'ReferenceNumber' => $this->generateReferenceNumber(),
+            'Purpose' => "Room Reservation",
+        ]);
     }
 
 
@@ -105,5 +137,11 @@ class ViewBookingDetails extends Component
 
         session()->flash('message', 'Guest Checked Out');
 
+    }
+
+
+    public function generateReferenceNumber()
+    {
+        return 'REF-' . date('YmdHis');
     }
 }
