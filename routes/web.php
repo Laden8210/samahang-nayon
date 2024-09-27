@@ -19,7 +19,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportController;
 
 Route::get('', [LoginController::class, 'index']);
-Route::get('login', [LoginController::class, 'index'])->name('login');
+// Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
@@ -82,3 +82,5 @@ Route::get('online-payment/{reservationId}', [XenditController::class, 'createPa
 
 Route::get('manager/promotions', [PromotionController::class, 'index'])->name('promotion');
 Route::get('download/report/{id}', [ReportController::class, 'downloadReport'])->name('download-report');
+
+Route::get('settings', [UserController::class, 'settings'])->name('settings');

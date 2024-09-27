@@ -28,7 +28,7 @@ class CreateRoom extends Component
         $this->validate(
             [
                 'rate' => 'required',
-                'roomNumber' => 'required|numeric',
+                'roomNumber' => 'required|numeric|unique:rooms,RoomNumber',
                 'roomType' => 'required',
                 'capacity' => 'required',
                 'description' => 'required',

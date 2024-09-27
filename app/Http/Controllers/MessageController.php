@@ -91,6 +91,7 @@ class MessageController extends Controller
                 ->where('isGuestMessage', true)
                 ->count();
 
+            // Handle both employees with and without messages
             return [
                 'employee_id' => $employee->EmployeeId,
                 'employee_name' => $employee->FirstName . " " . $employee->LastName,
@@ -106,6 +107,7 @@ class MessageController extends Controller
 
         return response()->json($response->values()->all(), 200);
     }
+
 
 
     public function retrieveUserMessage(Request $request)

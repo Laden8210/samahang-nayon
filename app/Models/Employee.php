@@ -13,6 +13,7 @@ class Employee extends Authenticatable
     public $table = 'employees';
 
 
+
     public function scopeSearch($query, $value){
         return $query->where(function($q) use ($value) {
             $q->where('FirstName', 'like', '%' . $value . '%')
@@ -54,10 +55,10 @@ class Employee extends Authenticatable
         'password',
     ];
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
+    // public function setPasswordAttribute($value)
+    // {
+    //     $this->attributes['password'] = Hash::make($value);
+    // }
 
     public function report()
     {

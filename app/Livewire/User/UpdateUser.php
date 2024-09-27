@@ -37,7 +37,7 @@ class UpdateUser extends Component
         $this->middlename = $user->MiddleName;
         $this->lastname = $user->LastName;
         $this->contactNumber = $user->ContactNumber;
-        $this->email = htmlentities($user->EmailAddress, ENT_QUOTES, 'UTF-8');
+        $this->email = htmlentities($user->email, ENT_QUOTES, 'UTF-8');
 
         $this->street = $user->Street;
         $this->city = $user->City;
@@ -55,7 +55,7 @@ class UpdateUser extends Component
             'middlename' => 'nullable|string|max:255',
             'lastname' => 'required|string|max:255',
             'contactNumber' => 'required|string|max:15',
-            'email' => ['required', 'email', Rule::unique('employees', 'EmailAddress')->ignore($this->userId, 'EmployeeId')],
+            'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($this->userId, 'EmployeeId')],
             'street' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',

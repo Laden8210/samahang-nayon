@@ -32,4 +32,9 @@ class UserController extends Controller
         //     return redirect()->route('user')->with('error', 'Invalid Employee ID.');
         // }
     }
+
+    public function settings()
+    {
+        return view('admin.user.setting');
+    }
 }

@@ -14,7 +14,7 @@ use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Http;
 use App\Models\Room;
 use Carbon\Carbon;
-
+use App\Models\Promotion;
 class GuestAPIController extends Controller
 {
     private $apiKey;
@@ -112,8 +112,8 @@ class GuestAPIController extends Controller
             'amenities.*.quantity' => 'required_with:amenities|integer',
             'sub_guests' => 'nullable|array',
             'payment_option' => 'required|string|in:full,partial',
-            'total_adult'=>'required|integer',
-            'total_children'=>'required|integer',
+            'total_adult' => 'required|integer',
+            'total_children' => 'required|integer',
         ]);
 
 
@@ -128,7 +128,21 @@ class GuestAPIController extends Controller
         $checkIn = Carbon::parse($validatedData['check_in']);
         $checkOut = Carbon::parse($validatedData['check_out']);
         $lengthOfStay = $checkIn->diffInDays($checkOut);
+
         $totalCost = $room->RoomPrice * $lengthOfStay;
+
+        $promotion = Promotion::where('StartDate', '<=', $checkOut)
+            ->where('EndDate', '>=', $checkIn)
+            ->whereHas('discountedRooms', function ($query) use ($room) {
+                $query->where('RoomId', $room->RoomId);
+            })
+            ->first();
+
+        if ($promotion) {
+            $totalCost = $totalCost - ($totalCost * ($promotion->Discount / 100));
+        }
+
+
 
         $reservation = Reservation::create([
             'GuestId' => $guest->GuestId,
@@ -163,8 +177,8 @@ class GuestAPIController extends Controller
 
         foreach ($validatedData['sub_guests'] as $sub_guest) {
             $reservation->subGuests()->create([
-                'FirstName' => $sub_guest['first_name'], // Corrected key
-                'LastName' => $sub_guest['last_name'],   // Corrected key
+                'FirstName' => $sub_guest['first_name'],
+                'LastName' => $sub_guest['last_name'],
                 'MiddleName' => $sub_guest['middle_name'], // Corrected key
                 'ContactNumber' => $sub_guest['contact_number'], // Corrected key
                 'EmailAddress' => $sub_guest['email'], // Corrected key
@@ -175,7 +189,7 @@ class GuestAPIController extends Controller
 
 
         $partialPaymentAmount = $totalCost * 0.30;
-        if($validatedData['payment_option'] == 'partial'){
+        if ($validatedData['payment_option'] == 'partial') {
             $reservation->payments()->create([
                 'GuestId' => $guest->GuestId,
                 'AmountPaid' => $partialPaymentAmount ?? 0,
@@ -252,7 +266,7 @@ class GuestAPIController extends Controller
                     'error' => $e->getMessage()
                 ], 500);
             }
-        }else{
+        } else {
 
             $reservation->payments()->create([
                 'GuestId' => $guest->GuestId,
@@ -281,7 +295,7 @@ class GuestAPIController extends Controller
                         'line_items' => [
                             [
                                 'currency' => 'PHP',
-                                'amount' => (int)($reservation->room->RoomPrice * 100),
+                                'amount' => (int)($reservation->room->RoomPrice * 100) -(($reservation->room->RoomPrice * 100) * ($promotion->Discount / 100)),
 
                                 'description' => 'Room Reservation',
                                 'name' => $reservation->Room->RoomType,
@@ -326,11 +340,7 @@ class GuestAPIController extends Controller
                     'error' => $e->getMessage()
                 ], 500);
             }
-
         }
-
-
-
     }
 
 

@@ -72,21 +72,25 @@ class CreateBooking extends Component
         $checkIn = Carbon::parse($this->checkIn);
         $checkOut = Carbon::parse($this->checkOut);
 
+
+
         return Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereNull('reservations.RoomId') // Room has no reservation
-                    ->orWhere('reservations.Status', 'Checked Out') // Reservation has checked out
+                $query->whereNull('reservations.RoomId')  // Rooms with no reservations
+                    ->orWhere('reservations.Status', 'Checked Out') // Rooms that have been checked out
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('reservations.DateCheckOut', '<', $checkIn) // Reservation check-out is before the new check-in
-                              ->orWhere('reservations.DateCheckIn', '>', $checkOut); // Reservation check-in is after the new check-out
+                        $query->where('reservations.DateCheckOut', '<', $checkIn)
+                            ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
             ->select('rooms.*')
+            ->distinct()
             ->get();
     }
 
     public function saveBooking()
     {
+
 
         if ($this->selectedGuestId) {
             $guest = Guest::find($this->selectedGuestId);
@@ -119,7 +123,7 @@ class CreateBooking extends Component
         $reservation->DateCheckIn = $this->checkIn;
         $reservation->DateCheckOut = $this->checkOut;
         $reservation->TotalCost =  $room->RoomPrice * $this->lengthOfStay;
-        $reservation->Status = 'Booking';
+        $reservation->Status = 'Booked';
 
         $purpose = "";
 
@@ -137,45 +141,19 @@ class CreateBooking extends Component
             })
         );
 
+        $reservation->payments()->create([
+            'GuestId' => $guest->GuestId,
+            'AmountPaid' => $this->paymentAmount ?? 0,
+            'DateCreated' => date('Y-m-d'),
+            'TimeCreated' => date('H:i:s'),
+            'Status' => 'Confirmed`',
+            'PaymentType' => $this->paymentType,
+            'ReferenceNumber' => $this->generateReferenceNumber(),
+            'Purpose' => $purpose,
+        ]);
+        $this->reset();
 
-
-        if ($this->paymentType == 'Gcash') {
-            $paymentLink = route('online-payment', ['reservationId' => $reservation->ReservationId]);
-            try {
-                Mail::to('domingo.laden@gmail.com')->send(new SamahangNayonMailer($paymentLink));
-                session()->flash('message', 'Room Booking created successfully and email sent.');
-            } catch (\Exception $e) {
-                session()->flash('error', 'Failed to send email: ' . $e->getMessage());
-            }
-            // $reservation->payments()->create([
-            //     'GuestId' => $guest->GuestId,
-            //     'AmountPaid' => $this->paymentAmount ?? 0,
-            //     'DateCreated' => date('Y-m-d'),
-            //     'TimeCreated' => date('H:i:s'),
-            //     'Status' => 'Pending`',
-            //     'PaymentType' => $this->paymentType,
-            //     'ReferenceNumber' => $this->generateReferenceNumber(),
-            //     'Purpose' => $purpose,
-            // ]);
-            // $this->reset();
-
-
-            // session()->flash('message', 'Room Booking created successfully.');
-        } else {
-            $reservation->payments()->create([
-                'GuestId' => $guest->GuestId,
-                'AmountPaid' => $this->paymentAmount ?? 0,
-                'DateCreated' => date('Y-m-d'),
-                'TimeCreated' => date('H:i:s'),
-                'Status' => 'Confirmed`',
-                'PaymentType' => $this->paymentType,
-                'ReferenceNumber' => $this->generateReferenceNumber(),
-                'Purpose' => $purpose,
-            ]);
-            $this->reset();
-
-            session()->flash('message', 'Room Booking created successfully.');
-        }
+        session()->flash('message', 'Room Booking created successfully.');
     }
 
     public function filterRoom()

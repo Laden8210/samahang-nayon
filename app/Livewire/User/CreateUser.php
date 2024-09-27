@@ -78,7 +78,7 @@ class CreateUser extends Component
             'Status' => 'Active',
             'Username' => $this->email,
             'email' => $this->email,
-            'password' => "password",
+            'password' => bcrypt("password"),
             'DateCreated' => now()->format('Y-m-d'),
             'TimeCreated' => now()->format('H:i:s'),
         ]);

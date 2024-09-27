@@ -73,13 +73,37 @@ class PromotionTable extends Component
 
     public function updatePromotion($promotionId)
     {
-        $selectedPromotion = Promotion::find($promotionId);
+        $this->selectedPromotion = Promotion::find($promotionId);
 
-        $this->promotionName = $selectedPromotion->promotion;
-        $this->description = $selectedPromotion->description;
-        $this->discount = $selectedPromotion->discount;
-        $this->startingDate = $selectedPromotion->startingDate;
-        $this->endDate = $selectedPromotion->endDate;
+
+        $this->promotionName = $this->selectedPromotion->Promotion;
+        $this->description = $this->selectedPromotion->Description;
+        $this->discount = $this->selectedPromotion->Discount;
+        $this->startingDate = $this->selectedPromotion->StartDate;
+        $this->endDate = $this->selectedPromotion->EndDate;
+    }
+
+    public function savePromotion()
+    {
+        $this->validate([
+            'promotionName' => 'required',
+            'description' => 'required',
+            'discount' => 'required',
+            'startingDate' => 'required',
+            'endDate' => 'required',
+        ]);
+
+        $this->selectedPromotion->update([
+            'Promotion' => $this->promotionName,
+            'Description' => $this->description,
+            'Discount' => $this->discount,
+            'StartDate' => $this->startingDate,
+            'EndDate' => $this->endDate,
+        ]);
+
+        $this->dispatch('close-modal', name: 'update-modal');
+        session()->flash('message', 'Promotion updated successfully.');
+
     }
 
     public function deletePromotion($promotionId)

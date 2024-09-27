@@ -182,7 +182,7 @@
 
         <x-modal title="Update Promotion" name="update-modal">
             @slot('body')
-                <form wire:submit.prevent="addPromotion">
+                <form wire:submit.prevent="savePromotion">
                     <div class="grid gap-4 mb-4 grid-cols-2">
 
                         <div class="col-span-1">

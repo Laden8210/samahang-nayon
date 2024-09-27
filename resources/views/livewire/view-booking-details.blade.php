@@ -60,17 +60,19 @@
                 <thead class="">
                     <tr class="bg-slate-100">
                         <th class="px-2 py-3">Room Type</th>
-                        <th class="px-2 py-3">Price</th>
                         <th class="px-2 py-3">Room Number</th>
+                        <th class="px-2 py-3">Price</th>
+
                         <th class="px-2 py-3">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b border-slate-100 text-center">
                         <td class="py-3">{{ $reservation->room->RoomType }}</td>
-                        <td>{{ $reservation->room->RoomPrice }}</td>
                         <td>{{ $reservation->room->RoomNumber }}</td>
-                        <td>{{ $reservation->Disburse }}</td>
+                        <td>{{ $reservation->room->RoomPrice }}</td>
+
+                        <td>{{ $reservation->TotalCost }}</td>
                     </tr>
                 </tbody>
             </table>

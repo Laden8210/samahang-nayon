@@ -71,7 +71,7 @@
                 <div class="grid grid-cols-3">
                     <div class="text-start font-bold">
                         <p class="text-sm ">Transaction Id</p>
-                        <p class="text-sm ">Payeer Name</p>
+                        <p class="text-sm ">Payee Name</p>
                         <p class="text-sm ">Purpose</p>
                         <p class="text-sm ">Date</p>
                         <p class="text-sm ">Payment Method</p>

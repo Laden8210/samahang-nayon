@@ -6,7 +6,7 @@
 
 
     {{-- Admin sidebar --}}
-    {{-- @if (Auth::check() && Auth::user()->Position === 'System Administrator') --}}
+    @if (Auth::check() && Auth::user()->Position === 'System Administrator')
         <ul class="items-center pt-7">
             <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
         </ul>
@@ -20,7 +20,6 @@
             <x-menu-item title="User Account Management" url="{{ route('user') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Room Managenent" url="{{ route('rooms') }}" icon="fas fa-home mx-2" />
             <x-menu-item title="Activity Log" url="{{ route('rooms') }}" icon="fas fa-home mx-2" />
-            <x-menu-item title="Notification" url="{{ route('rooms') }}" icon="fas fa-home mx-2" />
 
         </ul>
 
@@ -30,15 +29,14 @@
                 Others
             </li>
 
-            <x-menu-item title="Message" url="#" icon="fas fa-home mx-2" badge="true" badgeCount="1" />
             <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
 
         </ul>
-    {{-- @endif --}}
+    @endif
 
     {{-- admin sidebar end here --}}
     {{-- Receptionist sidebar --}}
-    {{-- @if (Auth::check() && Auth::user()->Position === 'Receptionist') --}}
+    @if (Auth::check() && Auth::user()->Position === 'Receptionist')
     <ul class="items-center pt-7">
         <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
     </ul>
@@ -66,12 +64,12 @@
 
         <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
     </ul>
-    {{-- @endif --}}
+    @endif
     {{-- Receptionist sidebar end here --}}
 
     {{-- Manager sidebar --}}
 
-    {{-- @if (Auth::check() && Auth::user()->Position === 'Manager') --}}
+    @if (Auth::check() && Auth::user()->Position === 'Manager')
     <ul class="items-center pt-7">
         <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
     </ul>
@@ -93,8 +91,8 @@
             Other
         </li>
 
-        <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
+        <x-menu-item title="Setting"  url="{{ route('settings') }}" icon="fas fa-home mx-2" />
     </ul>
-    {{-- @endif --}}
+    @endif
 
 </nav>
