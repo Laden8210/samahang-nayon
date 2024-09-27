@@ -15,7 +15,7 @@
             <thead class="text-xs uppercase bg-gray-100 ">
                 <tr class="text-center">
                     <th class="py-2">Transaction Id</th>
-                    <th class="py-2">Payeer Name</th>
+                    <th class="py-2">Payee Name</th>
                     <th class="py-2">Purpose</th>
                     <th class="py-2">Date</th>
                     <th class="py-2">Payment Method</th>
@@ -29,7 +29,7 @@
                     <tr class="text-center">
                         <td class="py-2">{{ $payment->ReferenceNumber }}</td>
                         {{-- <td class="py-2">{{ $payment->guest->FirstName }}</td> --}}
-                        <td class="py-2">John Michael</td>
+                        <td class="py-2">{{$payment->guest->FirstName . " " . $payment->guest->LastName}}</td>
                         <td class="py-2">{{ $payment->Purpose }}</td>
                         <td class="py-2">{{ $payment->DateCreated }}</td>
                         <td class="py-2">{{ $payment->PaymentType }}</td>
@@ -64,6 +64,31 @@
 
     </div>
 
+
+    <div class="py-4 px-3">
+        <div class="flex justify-between items-center">
+            <div class="flex-1">
+                <p class="text-sm text-gray-700 dark:text-gray-400">
+                    Showing {{ $payments->firstItem() }} to {{ $payments->lastItem() }} of {{ $payments->total() }} rooms
+                </p>
+            </div>
+            <div class="flex items-center">
+                @if ($payments->onFirstPage())
+                <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-l cursor-not-allowed">Previous</span>
+                @else
+                <a href="{{ $payments->previousPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600">Previous</a>
+                @endif
+
+                @if ($payments->hasMorePages())
+                <a href="{{ $payments->nextPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600">Next</a>
+                @else
+                <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-r cursor-not-allowed">Next</span>
+                @endif
+            </div>
+        </div>
+
+
+    </div>
 
     <x-modal name="payment-details-modal" title="Payment Detals">
         @slot('body')

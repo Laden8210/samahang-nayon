@@ -124,6 +124,8 @@ class CreateBooking extends Component
         $reservation->DateCheckOut = $this->checkOut;
         $reservation->TotalCost =  $room->RoomPrice * $this->lengthOfStay;
         $reservation->Status = 'Booked';
+        $reservation->TotalAdult = $this->totalGuests;
+        $reservation->TotalChildren = 0;
 
         $purpose = "";
 

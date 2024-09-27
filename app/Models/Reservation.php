@@ -26,6 +26,28 @@ class Reservation extends Model
         'TotalChildren',
     ];
 
+    public function scopeSearch($query, $value){
+
+        return $query->whereHas('guest', function($query) use ($value){
+            $query->where('FirstName', 'like', '%'.$value.'%')
+                ->orWhere('LastName', 'like', '%'.$value.'%')
+
+                ->orWhere('ContactNumber', 'like', '%'.$value.'%')
+                ;
+        })
+        ->orWhereHas('room', function($query) use ($value){
+            $query->where('RoomNumber', 'like', '%'.$value.'%')
+                ->orWhere('RoomType', 'like', '%'.$value.'%')
+                ->orWhere('RoomPrice', 'like', '%'.$value.'%');
+        })->orWhere('DateCheckIn', 'like', '%'.$value.'%')
+        ->orWhere('DateCheckOut', 'like', '%'.$value.'%')
+        ->orWhere('TotalCost', 'like', '%'.$value.'%')
+        ->orWhere('Status', 'like', '%'.$value.'%')
+        ->orWhere('TotalAdult', 'like', '%'.$value.'%')
+        ->orWhere('TotalChildren', 'like', '%'.$value.'%')
+        ;
+    }
+
     public function guest()
     {
         return $this->belongsTo(Guest::class, 'GuestId');

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Http;
 use App\Models\Room;
 use Carbon\Carbon;
 use App\Models\Promotion;
+use App\Models\Notification;
+
 class GuestAPIController extends Controller
 {
     private $apiKey;
@@ -286,7 +288,7 @@ class GuestAPIController extends Controller
                         'line_items' => [
                             [
                                 'currency' => 'PHP',
-                                'amount' => (int)($reservation->room->RoomPrice * 100) -(($reservation->room->RoomPrice * 100) * ($promotion->Discount / 100)),
+                                'amount' => (int)($reservation->room->RoomPrice * 100) - (($reservation->room->RoomPrice * 100) * ($promotion->Discount / 100)),
 
                                 'description' => 'Room Reservation',
                                 'name' => $reservation->Room->RoomType,
@@ -318,6 +320,15 @@ class GuestAPIController extends Controller
 
 
                 if ($response->successful()) {
+
+                    $notification = new Notification();
+                    $notification->isForGuest = false;
+                    $notification->Title = 'New Reservation';
+                    $notification->Type = 'Reservation';
+                    $notification->Message = 'A new reservation has been created for ' . $guest->FirstName . ' ' . $guest->LastName . '. Please confirm and proceed with the necessary actions.';
+                    $notification->save();
+
+
                     return response()->json($response->json());
                 } else {
 
@@ -373,6 +384,13 @@ class GuestAPIController extends Controller
             'Status' => 'Cancelled'
         ]);
 
+        $notification = new Notification();
+        $notification->isForGuest = false;
+        $notification->Title = 'Reservation Cancellation';
+        $notification->Type = 'Cancellation';
+        $notification->Message = 'The reservation for ' . $guest->FirstName . ' ' . $guest->LastName . ' has been canceled. The system has been updated automatically.';
+        $notification->save();
+
         return response()->json(['message' => 'Reservation cancelled successfully'], 200);
     }
 
@@ -386,5 +404,30 @@ class GuestAPIController extends Controller
     public function generateReferenceNumber()
     {
         return 'REF-' . date('YmdHis');
+    }
+
+    public function getReservationDetails(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+
+        // Check if the user is authenticated
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        // Validate the request data
+        $request->validate([
+            'reservation_id' => 'required|integer|exists:reservations,ReservationId', // Update to check for ReservationId
+        ]);
+
+        $reservation = Reservation::with(['payments', 'room', 'reservationAmenities.amenity', 'subGuests']) // Correct 'payment' to 'payments'
+            ->where('ReservationId', $request->reservation_id) // Use where() instead of find()
+            ->first();
+
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+
+        return response()->json($reservation);
     }
 }

@@ -34,3 +34,5 @@ Route::post('message/retrieveUserMessage', [MessageController::class, 'retrieveU
 Route::post('reservation/getReservation', [GuestAPIController::class, 'getReservation']);
 
 Route::post('reservation/cancelReservation', [GuestAPIController::class, 'cancelReservation']);
+
+Route::post('reservation/getReservationDetails', [GuestAPIController::class, 'getReservationDetails']);

@@ -17,9 +17,13 @@ class ReportTable extends Component
 
     public function createReport()
     {
+
+        $employeeId = auth()->id();
+
+        $user = auth()->user();
         $report = new Report();
-        $report->ReportName = 'Report 1';
-        $report->EmployeeId = 1;
+        $report->ReportName = 'Daily Sales Report '.now();
+        $report->EmployeeId = $employeeId;
         $report->Date = now();
         $report->save();
     }

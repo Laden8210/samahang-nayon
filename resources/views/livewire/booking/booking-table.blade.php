@@ -71,22 +71,22 @@
 
 
     </div>
-    {{-- <div class="py-4 px-3">
+    <div class="py-4 px-3">
         <div class="flex justify-between items-center">
             <div class="flex-1">
                 <p class="text-sm text-gray-700 dark:text-gray-400">
-                    Showing {{ $rooms->firstItem() }} to {{ $rooms->lastItem() }} of {{ $rooms->total() }} rooms
+                    Showing {{ $bookings->firstItem() }} to {{ $bookings->lastItem() }} of {{ $bookings->total() }} rooms
                 </p>
             </div>
             <div class="flex items-center">
-                @if ($rooms->onFirstPage())
+                @if ($bookings->onFirstPage())
                 <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-l cursor-not-allowed">Previous</span>
                 @else
-                <a href="{{ $rooms->previousPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600">Previous</a>
+                <a href="{{ $bookings->previousPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600">Previous</a>
                 @endif
 
-                @if ($rooms->hasMorePages())
-                <a href="{{ $rooms->nextPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600">Next</a>
+                @if ($bookings->hasMorePages())
+                <a href="{{ $bookings->nextPageUrl() }}" class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600">Next</a>
                 @else
                 <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-r cursor-not-allowed">Next</span>
                 @endif
@@ -94,7 +94,7 @@
         </div>
 
 
-    </div> --}}
+    </div>
 
 
 </div>

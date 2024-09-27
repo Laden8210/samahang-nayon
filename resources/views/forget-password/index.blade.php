@@ -27,7 +27,7 @@
                     <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i> {{ session('error') }}</p>
                 @endif
 
-                <button type="submit" class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded mt-5">Send Reset Link</button>
+                <button type="submit" class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded mt-5">Send OTP</button>
 
                 <div class="flex justify-center mt-5">
                     <a href="{{ route('login') }}" class="font-medium text-sm"><i class="fas fa-chevron-left"></i> Back to login</a>
