@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Official Receipt</title>
     <style>
-        body {
+         body {
             font-family: Arial, sans-serif;
             font-size: 14px;
             margin: 0;
@@ -97,8 +97,8 @@
                 <p>(Hotel)</p>
             </div>
             <div>
-                <p>Reservation/Booking No. </p>
-                <h2>Date: July 17, 2024</h2>
+                <p>Reservation/Booking No: {{ $payment->ReferenceNumber }}</p>
+                <h2>Date: {{ \Carbon\Carbon::parse($payment->DateCreated)->format('F d, Y') }}</h2>
             </div>
         </div>
 
@@ -106,42 +106,42 @@
             <div class="flex">
                 <p>Received from: </p>
                 <div class="underline">
-                    <span>Name Here</span>
+                    <span>{{ $payment->guest->FirstName }} {{ $payment->guest->LastName }}</span>
                 </div>
             </div>
 
             <div class="flex">
                 <p>With address at: </p>
                 <div class="underline">
-                    <span>Address Here</span>
+                    <span>{{ $payment->guest->Brgy . " " . $payment->guest->City ." ". $payment->guest->Province }}</span>
                 </div>
             </div>
 
             <div class="flex">
                 <p>Business Style: </p>
                 <div class="underline">
-                    <span>Business Style Here</span>
+                    <span>Hotel Reservation</span>
                 </div>
             </div>
 
             <div class="flex">
                 <p>TIN: </p>
                 <div class="underline">
-                    <span>TIN Here</span>
+                    <span>{{ $payment->guest->TIN }}</span>
                 </div>
             </div>
 
             <div class="flex">
                 <p>Amount: </p>
                 <div class="underline">
-                    <span>PHP Amount Here (in words)</span>
+                    <span>PHP {{ number_format($payment->AmountPaid, 2) }} ( {{ $amountInWords }})</span>
                 </div>
             </div>
 
             <div class="flex">
                 <p>By: </p>
                 <div class="underline">
-                    <span>Cashier/Authorized Representative</span>
+                    <span>{{ $payment->Cashier }}</span>
                 </div>
             </div>
         </div>
@@ -157,13 +157,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example of a row -->
+                    {{-- @foreach ($payment->services as $service)
                     <tr>
-                        <td>Room Reservation</td>
-                        <td>1</td>
-                        <td>1,000.00</td>
-                        <td>1,000.00</td>
+                        <td>{{ $service->name }}</td>
+                        <td>{{ $service->quantity }}</td>
+                        <td>{{ number_format($service->unit_price, 2) }}</td>
+                        <td>{{ number_format($service->amount, 2) }}</td>
                     </tr>
+                    @endforeach --}}
                 </tbody>
             </table>
         </div>

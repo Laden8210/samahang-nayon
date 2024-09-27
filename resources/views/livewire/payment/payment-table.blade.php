@@ -38,7 +38,7 @@
                         <td class="py-2">
                             <div class="flex justify-center">
 
-                                <a href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
+                                <a href="{{ route('receipt', ['view' => $payment->ReferenceNumber]) }}" target="_blank"
                                     class="rounded-full hover:bg-blue-400 px-2 py-1 hover:text-white">
                                     <i class="fas fa-print"></i>
                                 </a>
