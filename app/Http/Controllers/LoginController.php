@@ -104,7 +104,7 @@ class LoginController extends Controller
                 'action' => 'Login',
                 'date_created' => date('Y-m-d'),
             ]);
-            return redirect()->intended('manager/promotion/');
+            return redirect()->intended('manager/promotions/');
         }
 
 

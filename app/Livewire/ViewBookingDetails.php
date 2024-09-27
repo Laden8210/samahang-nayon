@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Amenities;
 use Livewire\Component;
 use App\Models\Reservation;
 use Xendit\Refund\Refund;
@@ -10,6 +11,10 @@ class ViewBookingDetails extends Component
 {
     public $ReservationId;
     public $reservation;
+    public $Amenities;
+    public $amenity_id;
+    public $quantity;
+
 
     public function render()
     {
@@ -19,6 +24,36 @@ class ViewBookingDetails extends Component
     {
         $this->ReservationId = $ReservationId;
         $this->reservation = Reservation::find($ReservationId);
+        $this->Amenities = Amenities::all();
+
+    }
+
+
+
+
+
+    public function addAmenities()
+    {
+
+
+        $this->validate([
+            'amenity_id' => 'required|exists:amenities,AmenitiesId',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $totalCost = Amenities::find($this->amenity_id)->Price * $this->quantity;
+
+        $this->reservation->reservationAmenities()->create([
+            'AmenitiesId' => $this->amenity_id,
+            'Quantity' => $this->quantity,
+            'TotalCost' => $totalCost,
+        ]);
+
+        session()->flash('message', 'Amenity Added');
+
+        // Optionally reset the fields after submission
+        $this->reset(['amenity_id', 'quantity']);
+
     }
 
     public function checkIn(){

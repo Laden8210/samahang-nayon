@@ -149,7 +149,7 @@ class GuestAPIController extends Controller
             'RoomId' => $validatedData['room_id'],
             'DateCheckIn' => $validatedData['check_in'],
             'DateCheckOut' => $validatedData['check_out'],
-            'Status' => "Booking",
+            'Status' => $validatedData['payment_option'] == 'partial' ? 'Reserved' : 'Booked',
             'TotalCost' => $totalCost,
             'DateCreated' => now()->toDateString(),
             'TimeCreated' => now()->toTimeString(),
@@ -195,23 +195,14 @@ class GuestAPIController extends Controller
                 'AmountPaid' => $partialPaymentAmount ?? 0,
                 'DateCreated' => date('Y-m-d'),
                 'TimeCreated' => date('H:i:s'),
-                'Status' => 'Pending',
-                'PaymentType' => 'Gcash',
-                'ReferenceNumber' => $this->generateReferenceNumber(),
-                'Purpose' => "Room Reservation",
-            ]);
-
-
-            $reservation->payments()->create([
-                'GuestId' => $guest->GuestId,
-                'AmountPaid' => $totalCost + $totalPayment ?? 0,
-                'DateCreated' => date('Y-m-d'),
-                'TimeCreated' => date('H:i:s'),
                 'Status' => 'Confirmed',
                 'PaymentType' => 'Gcash',
                 'ReferenceNumber' => $this->generateReferenceNumber(),
                 'Purpose' => "Room Reservation",
             ]);
+
+
+
 
             $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
             $data = [
