@@ -132,7 +132,7 @@ class GuestAPIController extends Controller
 
         $guest = Auth::guard('api')->user();
         if (!$guest) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Invalid Session'], 200);
         }
 
         $room = Room::find($validatedData['room_id']);
