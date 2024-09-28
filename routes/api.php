@@ -36,3 +36,9 @@ Route::post('reservation/getReservation', [GuestAPIController::class, 'getReserv
 Route::post('reservation/cancelReservation', [GuestAPIController::class, 'cancelReservation']);
 
 Route::post('reservation/getReservationDetails', [GuestAPIController::class, 'getReservationDetails']);
+
+
+Route::post('user/getCurrentUser', [GuestAPIController::class, 'getCurrentUser']);
+
+
+Route::post('requestOtp', [GuestAPIController::class, 'requestOtp']);

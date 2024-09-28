@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -35,6 +36,8 @@ class UserController extends Controller
 
     public function settings()
     {
-        return view('admin.user.setting');
+
+        $user = Auth::user();
+        return view('admin.user.setting', compact('user'));
     }
 }

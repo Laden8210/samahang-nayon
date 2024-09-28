@@ -23,9 +23,10 @@ Route::get('', [LoginController::class, 'index']);
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
 Route::middleware('auth', 'position:System Administrator')->group(function () {
 
-    Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('admin/rooms', [RoomController::class, 'index'])->name('rooms');
     Route::get('admin/rooms/add', [RoomController::class, 'addRoom'])->name('addRoom');
     Route::get('admin/rooms/update/{roomId}', [RoomController::class, 'updateRoom'])->name('updateRoom');

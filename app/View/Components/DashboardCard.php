@@ -8,12 +8,14 @@ use Illuminate\View\Component;
 
 class DashboardCard extends Component
 {
-    /**
-     * Create a new component instance.
-     */
-    public function __construct()
+
+    public $title;
+    public $count;
+
+    public function __construct($title, $count)
     {
-        //
+        $this->title = $title;
+        $this->count = $count;
     }
 
     /**

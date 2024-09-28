@@ -79,7 +79,7 @@
                         </td>
 
 
-                        <x-modal title="Delete Amenities" name="delete-modal-{{ $user->EmployeeId }}">
+                        <x-modal title="Delete User" name="delete-modal-{{ $user->EmployeeId }}">
 
                             @slot('body')
                                 <div class="p-4 md:p-5 text-center">

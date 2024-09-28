@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Official Receipt</title>
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
             font-size: 14px;
             margin: 0;
@@ -19,6 +19,7 @@
             margin: 20px auto;
             padding: 20px;
             border: 1px solid #000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1, h2, p {
@@ -42,6 +43,7 @@
         .subtitle {
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .underline {
@@ -79,6 +81,13 @@
         .service-list td:first-child {
             text-align: left;
         }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
     </style>
 </head>
 
@@ -113,7 +122,7 @@
             <div class="flex">
                 <p>With address at: </p>
                 <div class="underline">
-                    <span>{{ $payment->guest->Brgy . " " . $payment->guest->City ." ". $payment->guest->Province }}</span>
+                    <span>{{ $payment->guest->Brgy . " " . $payment->guest->City . " " . $payment->guest->Province }}</span>
                 </div>
             </div>
 
@@ -134,7 +143,7 @@
             <div class="flex">
                 <p>Amount: </p>
                 <div class="underline">
-                    <span>PHP {{ number_format($payment->AmountPaid, 2) }} ( {{ $amountInWords }})</span>
+                    <span>PHP {{ number_format($payment->AmountPaid, 2) }} ({{ $amountInWords }})</span>
                 </div>
             </div>
 
@@ -167,6 +176,10 @@
                     @endforeach --}}
                 </tbody>
             </table>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for your business!</p>
         </div>
 
     </div>

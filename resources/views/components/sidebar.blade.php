@@ -8,7 +8,7 @@
     {{-- Admin sidebar --}}
     @if (Auth::check() && Auth::user()->Position === 'System Administrator')
         <ul class="items-center pt-7">
-            <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
+            <x-menu-item title="Dashboard" url="{{route('dashboard')}}" icon="fas fa-home mx-2" active="true" />
         </ul>
 
         <hr>
@@ -29,7 +29,7 @@
                 Others
             </li>
 
-            <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
+            <x-menu-item title="Setting" url="{{route('settings')}}" icon="fas fa-home mx-2" />
 
         </ul>
     @endif
@@ -38,7 +38,7 @@
     {{-- Receptionist sidebar --}}
     @if (Auth::check() && Auth::user()->Position === 'Receptionist')
     <ul class="items-center pt-7">
-        <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
+        <x-menu-item title="Dashboard" url="{{route('dashboard')}}" icon="fas fa-home mx-2" active="true" />
     </ul>
 
     <ul class="items-center pt-3 text-gray-700">
@@ -62,7 +62,7 @@
             Other
         </li>
 
-        <x-menu-item title="Setting" url="#" icon="fas fa-home mx-2" />
+        <x-menu-item title="Setting" url="{{route('settings')}}" icon="fas fa-home mx-2" />
     </ul>
     @endif
     {{-- Receptionist sidebar end here --}}
@@ -71,7 +71,7 @@
 
     @if (Auth::check() && Auth::user()->Position === 'Manager')
     <ul class="items-center pt-7">
-        <x-menu-item title="Dashboard" url="#" icon="fas fa-home mx-2" active="true" />
+        <x-menu-item title="Dashboard" url="{{route('dashboard')}}" icon="fas fa-home mx-2" active="true" />
     </ul>
 
     <ul class="items-center pt-3 text-gray-700">

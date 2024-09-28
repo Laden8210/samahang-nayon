@@ -66,6 +66,16 @@ class GuestAPIController extends Controller
         );
     }
 
+    public function getCurrentUser(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+        if ($guest) {
+            return response()->json($guest);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
     public function login(Request $request)
     {
         $validatedData = $request->validate([
@@ -132,6 +142,23 @@ class GuestAPIController extends Controller
         $lengthOfStay = $checkIn->diffInDays($checkOut);
 
         $totalCost = $room->RoomPrice * $lengthOfStay;
+
+        $existingReservation = Reservation::where('RoomId', $validatedData['room_id'])
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
+                    ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('DateCheckIn', '<=', $checkIn)
+                            ->where('DateCheckOut', '>=', $checkOut);
+                    });
+            })
+            ->exists();
+
+        // If a reservation exists, return an error
+        if ($existingReservation) {
+            return response()->json(['error' => 'The selected room is already booked for the selected dates.'], 200);
+        }
+
 
         $promotion = Promotion::where('StartDate', '<=', $checkOut)
             ->where('EndDate', '>=', $checkIn)
@@ -429,5 +456,31 @@ class GuestAPIController extends Controller
         }
 
         return response()->json($reservation);
+    }
+
+    public function requestOtp(Request $request){
+
+
+        $validatedData = $request->validate([
+            'contactnumber' => 'required|string|max:12',
+        ]);
+
+        $guest = Guest::where('ContactNumber', $validatedData['contactnumber'])->first();
+
+        if (!$guest) {
+            return response()->json(['message' => 'Guest not found'], 404);
+        }
+
+        $otp = rand(1000, 9999);
+
+
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $guest->ContactNumber,
+            'message' => "Your OTP code is: $otp. Please use this code to reset your password.",
+        ]);
+
+
+        return response()->json(['otp' => $otp], 200);
+
     }
 }
