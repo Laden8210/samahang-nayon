@@ -143,21 +143,21 @@ class GuestAPIController extends Controller
 
         $totalCost = $room->RoomPrice * $lengthOfStay;
 
-        $existingReservation = Reservation::where('RoomId', $validatedData['room_id'])
-            ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
-                    ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
-                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('DateCheckIn', '<=', $checkIn)
-                            ->where('DateCheckOut', '>=', $checkOut);
-                    });
-            })
-            ->exists();
+        // $existingReservation = Reservation::where('RoomId', $validatedData['room_id'])
+        //     ->where(function ($query) use ($checkIn, $checkOut) {
+        //         $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
+        //             ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
+        //             ->orWhere(function ($query) use ($checkIn, $checkOut) {
+        //                 $query->where('DateCheckIn', '<=', $checkIn)
+        //                     ->where('DateCheckOut', '>=', $checkOut);
+        //             });
+        //     })
+        //     ->exists();
 
-        // If a reservation exists, return an error
-        if ($existingReservation) {
-            return response()->json(['error' => 'The selected room is already booked for the selected dates.'], 200);
-        }
+        // // If a reservation exists, return an error
+        // if ($existingReservation) {
+        //     return response()->json(['error' => 'The selected room is already booked for the selected dates.'], 200);
+        // }
 
 
         $promotion = Promotion::where('StartDate', '<=', $checkOut)
