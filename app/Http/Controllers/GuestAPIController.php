@@ -315,7 +315,8 @@ class GuestAPIController extends Controller
                         'line_items' => [
                             [
                                 'currency' => 'PHP',
-                                'amount' => (int)($reservation->room->RoomPrice * 100) - (($reservation->room->RoomPrice * 100) * ($promotion->Discount / 100)),
+                                'amount' => (int)($reservation->room->RoomPrice * 100) -
+                                    (($reservation->room->RoomPrice * 100) * (($promotion->Discount ?? 0) / 100)),
 
                                 'description' => 'Room Reservation',
                                 'name' => $reservation->Room->RoomType,
@@ -458,7 +459,8 @@ class GuestAPIController extends Controller
         return response()->json($reservation);
     }
 
-    public function requestOtp(Request $request){
+    public function requestOtp(Request $request)
+    {
 
 
         $validatedData = $request->validate([
@@ -481,6 +483,5 @@ class GuestAPIController extends Controller
 
 
         return response()->json(['otp' => $otp], 200);
-
     }
 }
