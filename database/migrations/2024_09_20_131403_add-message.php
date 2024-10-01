@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id('MessageId');
             $table->foreignId('GuestId');
-            $table->foreignId('EmployeeId');
+            $table->foreignId('EmployeeId')->nullable();
             $table->boolean('IsReadEmployee');
             $table->boolean('IsReadGuest');
             $table->longText('Message');
@@ -22,23 +22,23 @@ return new class extends Migration
             $table->time('TimeSent');
         });
 
-        Schema::create("subguest", function(Blueprint $table){
-            $table->id('SubGuestId');
-            $table->string('FirstName', 255);
-            $table->string('LastName', 255);
-            $table->string('MiddleName', 255)->nullable();
-            $table->date('Birthdate');
-            $table->string('Gender', 255);
-            $table->string('ContactNumber', 12);
-            $table->string('EmailAddress', 255);
+        // Schema::create("subguest", function(Blueprint $table){
+        //     $table->id('SubGuestId');
+        //     $table->string('FirstName', 255);
+        //     $table->string('LastName', 255);
+        //     $table->string('MiddleName', 255)->nullable();
+        //     $table->date('Birthdate');
+        //     $table->string('Gender', 255);
+        //     $table->string('ContactNumber', 12);
+        //     $table->string('EmailAddress', 255);
 
-        });
+        // });
 
-        Schema::create("subguestreservation", function(Blueprint $table){
-            $table->id('SubGuestReservationId');
-            $table->foreignIdFor(Reservation::class, 'ReservationId');
-            $table->foreignIdFor(SubGuest::class, 'SubGuestId');
-        });
+        // Schema::create("subguestreservation", function(Blueprint $table){
+        //     $table->id('SubGuestReservationId');
+        //     $table->foreignIdFor(Reservation::class, 'ReservationId');
+        //     $table->foreignIdFor(SubGuest::class, 'SubGuestId');
+        // });
     }
 
     /**

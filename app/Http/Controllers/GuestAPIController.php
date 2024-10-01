@@ -73,7 +73,7 @@ class GuestAPIController extends Controller
             return response()->json($guest);
         }
 
-        return response()->json(['message' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'Unauthorized'], 200);
     }
 
     public function login(Request $request)
@@ -86,11 +86,11 @@ class GuestAPIController extends Controller
         $guest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
 
         if (!$guest) {
-            return response()->json(['message' => 'Guest not found'], 404);
+            return response()->json(['error' => 'Guest not found'], 200);
         }
 
         if (!Hash::check($validatedData['password'], $guest->Password)) {
-            return response()->json(['message' => 'Invalid password'], 401);
+            return response()->json(['error' => 'Invalid password'], 200);
         }
 
 

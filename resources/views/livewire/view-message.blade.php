@@ -53,7 +53,7 @@
 
                             @if ($message->isGuestMessage === 1)
                                 <div class="bg-blue-500 text-white p-2 rounded-lg inline-block text-lg min-w-24">
-                                    <p>{{ $message->Message . $message->isGuestMessage }}</p>
+                                    <p>{{ $message->Message  }}</p>
                                     <span
                                         class="text-xs">{{ \Carbon\Carbon::createFromFormat('H:i:s', $message->TimeSent)->format('h:i A') }}</span>
                                 </div>

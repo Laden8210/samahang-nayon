@@ -20,7 +20,7 @@ class MessageController extends Controller
 
         $guest = Auth::guard('api')->user();
         if (!$guest) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], 200);
         }
 
         $request->validate([
@@ -29,7 +29,7 @@ class MessageController extends Controller
 
         $message = new Message();
         $message->GuestId = $guest->GuestId;
-        $message->EmployeeId = $request->EmployeeId;
+
         $message->IsReadEmployee = false;
         $message->IsReadGuest = false;
         $message->Message = $request->Message;
@@ -76,7 +76,7 @@ class MessageController extends Controller
                 'date_sent' => $latestMessage->DateSent,
                 'time_sent' => date('g:i A', strtotime($latestMessage->TimeSent)),
                 'is_read_guest' => $latestMessage->IsReadGuest,
-                'employee_id' => $latestMessage->EmployeeId,
+
                 'employee_name' => $latestMessage->employee
                     ? $latestMessage->employee->FirstName . " " . $latestMessage->employee->LastName
                     : null,
@@ -118,7 +118,7 @@ class MessageController extends Controller
         }
 
         $message = Message::where('GuestId', $guest->GuestId)
-            ->where('EmployeeId', $request->EmployeeId)
+
             ->with(['employee' => function($query) {
                 $query->select('EmployeeId', 'FirstName', 'LastName', 'Position');
             }])
