@@ -17,19 +17,22 @@ class MessageController extends Controller
 
     public function sendGuestMessage(Request $request)
     {
-
+        // Get the authenticated guest user
         $guest = Auth::guard('api')->user();
+
+        // Check if the user is authenticated
         if (!$guest) {
-            return response()->json(['error' => 'Unauthorized'], 200);
+            return response()->json(['error' => 'Unauthorized'], 401);  // Return 401 for unauthorized
         }
 
+        // Validate the incoming request
         $request->validate([
             'Message' => 'required|string'
         ]);
 
+        // Create and save the guest's message
         $message = new Message();
         $message->GuestId = $guest->GuestId;
-
         $message->IsReadEmployee = false;
         $message->IsReadGuest = false;
         $message->Message = $request->Message;
@@ -37,11 +40,14 @@ class MessageController extends Controller
         $message->DateSent = now()->toDateString();
         $message->TimeSent = now()->toTimeString();
         $message->save();
-        $getMessage = Message::where('GuestId', $guest->GuestId)->get();
 
-        if($getMessage->count() > 0){
+        // Check if any previous messages exist for the guest
+        $hasPreviousMessages = Message::where('GuestId', $guest->GuestId)->exists();
 
+        // If there are previous messages, send an automated response
+        if ($hasPreviousMessages) {
             $response = new Message();
+            $response->GuestId = $guest->GuestId;
             $response->IsReadEmployee = false;
             $response->IsReadGuest = false;
             $response->Message = "Thank you for your message. We will get back to you shortly.";
@@ -51,12 +57,15 @@ class MessageController extends Controller
             $response->save();
         }
 
+        // Check if the message was successfully saved
         if ($message) {
             return response()->json(['message' => 'Message sent successfully'], 200);
         } else {
-            return response()->json(['message' => 'Failed to send message'], 400);
+            return response()->json(['message' => 'Failed to send message'], 500);  // Use 500 for server errors
         }
     }
+
+
     public function getGuestMessages()
     {
         $guest = Auth::guard('api')->user();
