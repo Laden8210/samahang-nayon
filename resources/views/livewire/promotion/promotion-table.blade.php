@@ -137,8 +137,10 @@
                         </div>
 
                         <div class="col-span-2 ">
-                            <x-text-area name="update-description" placeholder="Enter Description" model="description"
-                                label="Description" />
+
+                            <textarea wire:model="description"
+                                class="h-28 mt-1  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                                placeholder="Enter Description"></textarea>
                         </div>
 
 
@@ -161,7 +163,8 @@
                                 @foreach ($rooms as $room)
                                     <tr class="text-center">
                                         <td class="px-6 py-4">
-                                            <input type="checkbox" wire:model="selectRoom" value="{{ $room->RoomType }}">
+                                            <input type="checkbox" wire:model="selectRoom"
+                                                value="{{ $room->RoomType }}">
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $room->RoomType }}
@@ -204,8 +207,11 @@
                         </div>
 
                         <div class="col-span-2 ">
-                            <x-text-area name="update-description" placeholder="Enter Description" model="description"
-                                label="Description" />
+
+
+                            <textarea wire:model="description"
+                                class="h-28 mt-1  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                                placeholder="Enter Description"></textarea>
                         </div>
 
 

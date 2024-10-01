@@ -81,6 +81,7 @@ class PromotionTable extends Component
         $this->discount = $this->selectedPromotion->Discount;
         $this->startingDate = $this->selectedPromotion->StartDate;
         $this->endDate = $this->selectedPromotion->EndDate;
+
     }
 
     public function savePromotion()
@@ -102,6 +103,8 @@ class PromotionTable extends Component
         ]);
 
         $this->dispatch('close-modal', name: 'update-modal');
+        $this->reset();
+
         session()->flash('message', 'Promotion updated successfully.');
 
     }

@@ -15,6 +15,9 @@ class Report extends Model
         'ReportName',
         'EmployeeId',
         'Date',
+        'type',
+        'EndDate',
+        'CreatedAt'
     ];
 
     public function employee()

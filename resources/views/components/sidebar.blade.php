@@ -81,8 +81,6 @@
 
         <x-menu-item title="Promotions" url="{{route('promotion')}}" icon="fas fa-home mx-2" />
 
-        <x-menu-item title="Message" url="{{ route('message') }}" icon="fas fa-home mx-2" badge="true"
-            badgeCount="1" />
 
     </ul>
 

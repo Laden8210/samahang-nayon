@@ -13,7 +13,7 @@
                         class="h-24 bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
                         {{ $room->RoomNumber }}
                     </a>
-                    <div class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block">
+                    <div class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
                         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                             <div class="h-52 bg-gray-200 flex items-center justify-center">
                                 @if ($room->roomPictures->isNotEmpty())
@@ -33,7 +33,8 @@
                                         <div class="font-bold">Price:</div>
                                         <div class="text-red-600">{{ $room->RoomPrice }}</div>
                                     </div>
-                                    <div class="text-sm text-gray-600">Room Capacity: {{ $room->RoomCapacity }}</div>
+
+                                    <div class="text-sm text-gray-600">Room Capacity: {{ $room->Capacity }}</div>
 
                                 </div>
                             </div>

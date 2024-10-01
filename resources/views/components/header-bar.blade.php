@@ -1,5 +1,5 @@
-<nav class="flex drop-shadow h-auto bg-white p-3 justify-end">
-    <div class="grid grid-cols-3 gap-2 items-center px-2 my-1 " style="z-index: 50">
+<nav class="flex drop-shadow h-auto bg-white p-3 justify-end z-50">
+    <div class="grid grid-cols-2 gap-2 items-center px-2 my-1 ">
 
         <div class="relative">
             <button data-dropdown-toggle="notificationDropdown" data-dropdown-delay="500"
@@ -28,7 +28,6 @@
             @endforelse
         </div>
 
-        <i class="fas fa-question mx-1 text-slate-500"></i>
         <button class="rounded-full bg-slate-500 w-6 h-6 overflow-hidden align-middle items-center mx-1"
             id="dropdownDelayButton" data-dropdown-toggle="dropdownDelay" data-dropdown-delay="500"
             data-dropdown-trigger="hover">

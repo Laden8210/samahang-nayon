@@ -18,7 +18,7 @@ use App\Http\Controllers\XenditController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportController;
 
-Route::get('', [LoginController::class, 'index']);
+Route::get('', [LoginController::class, 'index'])->name('index');
 // Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 

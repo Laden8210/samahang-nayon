@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Reservation;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Report;
 class ReportController extends Controller
 {
     public function index()
@@ -15,9 +16,13 @@ class ReportController extends Controller
 
     public function downloadReport($id){
 
-        $reservations = Reservation::with(['guest', 'room', 'reservationAmenities'])->get();
+        $report = Report::find($id);
 
-        $pdf = Pdf::loadView('admin.report.sales', compact('reservations'));
+
+        $reservations = Reservation::with(['guest', 'room', 'reservationAmenities'])
+        ->where("DateCreated", $report->Date)->get();
+
+        $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
         return $pdf->stream('invoice.pdf');
     }
 

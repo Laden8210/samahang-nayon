@@ -24,6 +24,8 @@ class Reservation extends Model
         'Status',
         'TotalAdult',
         'TotalChildren',
+        'OriginalCost',
+        'Discount'
     ];
 
     public function scopeSearch($query, $value){

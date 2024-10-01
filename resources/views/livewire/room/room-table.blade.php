@@ -12,13 +12,13 @@
 
     <div class="flex p-2 justify-center">
 
-        <div class="grid grid-cols-2 gap-x-5 gap-y-4 overflow-auto  p-2">
+        <div class="grid grid-cols-3 gap-x-5 gap-y-4 overflow-auto  p-2">
             @foreach ($rooms as $room)
                 <div
                     class=" w-full min-w-full max-w-full
                     shadow rounded-lg
                  bg-slate-50 grid grid-cols-4  p-1 max-h-40 min-h-40
-                 translate hover:shadow-md hover:scale-95 delay-300 duration-300 ease-in-out">
+                 ">
                     <div class="col-span-1 rounded-lg overflow-hidden">
                         @php
                             $topImage = $room->roomPictures->first();
@@ -42,35 +42,24 @@
                                 <h1 class="text-base font-bold">{{ $room->RoomType }}</h1>
 
                             </div>
-                            <div>
-                                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown-{{ $room->RoomId }}"
-                                    class="px-2 py-1 rounded-full hover:bg-cyan-100" type="button">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-
-                                <div id="dropdown-{{ $room->RoomId }}"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 text-center"
-                                        aria-labelledby="dropdownDefaultButton">
-                                        <li>
-                                            <a href="{{ route('viewRoom', Crypt::encrypt($room->RoomId)) }}"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('updateRoom', Crypt::encrypt($room->RoomId)) }}"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update</a>
-                                        </li>
-
-                                        <li>
-                                            <button data-modal-target="popup-modal-{{ $room->RoomId }}"
-                                                data-modal-toggle="popup-modal-{{ $room->RoomId }}"
-                                                class="w-full block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                type="button">
-                                                Delete
-                                            </button>
-                                        </li>
-                                    </ul>
+                            <div class="flex justify-end">
+                                <div>
+                                    <a href="{{ route('viewRoom', Crypt::encrypt($room->RoomId)) }}"
+                                        class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-xs"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                 </div>
+                                <div>
+                                    <a href="{{ route('updateRoom', Crypt::encrypt($room->RoomId)) }}"
+                                        class=" text-xs block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                </div>
+                                <div>
+                                    <button data-modal-target="popup-modal-{{ $room->RoomId }}"
+                                        data-modal-toggle="popup-modal-{{ $room->RoomId }}"
+                                        class="w-full block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-xs"
+                                        type="button">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
 
@@ -80,16 +69,16 @@
                             </div>
 
 
-                            <div class="grid grid-cols-3 text-xs relative bottom-1">
+                            <div class="grid grid-cols-3 text-xs  bottom-1">
                                 <div>
-                                    <span class="font-bold">Price:</span> {{$room->RoomPrice}}
+                                    <span class="font-bold">Price:</span> {{ $room->RoomPrice }}
                                 </div>
 
                                 <div>
-                                    <span class="font-bold">Capacity:</span> {{$room->Capacity}}
+                                    <span class="font-bold">Capacity:</span> {{ $room->Capacity }}
                                 </div>
                                 <div>
-                                    <span class="font-bold">Room Number:</span> {{$room->RoomNumber}}</span>
+                                    <span class="font-bold">Room Number:</span> {{ $room->RoomNumber }}</span>
                                 </div>
 
                             </div>

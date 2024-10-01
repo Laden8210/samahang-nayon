@@ -184,6 +184,8 @@ class GuestAPIController extends Controller
             'TimeCreated' => now()->toTimeString(),
             'TotalAdult' => $validatedData['total_adult'],
             'TotalChildren' => $validatedData['total_children'],
+            'OriginalCost' => $room->RoomPrice * $lengthOfStay,
+            'Discount' => $promotion->Discount
         ]);
 
 
