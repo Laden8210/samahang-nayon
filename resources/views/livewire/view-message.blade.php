@@ -1,4 +1,4 @@
-<div class="w-full h-screen shadow rounded overflow-hidden">
+<div class="w-full h-screen shadow rounded overflow-hidden z-0 ">
     <div class="grid grid-cols-12 h-full">
 
         <!-- Sidebar: Contact List -->
@@ -37,15 +37,14 @@
         <div class="col-span-9 relative bg-white">
 
             <!-- Chat Header -->
-            <div class="p-4 bg-cyan-100 border-b border-gray-300 min-h-16">
+            <div class="p-4 bg-cyan-100 border-b border-gray-300 min-h-16 z-0">
                 <h1 class="text-2xl font-bold">
                     @if ($selectedGuest)
                         {{ $selectedGuest->FirstName . ' ' . $selectedGuest->LastName }}
                     @endif
                 </h1>
             </div>
-            <div class="h-full overflow-y-auto p-4" style="height: calc(100vh - 150px);"
-            wire:poll.debounce.1000ms>
+            <div class="h-full overflow-y-auto p-4" style="height: calc(100vh - 150px);" wire:poll.debounce.1000ms>
                 @if ($selectedGuest)
 
                     @foreach ($selectedGuest->messages as $message)
@@ -53,7 +52,7 @@
 
                             @if ($message->isGuestMessage === 1)
                                 <div class="bg-blue-500 text-white p-2 rounded-lg inline-block text-lg min-w-24">
-                                    <p>{{ $message->Message  }}</p>
+                                    <p>{{ $message->Message }}</p>
                                     <span
                                         class="text-xs">{{ \Carbon\Carbon::createFromFormat('H:i:s', $message->TimeSent)->format('h:i A') }}</span>
                                 </div>
@@ -72,8 +71,7 @@
             <form wire:submit.prevent="sendMessage">
                 <div class="absolute bottom-0 w-full bg-gray-100 border-t border-gray-300 p-4">
                     <div class="flex items-center space-x-2">
-                        <textarea class="w-full p-2 border border-gray-300 rounded-lg resize-none" rows="2"
-                            wire:model="message"
+                        <textarea class="w-full p-2 border border-gray-300 rounded-lg resize-none" rows="2" wire:model="message"
                             placeholder="Type your message..."></textarea>
                         <button type="submit" class="bg-blue-500 text-white p-3 rounded-lg">Send</button>
                     </div>

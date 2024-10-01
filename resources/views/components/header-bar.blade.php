@@ -1,5 +1,5 @@
 <nav class="flex drop-shadow h-auto bg-white p-3 justify-end">
-    <div class="grid grid-cols-3 gap-2 items-center px-2 my-1">
+    <div class="grid grid-cols-3 gap-2 items-center px-2 my-1 " style="z-index: 50">
 
         <div class="relative">
             <button data-dropdown-toggle="notificationDropdown" data-dropdown-delay="500"

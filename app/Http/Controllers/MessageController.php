@@ -37,6 +37,19 @@ class MessageController extends Controller
         $message->DateSent = now()->toDateString();
         $message->TimeSent = now()->toTimeString();
         $message->save();
+        $getMessage = Message::where('GuestId', $guest->GuestId)->get();
+
+        if($getMessage->count() > 0){
+
+            $response = new Message();
+            $response->IsReadEmployee = false;
+            $response->IsReadGuest = false;
+            $response->Message = "Thank you for your message. We will get back to you shortly.";
+            $response->isGuestMessage = false;
+            $response->DateSent = now()->toDateString();
+            $response->TimeSent = now()->toTimeString();
+            $response->save();
+        }
 
         if ($message) {
             return response()->json(['message' => 'Message sent successfully'], 200);
@@ -55,10 +68,9 @@ class MessageController extends Controller
             ], 401);
         }
 
-        // Get all employees related to the guest, even those without messages
         $employees = Employee::select('EmployeeId', 'FirstName', 'LastName', 'Position')->get();
 
-        // Fetch messages related to the guest
+
         $messages = Message::where('GuestId', $guest->GuestId)
             ->with(['employee' => function($query) {
                 $query->select('EmployeeId', 'FirstName', 'LastName', 'Position');
