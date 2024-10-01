@@ -411,7 +411,8 @@ class GuestAPIController extends Controller
         }
 
         $reservation->update([
-            'Status' => 'Cancelled'
+            'Status' => 'Cancelled',
+            'DateCancelled' => now()
         ]);
 
         $notification = new Notification();

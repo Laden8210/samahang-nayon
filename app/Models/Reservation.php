@@ -25,7 +25,9 @@ class Reservation extends Model
         'TotalAdult',
         'TotalChildren',
         'OriginalCost',
-        'Discount'
+        'Discount',
+        'Source',
+        'DateCancelled'
     ];
 
     public function scopeSearch($query, $value){
