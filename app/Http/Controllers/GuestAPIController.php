@@ -512,7 +512,7 @@ class GuestAPIController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
         ]);
 
         // Get the authenticated guest
