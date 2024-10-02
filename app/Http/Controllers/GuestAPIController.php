@@ -35,7 +35,7 @@ class GuestAPIController extends Controller
             'gender' => 'required|string|max:255',
             'contactnumber' => 'required|string|max:12',
             'emailaddress' => 'required|email|max:255',
-            'password' => 'required|string|max:255',
+            'password' => 'required|string|max:32',
         ]);
 
 
