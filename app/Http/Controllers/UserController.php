@@ -26,12 +26,7 @@ class UserController extends Controller
 
         $employee = Employee::where('EmployeeId', $userId)->firstOrFail();
         return view('admin.user.update', compact('employee'));
-        // try {
-        //     $decryptedId = Crypt::decrypt($userId);
 
-        // } catch (DecryptException $e) {
-        //     return redirect()->route('user')->with('error', 'Invalid Employee ID.');
-        // }
     }
 
     public function settings()

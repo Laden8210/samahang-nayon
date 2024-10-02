@@ -10,11 +10,18 @@ class PaymentTable extends Component
     public $search = '';
     public $selectPayment;
 
+    public $filterPayment;
+
     public function render()
     {
         return view('livewire.payment.payment-table',
         [
-            'payments' => Payment::search($this->search)->orderBy('DateCreated', 'desc')->paginate(10)
+            'payments' => Payment::search($this->search)
+            ->when($this->filterPayment, function($query) {
+
+                $query->where('PaymentType', $this->filterPayment );
+            })
+            ->orderBy('DateCreated', 'desc')->paginate(10)
         ]);
     }
 

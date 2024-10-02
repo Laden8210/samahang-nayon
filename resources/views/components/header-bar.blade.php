@@ -34,7 +34,7 @@
             <img src="{{ asset('img/logo.jpg') }}" class="w-6">
         </button>
         <div id="dropdownDelay"
-            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 max-h-96 overflow-auto">
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
                 <li class="flex justify-normal items-center gap-2 w-full">
                     <a href="{{ route('logout') }}"

@@ -123,7 +123,7 @@
                             <h2 class="text-xs">YOU SELECTED</h2>
 
                             <p class="w-full bg-slate-100 p-2 rounded focus:outline-none border-none tex">
-                                {{$selectedRoom->RoomType ?? 'No Room Selected'}}
+                                {{ $selectedRoom->RoomType ?? 'No Room Selected' }}
                             </p>
                         </div>
                     </div>
@@ -184,6 +184,18 @@
                             @endif
 
                         </div>
+
+                        <div class="flex justify-between text-xs">
+
+                            @if ($discount)
+                                <p>Discount</p>
+                                <p>{{ $total * ($discount->Discount / 100) }}</p>
+                            @endif
+
+                        </div>
+
+
+
                         <div class="grid grid-flow-row text-xs">
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
@@ -197,7 +209,7 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
-                            <p>{{ $total }}</p>
+                            <p>{{ $discountedRoomRate }}</p>
                         </div>
                         <div>
                             <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount"
@@ -299,52 +311,132 @@
 
     <x-select-room-modal name="select-room-modal" title="Select Room">
         @slot('body')
-            <form wire:submit.prevent="filterRoom">
-                <div class="flex justify-normal gap-5 rounded-lg shadow-lg p-2 mt-5">
 
-                    <div class="w-1/2">
-                        <x-text-field1 field1 name="checkout" placeholder="Check Out" type="date" label="Check Out"
-                            model="checkOut" />
-                    </div>
-                    <div class="w-1/2">
-                        <x-combobox name="totalGuests" placeholder="Total Guest" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" model="totalGuests" />
-                    </div>
+            <div class="flex justify-normal gap-5 rounded-lg shadow-lg p-2 mt-5">
+
+                <div class="w-1/2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">Check Out</label>
+                    <input name="checkout" placeholder="Check Out" type="date"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                        wire:model.live="checkOut" />
+                </div>
+
+
+                <div class="w-1/2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Adult
+                    </label>
+                    <select name="totalGuests" wire:model.live="totalGuests"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="">Total Adult</option>
+                        @for ($i = 1; $i < 11; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+
+                    </select>
+                </div>
+
+                <div class="w-1/2">
+
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Children
+                    </label>
+                    <select name="totalChildren" wire:model.live="totalChildren"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        <option value="">Total Adult</option>
+                        @for ($i = 1; $i < 11; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+
+                    </select>
 
                 </div>
 
-            </form>
+            </div>
+
             <div class="space-y-4 mt-5">
-                @php
+                <div class="space-y-4" wire:ignore>
+                    @php
+                        $groupedRooms = collect();
 
-                    $rooms = $rooms ?? collect();
+                        if ($rooms) {
+                            $groupedRooms = $rooms->groupBy(function ($room) {
+                                return floor($room->RoomNumber / 100) * 100;
+                            });
+                        }
+
+                    @endphp
 
 
-                    $groupedRooms = $rooms->groupBy(function ($room) {
-                        return floor($room->RoomNumber / 100) * 100;
-                    });
-                @endphp
-
-                @if ($rooms->isEmpty())
-                    <div class="bg-red-200 text-red-800 p-2 rounded-lg">
-                        <p>No Rooms Available</p>
-                    </div>
-                @else
-                    @foreach ($groupedRooms as $group => $roomGroup)
-                        <div class="grid grid-cols-10 gap-2 m-2">
-                            @foreach ($roomGroup as $room)
-                                <div class="relative group">
-                                    <button wire:click="selectRoom({{ $room->RoomId }})"
-                                        class="h-24 w-full bg-cyan-200 items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
-                                        <div>
-                                            <p class="text-xl font-bold">{{ $room->RoomNumber }}</p><br>
-                                            <span class="font-normal text-xs">{{ $room->RoomType }}</span>
+                    @if ($groupedRooms->isNotEmpty())
+                        @foreach ($groupedRooms as $group => $room)
+                            <div class="grid grid-cols-12 gap-2 m-2">
+                                @foreach ($room as $room)
+                                    <div class="relative group">
+                                        <button wire:click="selectRoom({{ $room->RoomId }})"
+                                            class="h-24 w-full
+                                        @switch($room->RoomType)
+                                            @case('Single bed')
+                                                bg-cyan-200
+                                                @break
+                                            @case('Two single beds')
+                                                bg-violet-200
+                                                @break
+                                            @case('Two double beds')
+                                                bg-blue-200
+                                                @break
+                                            @case('Matrimonial')
+                                                bg-green-200
+                                                @break
+                                            @case('Family')
+                                                bg-orange-200
+                                                @break
+                                            @case('King size')
+                                                bg-red-200
+                                                @break
+                                            @default
+                                                bg-gray-200
+                                        @endswitch
+                                        items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
+                                            {{ $room->RoomNumber }}
+                                        </button>
+                                        <div
+                                            class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
+                                            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                                <div class="h-52 bg-gray-200 flex items-center justify-center">
+                                                    @if ($room->roomPictures->isNotEmpty())
+                                                        <img src="data:image/png;base64,{{ base64_encode($room->roomPictures->first()->PictureFile) }}"
+                                                            alt="{{ $room->RoomType }}"
+                                                            class="object-cover h-full w-full">
+                                                    @else
+                                                        <div class="flex items-center justify-center h-full text-gray-500">
+                                                            No
+                                                            Image Available</div>
+                                                    @endif
+                                                </div>
+                                                <div class="p-4">
+                                                    <div class="flex justify-between">
+                                                        <div class="font-bold text-lg">{{ $room->RoomType }}</div>
+                                                        <div class="text-red-600">{{ $room->RoomStatus }}</div>
+                                                    </div>
+                                                    <div class="text-sm text-gray-700 mt-1">{{ $room->RoomDescription }}
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <div class="flex justify-between">
+                                                            <div class="font-bold">Price:</div>
+                                                            <div class="text-red-600">{{ $room->RoomPrice }}</div>
+                                                        </div>
+                                                        <div class="text-sm text-gray-600">Room Capacity:
+                                                            {{ $room->Capacity }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </button>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endforeach
-                @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+
 
             </div>
         @endslot

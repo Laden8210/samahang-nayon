@@ -74,6 +74,9 @@ class ForgetPasswordController extends Controller
             return redirect()->back()->with('error', 'Phone number or email not found.');
         }
 
+
+
+
         $response = Http::post('https://nasa-ph.com/api/send-sms', [
             'phone_number' => $phoneEmail,
             'message' => "Your OTP code is: $otp. Please use this code to reset your password.",

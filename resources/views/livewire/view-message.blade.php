@@ -5,8 +5,9 @@
         <div class="col-span-3 bg-gray-100 p-4 border-r border-gray-300">
             <!-- Search bar -->
             <div class="flex justify-between items-center mb-4 gap-2">
-                <input type="text" class="w-10/12 p-2 border border-gray-300 rounded" placeholder="Search">
-                <button class="bg-blue-500 text-white p-2 rounded">Search</button>
+                <input type="text" class="w-10/12 p-2 border border-gray-300 rounded" placeholder="Search"
+                wire:model.live='search'>
+
             </div>
 
             <div class="text-xl font-semibold mb-2">

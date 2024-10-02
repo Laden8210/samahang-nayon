@@ -33,6 +33,9 @@ class RoomAPIController extends Controller
             ->distinct()
             ->get();
 
+
+
+
         $rooms->map(function ($room) use ($checkIn, $checkOut) {
 
             $room->StartingDate = null;

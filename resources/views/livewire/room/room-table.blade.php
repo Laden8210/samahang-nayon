@@ -12,7 +12,7 @@
 
     <div class="flex p-2 justify-center">
 
-        <div class="grid grid-cols-3 gap-x-5 gap-y-4 overflow-auto  p-2">
+        <div class="grid grid-cols-2 gap-x-5 gap-y-4 overflow-auto  p-2">
             @foreach ($rooms as $room)
                 <div
                     class=" w-full min-w-full max-w-full

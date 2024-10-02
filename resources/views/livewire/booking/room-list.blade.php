@@ -9,8 +9,31 @@
         <div class="grid grid-cols-12 gap-2 m-2">
             @foreach ($room as $room)
                 <div class="relative group">
-                    <a href="{{ route('createBooking', Crypt::encrypt($room->RoomId)) }}"
-                        class="h-24 bg-cyan-200 items-center flex justify-center border-2 border-red-600 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
+                    <a href="{{ route('createBooking', $room->RoomId) }}"
+                        class="h-24
+                        @switch($room->RoomType)
+                            @case('Single bed')
+                                bg-cyan-200
+                                @break
+                            @case('Two single beds')
+                                bg-violet-200
+                                @break
+                            @case('Two double beds')
+                                bg-blue-200
+                                @break
+                            @case('Matrimonial')
+                                bg-green-200
+                                @break
+                            @case('Family')
+                                bg-orange-200
+                                @break
+                            @case('King size')
+                                bg-red-200
+                                @break
+                            @default
+                                bg-gray-200
+                        @endswitch
+                        items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
                         {{ $room->RoomNumber }}
                     </a>
                     <div class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
@@ -33,9 +56,7 @@
                                         <div class="font-bold">Price:</div>
                                         <div class="text-red-600">{{ $room->RoomPrice }}</div>
                                     </div>
-
                                     <div class="text-sm text-gray-600">Room Capacity: {{ $room->Capacity }}</div>
-
                                 </div>
                             </div>
                         </div>

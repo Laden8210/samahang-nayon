@@ -6,7 +6,7 @@ use App\Models\Amenities;
 use Livewire\Component;
 use App\Models\Reservation;
 use Xendit\Refund\Refund;
-
+use App\Models\Payment;
 class ViewBookingDetails extends Component
 {
     public $ReservationId;
@@ -38,6 +38,10 @@ class ViewBookingDetails extends Component
 
         $remainingBalance = $this->reservation->TotalCost;
 
+        foreach ($this->reservation->reservationAmenities as $amenity) {
+            $remainingBalance += $amenity->TotalCost;
+        }
+
         foreach ($this->reservation->payments as $payment) {
             $remainingBalance -= $payment->AmountPaid;
         }
@@ -58,6 +62,18 @@ class ViewBookingDetails extends Component
             'ReferenceNumber' => $this->generateReferenceNumber(),
             'Purpose' => "Room Reservation",
         ]);
+
+        session()->flash('message', 'Payment Complete');
+    }
+
+
+    public function confirmPayment($ref){
+        $payment = Payment::find($ref);
+        $payment->Status = 'Confirmed';
+
+        $payment->save();
+        session()->flash('message', 'Payment Confirm');
+
     }
 
 

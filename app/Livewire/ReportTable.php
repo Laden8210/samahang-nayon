@@ -13,11 +13,12 @@ class ReportTable extends Component
     public $enddate;
     public $isEndDateDisabled = false;
 
+    public $search = '';
 
     public function render()
     {
         return view('livewire.report-table', [
-            'reports' => Report::orderBy('CreatedAt', 'desc')->get()
+            'reports' => Report::search($this->search)->orderBy('CreatedAt', 'desc')->get()
         ]);
     }
 

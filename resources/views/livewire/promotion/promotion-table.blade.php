@@ -120,19 +120,19 @@
 
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter Promotion Name" model="promotionName"
-                                label="Name" type="text" />
+                                label="Promotion Name" type="text" />
                         </div>
                         <div class="col-span-1">
-                            <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount" label="Price"
+                            <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount" label="Enter Discount"
                                 type="number" />
                         </div>
 
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter starting date" model="startingDate"
-                                label="Name" type="date" />
+                                label="Enter starting date" type="date" />
                         </div>
                         <div class="col-span-1">
-                            <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate" label="Price"
+                            <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate" label="Enter ending date"
                                 type="date" />
                         </div>
 

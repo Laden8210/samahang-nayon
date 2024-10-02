@@ -62,4 +62,17 @@ class Guest extends Authenticatable
     {
         return $this->hasMany(Message::class, 'GuestId');
     }
+
+    public function scopeSearch($query, $value)
+    {
+        if ($value) {
+            return $query->where(function ($query) use ($value) {
+                $query->where('FirstName', 'like', '%' . $value . '%')
+                      ->orWhere('LastName', 'like', '%' . $value . '%');
+            });
+        }
+
+        return $query;
+    }
+
 }

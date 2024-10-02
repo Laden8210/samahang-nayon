@@ -16,7 +16,8 @@ use App\Models\Room;
 use Carbon\Carbon;
 use App\Models\Promotion;
 use App\Models\Notification;
-
+use Illuminate\Support\Facades\Request as FacadesRequest;
+use App\Models\SystemLog;
 class GuestAPIController extends Controller
 {
     private $apiKey;
@@ -54,6 +55,15 @@ class GuestAPIController extends Controller
             'DateCreated' => now()->toDateString(),
             'TimeCreated' => now()->toTimeString(),
         ]);
+
+        SystemLog::create([
+            'log' => 'New guest created from IP: ' . FacadesRequest::ip() .
+                     ' for email: ' . $validatedData['emailaddress'] . // Use the email from validated data
+                     ' on ' . now()->toDateTimeString(),
+            'action' => 'Create Guest',
+            'date_created' => now()->toDateString(),
+        ]);
+
 
 
         return response()->json(
@@ -93,6 +103,13 @@ class GuestAPIController extends Controller
             return response()->json(['error' => 'Invalid password'], 200);
         }
 
+        SystemLog::create([
+            'log' => 'Guest logged in successfully from IP: ' . FacadesRequest::ip() .
+                     ' for email: ' . $guest->EmailAddress . // Use the guest's email
+                     ' on ' . now()->toDateTimeString(), // Use now() for current date and time
+            'action' => 'Guest Login',
+            'date_created' => now()->toDateString(),
+        ]);
 
         $token = $guest->createToken('Samahang-Nayon')->plainTextToken;
 
@@ -143,22 +160,6 @@ class GuestAPIController extends Controller
 
         $totalCost = $room->RoomPrice * $lengthOfStay;
 
-        // $existingReservation = Reservation::where('RoomId', $validatedData['room_id'])
-        //     ->where(function ($query) use ($checkIn, $checkOut) {
-        //         $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
-        //             ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
-        //             ->orWhere(function ($query) use ($checkIn, $checkOut) {
-        //                 $query->where('DateCheckIn', '<=', $checkIn)
-        //                     ->where('DateCheckOut', '>=', $checkOut);
-        //             });
-        //     })
-        //     ->exists();
-
-        // // If a reservation exists, return an error
-        // if ($existingReservation) {
-        //     return response()->json(['error' => 'The selected room is already booked for the selected dates.'], 200);
-        // }
-
 
         $promotion = Promotion::where('StartDate', '<=', $checkOut)
             ->where('EndDate', '>=', $checkIn)
@@ -185,7 +186,7 @@ class GuestAPIController extends Controller
             'TotalAdult' => $validatedData['total_adult'],
             'TotalChildren' => $validatedData['total_children'],
             'OriginalCost' => $room->RoomPrice * $lengthOfStay,
-            'Discount' => $promotion->Discount
+            'Discount' => $promotion->Discount ?? 0
         ]);
 
 
@@ -359,6 +360,16 @@ class GuestAPIController extends Controller
                     $notification->save();
 
 
+                    SystemLog::create([
+                        'log' => 'Reservation created successfully from IP: ' . FacadesRequest::ip() .
+                                 ' for email: ' . $request->email .
+                                 ' on ' . date('Y-m-d H:i:s'),
+                        'action' => 'Create Reservation',
+                        'date_created' => date('Y-m-d')
+                    ]);
+
+
+
                     return response()->json($response->json());
                 } else {
 
@@ -422,6 +433,15 @@ class GuestAPIController extends Controller
         $notification->Message = 'The reservation for ' . $guest->FirstName . ' ' . $guest->LastName . ' has been canceled. The system has been updated automatically.';
         $notification->save();
 
+        SystemLog::create([
+            'log' => 'Reservation canceled successfully from IP: ' . FacadesRequest::ip() .
+                     ' for email: ' . $request->email .
+                     ' on ' . date('Y-m-d H:i:s'),
+            'action' => 'Cancel Reservation',
+            'date_created' => date('Y-m-d')
+        ]);
+
+
         return response()->json(['message' => 'Reservation cancelled successfully'], 200);
     }
 
@@ -483,8 +503,39 @@ class GuestAPIController extends Controller
             'phone_number' => $guest->ContactNumber,
             'message' => "Your OTP code is: $otp. Please use this code to reset your password.",
         ]);
+        $token = $guest->createToken('Samahang-Nayon')->plainTextToken;
 
-
-        return response()->json(['otp' => $otp], 200);
+        return response()->json(['otp' => $otp, 'token' => $token], 200);
     }
+
+    public function changePassword(Request $request)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'password' => 'required|string|min:8',
+        ]);
+
+        // Get the authenticated guest
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $nGuest = Guest::find($guest->GuestId);
+
+        $nGuest->Password = bcrypt($request->password);
+        $nGuest->save();
+
+        // Log the password change
+        SystemLog::create([
+            'log' => 'Password changed successfully from IP: ' . FacadesRequest::ip() .
+                     ' for email: ' . $guest->EmailAddress .
+                     ' on ' . date('Y-m-d H:i:s'),
+            'action' => 'Change Password',
+            'date_created' => date('Y-m-d')
+        ]);
+
+        return response()->json(['message' => 'Password changed successfully'], 200);
+    }
+
 }

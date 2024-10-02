@@ -9,15 +9,22 @@ use Illuminate\View\Component;
 
 class HeaderBar extends Component
 {
+    public $unreadCount;
+    public $notifications;
+
     /**
      * Create a new component instance.
+     *
+     * @return void
      */
-
-     public $unreadCount;
-     public $notifications;
     public function __construct()
     {
-        $this->notifications = Notification::where('status', 'unread')->get();
+        // Fetch the unread notifications ordered by created_at descending
+        $this->notifications = Notification::where('status', 'unread')
+            ->orderBy('created_at', 'desc') // Order by created_at
+            ->limit(5) // Limit to 5 notifications
+            ->get();
+
         $this->unreadCount = $this->notifications->count();
     }
 
@@ -26,6 +33,9 @@ class HeaderBar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.header-bar');
+        return view('components.header-bar', [
+            'unreadCount' => $this->unreadCount,
+            'notifications' => $this->notifications,
+        ]);
     }
 }

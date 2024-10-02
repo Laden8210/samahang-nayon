@@ -83,7 +83,7 @@
         <div class="bg-gray-50 rounded">
 
 
-            <h5 class="mx-2 font-bold px-2 pt-2">Promotion</h5>
+            <h5 class="mx-2 font-bold px-2 pt-2">Reprot</h5>
             <div class="relative mb-4 w-1/3 mx-3">
 
                 <input type="text" wire:model.live.debounce.300ms = "search"

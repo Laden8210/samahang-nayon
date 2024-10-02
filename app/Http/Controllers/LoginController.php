@@ -97,14 +97,14 @@ class LoginController extends Controller
                 'action' => 'Login',
                 'date_created' => date('Y-m-d'),
             ]);
-            return redirect()->intended('receptionist/booking');
+            return redirect()->intended('admin');
         } elseif (Auth::user()->Position == 'Manager') {
             SystemLog::create([
                 'log' => 'Manager logged in from IP: ' . FacadesRequest::ip() . ' for email: ' . $request->email,
                 'action' => 'Login',
                 'date_created' => date('Y-m-d'),
             ]);
-            return redirect()->intended('manager/promotions/');
+            return redirect()->intended('madmin/');
         }
 
 

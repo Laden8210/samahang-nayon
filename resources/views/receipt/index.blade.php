@@ -155,28 +155,7 @@
             </div>
         </div>
 
-        <div class="service-list">
-            <table>
-                <thead>
-                    <tr>
-                        <th>SERVICE/AMENITIES</th>
-                        <th>QUANTITY</th>
-                        <th>UNIT PRICE</th>
-                        <th>AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- @foreach ($payment->services as $service)
-                    <tr>
-                        <td>{{ $service->name }}</td>
-                        <td>{{ $service->quantity }}</td>
-                        <td>{{ number_format($service->unit_price, 2) }}</td>
-                        <td>{{ number_format($service->amount, 2) }}</td>
-                    </tr>
-                    @endforeach --}}
-                </tbody>
-            </table>
-        </div>
+
 
         <div class="footer">
             <p>Thank you for your business!</p>

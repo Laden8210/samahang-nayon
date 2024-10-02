@@ -207,6 +207,7 @@
                             <th class="px-2 py-3">Price</th>
                             <th class="px-2 py-3">Total</th>
                             <th class="px-2 py-3">Total Amount</th>
+
                         </tr>
                     </thead>
 
@@ -226,6 +227,7 @@
                                 <td>
                                     {{ $amenity->TotalCost }}
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -247,6 +249,7 @@
                             <th class="px-2 py-3">Date</th>
                             <th class="px-2 py-3">Payment Method</th>
                             <th class="px-2 py-3">Amount</th>
+                            <th class="px-2 py-2">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -258,7 +261,15 @@
                                 <td class="px-2 py-3">{{ $payment->DateCreated }}</td>
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
                                 <td class="px-2 py-3">{{ $payment->AmountPaid }}</td>
+                                <td>
+                                    @if ($payment->PaymentType === 'Gcash' && $payment->Status === 'Pending')
+                                        <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
+                                        type="button"
+                                        wire:click="confirmPayment({{$payment->PaymentId }})">Confirm Payment</button>
 
+
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
 

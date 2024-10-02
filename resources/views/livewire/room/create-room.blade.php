@@ -25,7 +25,7 @@
 
                     <div class="w-1/2 mx-2">
                         <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="[
-                            ' Single bed',
+                            'Single bed',
                             'Two single beds',
                             'Two double beds',
                             'Matrimonial',

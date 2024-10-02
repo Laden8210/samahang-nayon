@@ -4,8 +4,10 @@ namespace App\Livewire\Booking;
 
 use App\Mail\SamahangNayonMailer;
 use App\Models\Amenities;
+use App\Models\DiscountedRoom;
 use Livewire\Component;
 use App\Models\Guest;
+use App\Models\Promotion;
 use App\Models\Room;
 use App\Models\Reservation;
 use Carbon\Carbon;
@@ -35,20 +37,28 @@ class CreateBooking extends Component
     public $checkOut;
     public $totalGuests;
 
+    public $totalChildren;
+
     public $selectedAmenities = [];
     public $quantity = [];
 
     public $total;
+
+    public $discountedRoomRate;
     public $paymentAmount;
     public $paymentType;
 
     public $availableRooms;
+
+    public $discount;
 
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
         $this->checkOut = Carbon::today()->addDay()->format('Y-m-d');  // Default to one day after check-in
         $this->availableRooms = $this->getAvailableRooms();
+        $this->totalGuests = 1;
+        $this->totalChildren = 0;
     }
 
     public function render()
@@ -62,22 +72,26 @@ class CreateBooking extends Component
 
     public function updated($propertyName)
     {
-        if ($propertyName === 'checkIn' || $propertyName === 'checkOut') {
+        if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
             $this->availableRooms = $this->getAvailableRooms();
         }
     }
+
 
     public function getAvailableRooms()
     {
         $checkIn = Carbon::parse($this->checkIn);
         $checkOut = Carbon::parse($this->checkOut);
 
+        // Calculate total number of guests
+        $total = $this->totalChildren + $this->totalGuests;
 
 
-        return Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+        return Room::where('Capacity', '>=', $total)
+            ->leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereNull('reservations.RoomId')  // Rooms with no reservations
-                    ->orWhere('reservations.Status', 'Checked Out') // Rooms that have been checked out
+                $query->whereNull('reservations.RoomId')
+                    ->orWhere('reservations.Status', 'Checked Out')
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
                         $query->where('reservations.DateCheckOut', '<', $checkIn)
                             ->orWhere('reservations.DateCheckIn', '>', $checkOut);
@@ -91,41 +105,61 @@ class CreateBooking extends Component
     public function saveBooking()
     {
 
-
         if ($this->selectedGuestId) {
             $guest = Guest::find($this->selectedGuestId);
         } else {
-            $guest = new Guest();
 
-            $guest->FirstName = $this->firstname;
-            $guest->MiddleName = $this->middlename;
-            $guest->LastName = $this->lastname;
-            $guest->Birthdate = $this->dob;
-            $guest->Gender = $this->gender;
-            $guest->EmailAddress = $this->email;
-            $guest->Street = $this->street;
-            $guest->Brgy = $this->brgy;
-            $guest->City = $this->city;
-            $guest->Province = $this->province;
-            $guest->ContactNumber = $this->contactnumber;
-            $guest->Password = bcrypt('password');
-            $guest->DateCreated = date('Y-m-d');
-            $guest->TimeCreated = date('H:i:s');
+            if (
+                $this->selectedGuestId || $this->firstname || $this->middlename || $this->lastname || $this->dob ||
+                $this->gender || $this->email || $this->street || $this->brgy || $this->city ||
+                $this->province || $this->contactnumber
+            ) {
+                $guest = new Guest();
 
-            $guest->save();
+                $guest->FirstName = $this->firstname;
+                $guest->MiddleName = $this->middlename;
+                $guest->LastName = $this->lastname;
+                $guest->Birthdate = $this->dob;
+                $guest->Gender = $this->gender;
+                $guest->EmailAddress = $this->email;
+                $guest->Street = $this->street;
+                $guest->Brgy = $this->brgy;
+                $guest->City = $this->city;
+                $guest->Province = $this->province;
+                $guest->ContactNumber = $this->contactnumber;
+                $guest->Password = bcrypt('password');
+                $guest->DateCreated = date('Y-m-d');
+                $guest->TimeCreated = date('H:i:s');
+
+                $guest->save();
+            } else {
+                session()->flash('message', 'Please select or enter the guest information.');
+                return;
+            }
         }
 
+        if (!$this->selectedRoomId) {
+            session()->flash('message', 'Please select the room first');
+            return;
+        }
+
+
         $room = Room::find($this->selectedRoomId);
+
+
 
         $reservation = new Reservation();
         $reservation->RoomId = $room->RoomId;
         $reservation->GuestId = $guest->GuestId;
         $reservation->DateCheckIn = $this->checkIn;
         $reservation->DateCheckOut = $this->checkOut;
-        $reservation->TotalCost =  $room->RoomPrice * $this->lengthOfStay;
+        $reservation->TotalCost =  $this->discountedRoomRate;
         $reservation->Status = 'Booked';
+        $reservation->Discount = $this->discount->Discount ?? 0;
+        $reservation->OriginalCost =  $room->RoomPrice * $this->lengthOfStay;
         $reservation->TotalAdult = $this->totalGuests;
-        $reservation->TotalChildren = 0;
+        $reservation->TotalChildren = $this->totalChildren ?? 0;
+        $reservation->Source = 'Walk In';
 
         $purpose = "";
 
@@ -142,6 +176,11 @@ class CreateBooking extends Component
                 ];
             })
         );
+
+        if (!$this->paymentType) {
+            session()->flash('message', 'Please select the payment method');
+            return;
+        }
 
         $reservation->payments()->create([
             'GuestId' => $guest->GuestId,
@@ -216,22 +255,47 @@ class CreateBooking extends Component
     }
 
 
-
-
-
-
     public function selectRoom($roomId)
     {
+        // Find the room
         $room = Room::find($roomId);
         $this->selectedRoom = $room;
         $this->selectedRoomId = $roomId;
+
         $this->dispatch('close-modal');
 
         $checkIn = Carbon::parse($this->checkIn);
         $checkOut = Carbon::parse($this->checkOut);
         $this->lengthOfStay = $checkIn->diffInDays($checkOut);
+
         $this->total = $this->computeTotal();
+
+
+        $promotions = Promotion::where('StartDate', '<=', $checkIn)
+            ->where('EndDate', '>=', $checkOut)
+            ->first();
+
+
+
+        if ($promotions) {
+
+            foreach ($promotions->discountedRooms as $discount) {
+                if ($discount->RoomId === $roomId) {
+                    $this->discount = $promotions;
+                    break;
+                }
+            }
+
+
+            if ($this->discount) {
+
+                $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+            }
+        } else {
+            $this->discountedRoomRate = $this->total;
+        }
     }
+
 
     public function computeTotal()
     {
