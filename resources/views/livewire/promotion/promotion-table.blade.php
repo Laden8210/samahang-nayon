@@ -233,17 +233,22 @@
                             </thead>
 
                             <tbody class="bg-white border-b  hover:bg-gray-50">
-                                @foreach ($rooms as $room)
+
+                                @if ($discountedrooms)
+                                @foreach ($discountedrooms as $room)
                                     <tr class="text-center">
                                         <td class="px-6 py-4">
-                                            <input type="checkbox" name="room" value="{{ $room->RoomId }}">
+                                            <input type="checkbox" name="room[]" value="{{ $room->RoomType }}"
+                                                wire:model="updateSelectRoom"
+                                                {{ $room->isChecked ? 'checked' : '' }}>
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $room->RoomType }}
                                         </td>
-
                                     </tr>
                                 @endforeach
+                            @endif
+
 
                             </tbody>
                         </table>

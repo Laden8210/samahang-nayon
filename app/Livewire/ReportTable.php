@@ -4,20 +4,23 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Report;
-
+use Illuminate\Support\Carbon;
 class ReportTable extends Component
 {
 
     public $type;
     public $startdate;
     public $enddate;
+    public $isEndDateDisabled = false;
+
+
     public function render()
     {
         return view('livewire.report-table', [
-            'reports' => Report::all()
+            'reports' => Report::orderBy('CreatedAt', 'desc')->get()
         ]);
-
     }
+
 
     public function createReport()
     {
@@ -44,11 +47,20 @@ class ReportTable extends Component
         $report->EmployeeId = $employeeId;
         $report->Date = $this->startdate;
 
-        if ($this->type != 'Daily Revenue Report') {
-            $report->EndDate = $this->enddate;
+        if ($this->type == 'Weekly Revenue Report') {
+            $report->EndDate = Carbon::parse($this->startdate)->addWeek();
         }
+
+        if ($this->type == 'Monthly Revenue Report') {
+            $report->EndDate = Carbon::parse($this->startdate)->addMonth();
+        }
+
 
         $report->CreatedAt = now();
         $report->save();
+    }
+
+    public function disableField(){
+        $this->isEndDateDisabled = str_contains($this->type, 'Revenue Report');
     }
 }
