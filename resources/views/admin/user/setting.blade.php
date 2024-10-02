@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Setting')
+@section('title', 'Settings')
 @section('content')
 
     <div class="container mx-auto p-4">
