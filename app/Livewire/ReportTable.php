@@ -18,7 +18,7 @@ class ReportTable extends Component
     public function render()
     {
         return view('livewire.report-table', [
-            'reports' => Report::search($this->search)->orderBy('CreatedAt', 'desc')->get()
+            'reports' => Report::search($this->search)->orderBy('ReportId', 'desc')->get()
         ]);
     }
 
