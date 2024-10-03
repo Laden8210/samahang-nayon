@@ -241,16 +241,16 @@
                         <div class="grid grid-rows-2 gap-2 mt-2">
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="None" name="payment-type" wire:model.live="discountType">
+                                <input type="radio" value="None" name="discount-type" wire:model.live="discountType">
                                 <label for="">None</label>
                             </div>
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="payment-type" wire:model.live="discountType">
+                                <input type="radio" value="Senior" name="discount-type" wire:model.live="discountType">
                                 <label for="">PWD</label>
                             </div>
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="payment-type" wire:model.live="discountType">
+                                <input type="radio" value="Senior" name="discount-type" wire:model.live="discountType">
                                 <label for="">Senior</label>
                             </div>
 

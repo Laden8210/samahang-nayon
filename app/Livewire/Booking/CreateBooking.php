@@ -95,7 +95,7 @@ class CreateBooking extends Component
         }
 
         if(in_array($propertyName, ['discountType'])){
-            $this->computeTotal();
+
             $this->applyDiscount();
         }
     }
