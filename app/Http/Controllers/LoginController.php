@@ -19,12 +19,7 @@ class LoginController extends Controller
     {
 
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->position == 'System Administrator') {
-                return redirect('admin/');
-            } else if ($user->position == 'Receptionist') {
-                return redirect('receptionist/booking');
-            }
+            return redirect('admin/');
         }
         return view('index');
     }
@@ -104,7 +99,7 @@ class LoginController extends Controller
                 'action' => 'Login',
                 'date_created' => date('Y-m-d'),
             ]);
-            return redirect()->intended('madmin/');
+            return redirect()->intended('admin/');
         }
 
 

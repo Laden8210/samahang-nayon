@@ -52,6 +52,8 @@ class CreateBooking extends Component
 
     public $discount;
 
+    public $searchAmenity;
+
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
@@ -66,7 +68,7 @@ class CreateBooking extends Component
         return view('livewire.booking.create-booking', [
             'guests' => Guest::all(),
             'rooms' => $this->availableRooms,  // Use available rooms here
-            'amenities' => Amenities::all(),
+            'amenities' => Amenities::search($this->searchAmenity)->get(),
         ]);
     }
 
@@ -251,6 +253,41 @@ class CreateBooking extends Component
 
             $this->quantity[$amenityId] = $newQuantity > 0 ? $newQuantity : null;
             $this->total = $this->computeTotal();
+
+            $this->dispatch('close-modal');
+
+            $checkIn = Carbon::parse($this->checkIn);
+            $checkOut = Carbon::parse($this->checkOut);
+            $this->lengthOfStay = $checkIn->diffInDays($checkOut);
+
+            $this->total = $this->computeTotal();
+
+
+            $promotions = Promotion::where('StartDate', '<=', $checkIn)
+                ->where('EndDate', '>=', $checkOut)
+                ->first();
+
+
+
+            if ($promotions) {
+
+                foreach ($promotions->discountedRooms as $discount) {
+                    if ($discount->RoomId === $this->selectedRoomId) {
+                        $this->discount = $promotions;
+                        break;
+                    }
+                }
+
+
+                if ($this->discount) {
+
+                    $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+                }else{
+                    $this->discountedRoomRate = $this->total;
+                }
+            } else {
+                $this->discountedRoomRate = $this->total;
+            }
         }
     }
 
@@ -275,8 +312,6 @@ class CreateBooking extends Component
             ->where('EndDate', '>=', $checkOut)
             ->first();
 
-
-
         if ($promotions) {
 
             foreach ($promotions->discountedRooms as $discount) {
@@ -290,9 +325,13 @@ class CreateBooking extends Component
             if ($this->discount) {
 
                 $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+            }else{
+                $this->discountedRoomRate = $this->total;
+
             }
         } else {
             $this->discountedRoomRate = $this->total;
+
         }
     }
 

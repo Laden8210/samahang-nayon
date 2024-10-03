@@ -45,7 +45,7 @@ class ForgetPasswordController extends Controller
         }
 
         $employee->update([
-            'password' => $request->password,
+            'password' => bcrypt($request->password),
         ]);
 
         return redirect()->route('password-changed')->with('success', 'Password changed successfully.');

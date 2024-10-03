@@ -13,7 +13,7 @@
             <p class="text-gray-400 text-sm text-center mb-10">You've successfully completed your password reset</p>
 
             <div class="w-full flex justify-center text-center">
-                <a href="{{route('login')}}" class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded mt-5">Login Now</a>
+                <a href="{{route('index')}}" class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded mt-5">Login Now</a>
             </div>
 
         </div>

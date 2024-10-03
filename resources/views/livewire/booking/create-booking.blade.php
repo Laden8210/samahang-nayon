@@ -209,7 +209,7 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
-                            <p>{{ $discountedRoomRate }}</p>
+                            <p>{{ $discountedRoomRate ?? 0 }}</p>
                         </div>
                         <div>
                             <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount"
@@ -268,15 +268,23 @@
 
     <x-modal title="Select Amenities" name="select-amenities-modal">
         @slot('body')
-            <div class="my-2">
+            <div class="my-2" wire:ignore.self>
                 <div class="grid grid-cols-1 gap-2">
 
-                    <x-text-field1 -field1 name="search" placeholder="Search Amenities" model="search"
-                        label="Search Customer" />
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
+                            Search Amenities
+                        </label>
+                        <input type="text" wire:model.live="searchAmenity"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                            placeholder="Search Amenities">
+                    </div>
                 </div>
 
             </div>
             <div class="max-h-96 overflow-auto bg-white rounded-md">
+
                 @foreach ($amenities as $amenity)
                     <div class="p-2 shadow rounded-lg mx-1 my-4 flex justify-between items-baseline">
                         <div>

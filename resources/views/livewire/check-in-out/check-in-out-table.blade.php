@@ -29,8 +29,8 @@
 
                 <tr class="text-center">
                     <td class="py-2">{{ $checkInOut->id }}</td>
-                    <td class="py-2">{{ $checkInOut->guest->FirstName ." " . $checkInOut->guest->LastName }}</td>
-                    <td class="py-2">{{ $checkInOut->reservation->room->RoomNumber }}</td>
+                    <td class="py-2">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
+                    <td class="py-2">{{ $checkInOut->reservation->room->RoomNumber ?? '' }}</td>
                     <td class="py-2">{{ $checkInOut->DateCreated }}</td>
                     <td class="py-2">{{ $checkInOut->TimeCreated }}</td>
                     <td class="py-2">{{ $checkInOut->Type }}</td>
