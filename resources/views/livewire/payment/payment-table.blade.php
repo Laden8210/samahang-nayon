@@ -47,7 +47,10 @@
                     <tr class="text-center">
                         <td class="py-2">{{ $payment->ReferenceNumber }}</td>
                         {{-- <td class="py-2">{{ $payment->guest->FirstName }}</td> --}}
-                        <td class="py-2">{{ $payment->guest->FirstName ?? '' . ' ' . $payment->guest->LastName ?? ''}}</td>
+                        <td class="py-2">
+                            {{ ($payment->guest->FirstName ?? '') . ' ' . ($payment->guest->LastName ?? '') }}
+                        </td>
+
                         <td class="py-2">{{ $payment->Purpose }}</td>
                         <td class="py-2">{{ $payment->DateCreated }}</td>
                         <td class="py-2">{{ $payment->PaymentType }}</td>

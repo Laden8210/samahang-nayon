@@ -31,6 +31,7 @@ class ForgetPasswordController extends Controller
 
         $request->validate([
             'password' => 'required|min:8',
+            'confirm_password' => 'required|same:password',
         ]);
 
         if (!session('reset-password')) {

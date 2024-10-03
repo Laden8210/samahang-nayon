@@ -35,7 +35,7 @@
                     <td class="py-2">{{ $checkInOut->TimeCreated }}</td>
                     <td class="py-2">{{ $checkInOut->Type }}</td>
                     <td class="py-2">
-                        <a href="{{route('bookingDetails', $checkInOut->reservation->ReservationId)}}"
+                        <a href="{{route('bookingDetails', $checkInOut->reservation->ReservationId ?? '')}}"
                             class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
 
                     </td>
