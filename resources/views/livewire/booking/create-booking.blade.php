@@ -75,6 +75,73 @@
                     </div>
 
                 </div>
+
+                <div class="w-full bg-white shadow rounded p-2 my-2">
+                    <div class="m-4">
+
+                        <div class="flex justify-between my-2">
+                            <h2 class="text-lg font-bold">Sub guest Details</h2>
+                            <button class="text-xs bg-green-700 text-white px-2 py-2 rounded" x-data
+                                x-on:click="$dispatch('open-modal', {name: 'add-guest'})" type="button">
+
+                                Add Guest
+                            </button>
+                        </div>
+
+
+                        <div class="relative overflow-auto">
+                            <table class="text-xs text-gray-700 bg-gray-50 w-full">
+                                <tr class="text-center">
+                                    <th scope="col" class="px-6 py-3">Guest Name</th>
+                                    <th scope="col" class="px-6 py-3">Birthdate</th>
+                                    <th scope="col" class="px-6 py-3">Gender</th>
+                                    <th scope="col" class="px-6 py-3">Contact Number</th>
+                                    <th scope="col" class="px-6 py-3">Email</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tbody>
+
+                                    @if (count($subguests) == 0)
+                                        <tr class="bg-white border-b text-center">
+                                            <td class="px-6 py-3" colspan="6">No Sub Guest Added</td>
+                                        </tr>
+                                    @else
+                                        @foreach ($subguests as $subguest)
+                                            <tr class="bg-white border-b text-center">
+                                                <td class="px-6 py-3">
+                                                    {{ $subguest['firstname'] . ' ' . $subguest['middlename'] . ' ' . $subguest['lastname'] }}
+                                                </td>
+                                                <td class="px-6 py-3">
+                                                    {{ $subguest['dob'] }}
+                                                </td>
+                                                <td class="px-6 py-3">
+                                                    {{ $subguest['gender'] }}
+                                                </td>
+                                                <td class="px-6 py-3">
+                                                    {{ $subguest['contactnumber'] }}
+                                                </td>
+
+                                                <td class="px-6 py-3">
+                                                    {{ $subguest['contactnumber'] }}
+                                                </td>
+                                                <td>
+                                                    <button type="button"
+                                                        class="bg-red-700 text-white px-2 py-1 rounded">Delete</button>
+                                                    <button type="button"
+                                                        class="bg-green-700 text-white px-2 py-1 rounded">Edit</button>
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+
+                                    @endif
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="cols-span-1">
                 <div class="w-full bg-slate-50 shadow rounded p-2">
@@ -154,7 +221,7 @@
 
                     <div class="my-2">
                         <h2 class="font-bold">Payment Method</h2>
-                        <div class="grid grid-rows-2 gap-2 mt-5">
+                        <div class="grid grid-rows-2 gap-2 mt-2">
                             <div class="text-xs flex items-center gap-2">
                                 <input type="radio" value="Gcash" name="payment-type" wire:model="paymentType">
                                 <label for="">Gcash</label>
@@ -163,6 +230,28 @@
                             <div class="text-xs flex items-center gap-2">
                                 <input type="radio" value="Cash" name="payment-type" wire:model="paymentType">
                                 <label for="">Cash</label>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="my-2">
+                        <h2 class="font-bold">Discount</h2>
+                        <div class="grid grid-rows-2 gap-2 mt-2">
+
+                            <div class="text-xs flex items-center gap-2">
+                                <input type="radio" value="None" name="payment-type" wire:model.live="discountType">
+                                <label for="">None</label>
+                            </div>
+                            <div class="text-xs flex items-center gap-2">
+                                <input type="radio" value="Senior" name="payment-type" wire:model.live="discountType">
+                                <label for="">PWD</label>
+                            </div>
+
+                            <div class="text-xs flex items-center gap-2">
+                                <input type="radio" value="Senior" name="payment-type" wire:model.live="discountType">
+                                <label for="">Senior</label>
                             </div>
 
 
@@ -185,14 +274,28 @@
 
                         </div>
 
+
                         <div class="flex justify-between text-xs">
 
                             @if ($discount)
-                                <p>Discount</p>
+                                <p>Discount({{$discount->Discount}})</p>
                                 <p>{{ $total * ($discount->Discount / 100) }}</p>
                             @endif
 
                         </div>
+
+
+
+                        <div class="flex justify-between text-xs">
+
+                            @if ($discountType == 'Senior' || $discountType == 'PWD')
+                                <p>{{$discountType }} Discount(10%)</p>
+                                <p>{{ $total * (10 / 100) }}</p>
+                            @endif
+
+                        </div>
+
+
 
 
 
@@ -226,6 +329,9 @@
 
 
         </div>
+
+
+
     </form>
 
     @if (session()->has('message'))
@@ -240,8 +346,15 @@
             <div class="my-2">
                 <div class="grid grid-cols-1 gap-2">
 
-                    <x-text-field1 field1 name="search" placeholder="Search Customer" model="search"
-                        label="Search Customer" />
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
+                            Search Guest
+                        </label>
+                        <input type="text" wire:model.live="searchCustomer"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                            placeholder="Search Guest">
+                    </div>
 
 
                 </div>
@@ -450,5 +563,78 @@
         @endslot
     </x-select-room-modal>
 
+
+    <x-modal title="Add Guest" name="add-guest">
+
+        @slot('body')
+            <form wire:submit.prevent="addSubGuest">
+
+
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <x-text-field1 field1 name="firstname" placeholder="First Name" model="subguestsFirstname"
+                            label="First Name" />
+                        @error('subguestsFirstname')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="middlename" placeholder="Middle Name" model="subguestsMiddlename"
+                            label="Middle Name" />
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="lastname" placeholder="Last Name" model="subguestsLastname"
+                            label="Last Name" />
+                        @error('subguestsLastname')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-combobox name="gender" model="subguestsGender" placeholder="Gender" :options="['Female', 'Male']" />
+                        @error('subguestsGender')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="dob" placeholder="Birthdate" model="subguestsDob" type="date"
+                            label="Birthdate" />
+                        @error('subguestsDob')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="contactnumber" placeholder="Contact Number"
+                            model="subguestsContactnumber" type="number" label="Contact Number" />
+                        @error('subguestsContactnumber')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="email" placeholder="Email" model="subguestsEmail" type="email"
+                            label="Email" />
+                        @error('subguestsEmail')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="flex justify-end col-span-2 gap-2">
+                        <button class="px-2 py-2 bg-red-600 rounded shadow text-white">Cancel</button>
+                        <button class="px-2 py-2 bg-green-600 rounded shadow text-white" type="submit">Add Guest</button>
+                    </div>
+                </div>
+            </form>
+        @endslot
+
+    </x-modal>
+
+    @if (session()->has('subguest-message'))
+        <x-success-message-modal message="{{ session('subguest-message') }}" />
+    @endif
 
 </div>

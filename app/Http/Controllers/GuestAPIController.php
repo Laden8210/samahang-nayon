@@ -100,16 +100,17 @@ class GuestAPIController extends Controller
         }
 
         if (!Hash::check($validatedData['password'], $guest->Password)) {
+            SystemLog::create([
+                'log' => 'Guest login failed from IP: ' . FacadesRequest::ip() .
+                         ' for email: ' . $validatedData['emailaddress'] .
+                         ' on ' . now()->toDateTimeString(),
+                'action' => 'Guest Login',
+                'date_created' => now()->toDateString(),
+            ]);
             return response()->json(['error' => 'Invalid password'], 200);
         }
 
-        SystemLog::create([
-            'log' => 'Guest logged in successfully from IP: ' . FacadesRequest::ip() .
-                     ' for email: ' . $guest->EmailAddress . // Use the guest's email
-                     ' on ' . now()->toDateTimeString(), // Use now() for current date and time
-            'action' => 'Guest Login',
-            'date_created' => now()->toDateString(),
-        ]);
+
 
         $token = $guest->createToken('Samahang-Nayon')->plainTextToken;
 

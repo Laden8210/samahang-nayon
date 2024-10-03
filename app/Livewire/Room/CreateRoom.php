@@ -18,6 +18,8 @@ class CreateRoom extends Component
     public $description;
     public $pictures = [];
 
+
+
     public function render()
     {
         return view('livewire.room.create-room');

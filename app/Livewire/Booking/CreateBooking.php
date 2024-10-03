@@ -54,6 +54,22 @@ class CreateBooking extends Component
 
     public $searchAmenity;
 
+    public $subguests = [];
+
+
+    public $subguestsFirstname;
+    public $subguestsMiddlename;
+    public $subguestsLastname;
+    public $subguestsDob;
+    public $subguestsGender;
+    public $subguestsEmail;
+    public $subguestsContactnumber;
+
+    public $discountType;
+
+    public $searchCustomer;
+
+
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
@@ -66,7 +82,7 @@ class CreateBooking extends Component
     public function render()
     {
         return view('livewire.booking.create-booking', [
-            'guests' => Guest::all(),
+            'guests' => Guest::search($this->searchCustomer)->get(),
             'rooms' => $this->availableRooms,  // Use available rooms here
             'amenities' => Amenities::search($this->searchAmenity)->get(),
         ]);
@@ -77,8 +93,36 @@ class CreateBooking extends Component
         if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
             $this->availableRooms = $this->getAvailableRooms();
         }
+
+        if(in_array($propertyName, ['discountType'])){
+            $this->computeTotal();
+            $this->applyDiscount();
+        }
     }
 
+    public function addSubGuest() {
+        $this->validate([
+            'subguestsFirstname' => 'required',
+            'subguestsLastname' => 'required',
+            'subguestsDob' => 'required|date',
+            'subguestsGender' => 'required',
+            'subguestsEmail' => 'required|email',
+            'subguestsContactnumber' => 'required|numeric',
+        ]);
+
+
+        $this->subguests[] = [
+            'firstname' => $this->subguestsFirstname,
+            'middlename' => $this->subguestsMiddlename,
+            'lastname' => $this->subguestsLastname,
+            'dob' => $this->subguestsDob,
+            'gender' => $this->subguestsGender,
+            'email' => $this->subguestsEmail,
+            'contactnumber' => $this->subguestsContactnumber,
+        ];
+        session()->flash('subguest-message', 'Subguest added successfully.');
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
+    }
 
     public function getAvailableRooms()
     {
@@ -167,7 +211,22 @@ class CreateBooking extends Component
 
         $reservation->DateCreated = date('Y-m-d');
         $reservation->TimeCreated = date('H:i:s');
+
+
         $reservation->save();
+
+        foreach ($this->subguests as $subguest) {
+            $reservation->subguests()->create([
+                'FirstName' => $subguest['firstname'],
+                'MiddleName' => $subguest['middlename'],
+                'LastName' => $subguest['lastname'],
+                'Birthdate' => $subguest['dob'],
+                'Gender' => $subguest['gender'],
+                'EmailAddress' => $subguest['email'],
+                'ContactNumber' => $subguest['contactnumber'],
+            ]);
+        }
+
 
         $reservation->reservationAmenities()->createMany(
             collect($this->selectedAmenities)->map(function ($amenity) {
@@ -256,36 +315,48 @@ class CreateBooking extends Component
 
             $this->dispatch('close-modal');
 
-            $checkIn = Carbon::parse($this->checkIn);
-            $checkOut = Carbon::parse($this->checkOut);
-            $this->lengthOfStay = $checkIn->diffInDays($checkOut);
+            $this->applyDiscount();
+        }
+    }
 
-            $this->total = $this->computeTotal();
+    public function applyDiscount(){
+        $checkIn = Carbon::parse($this->checkIn);
+        $checkOut = Carbon::parse($this->checkOut);
+        $this->lengthOfStay = $checkIn->diffInDays($checkOut);
+
+        $this->total = $this->computeTotal();
 
 
-            $promotions = Promotion::where('StartDate', '<=', $checkIn)
-                ->where('EndDate', '>=', $checkOut)
-                ->first();
+        $promotions = Promotion::where('StartDate', '<=', $checkIn)
+            ->where('EndDate', '>=', $checkOut)
+            ->first();
 
+        if ($promotions) {
 
-
-            if ($promotions) {
-
-                foreach ($promotions->discountedRooms as $discount) {
-                    if ($discount->RoomId === $this->selectedRoomId) {
-                        $this->discount = $promotions;
-                        break;
-                    }
+            foreach ($promotions->discountedRooms as $discount) {
+                if ($discount->RoomId === $this->selectedRoomId) {
+                    $this->discount = $promotions;
+                    break;
                 }
+            }
 
 
-                if ($this->discount) {
+            if ($this->discount) {
 
-                    $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+                $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+            }else{
+
+                if($this->discountType != 'None'){
+                    $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
                 }else{
                     $this->discountedRoomRate = $this->total;
                 }
-            } else {
+
+            }
+        } else {
+            if($this->discountType != 'None'){
+                $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
+            }else{
                 $this->discountedRoomRate = $this->total;
             }
         }
