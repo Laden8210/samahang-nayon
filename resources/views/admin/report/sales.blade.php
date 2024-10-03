@@ -264,7 +264,7 @@
         <h5><strong>Total Amenities Cost: </strong> <span style="font-weight: normal;">
                 {{ number_format(
                     $reservations->sum(function ($reservation) {
-                        return $reservation->reservationAmenities->sum('cost');
+                        return $reservation->reservationAmenities->sum('TotalCost');
                     }),
                     2,
                 ) }}</span>
@@ -274,6 +274,8 @@
                 {{ number_format(
                     $reservations->sum(function ($reservation) {
                         return $reservation->TotalCost - ($reservation->discount ?? 0);
+                    }) + $reservations->sum(function ($reservation) {
+                        return $reservation->reservationAmenities->sum('TotalCost');
                     }),
                     2,
                 ) }}</span>
