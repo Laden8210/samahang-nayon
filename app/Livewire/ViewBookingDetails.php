@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Models\Reservation;
 use Xendit\Refund\Refund;
 use App\Models\Payment;
+
 class ViewBookingDetails extends Component
 {
     public $ReservationId;
@@ -16,6 +17,14 @@ class ViewBookingDetails extends Component
     public $quantity;
 
     public $payment;
+
+    public $subguestsFirstname;
+    public $subguestsMiddlename;
+    public $subguestsLastname;
+    public $subguestsDob;
+    public $subguestsGender;
+    public $subguestsEmail;
+    public $subguestsContactnumber;
 
 
     public function render()
@@ -27,9 +36,43 @@ class ViewBookingDetails extends Component
         $this->ReservationId = $ReservationId;
         $this->reservation = Reservation::find($ReservationId);
         $this->Amenities = Amenities::all();
+        $remainingBalance = $this->reservation->TotalCost;
 
+        foreach ($this->reservation->reservationAmenities as $amenity) {
+            $remainingBalance += $amenity->TotalCost;
+        }
+
+        $this->payment = $remainingBalance;
     }
 
+
+    public function addSubGuest()
+    {
+
+        $this->validate([
+            'subguestsFirstname' => 'required',
+            'subguestsMiddlename' => 'required',
+            'subguestsLastname' => 'required',
+            'subguestsDob' => 'required',
+            'subguestsGender' => 'required',
+            'subguestsEmail' => 'required|email',
+            'subguestsContactnumber' => 'required',
+        ]);
+
+        $this->reservation->subguests()->create([
+            'FirstName' => $this->subguestsFirstname,
+            'MiddleName' => $this->subguestsMiddlename,
+            'LastName' => $this->subguestsLastname,
+            'Birthdate' => $this->subguestsDob,
+            'Gender' => $this->subguestsGender,
+            'EmailAddress' => $this->subguestsEmail,
+            'ContactNumber' => $this->subguestsContactnumber,
+        ]);
+
+        session()->flash('subguest-message', 'Subguest added successfully.');
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
+
+    }
     public function addPayment()
     {
         $this->validate([
@@ -67,13 +110,13 @@ class ViewBookingDetails extends Component
     }
 
 
-    public function confirmPayment($ref){
+    public function confirmPayment($ref)
+    {
         $payment = Payment::find($ref);
         $payment->Status = 'Confirmed';
 
         $payment->save();
         session()->flash('message', 'Payment Confirm');
-
     }
 
 
@@ -101,27 +144,27 @@ class ViewBookingDetails extends Component
 
         // Optionally reset the fields after submission
         $this->reset(['amenity_id', 'quantity']);
-
     }
 
-    public function checkIn(){
+    public function checkIn()
+    {
 
-        if($this->reservation->DateCheckIn > now()){
+        if ($this->reservation->DateCheckIn > now()) {
             session()->flash('message', 'Guest Cannot be Checked In Yet');
             return;
         }
 
-        if($this->reservation->DateCheckOut < now()){
+        if ($this->reservation->DateCheckOut < now()) {
             session()->flash('message', 'Guest Cannot be Checked In Anymore');
             return;
         }
 
-        if($this->reservation->Status == 'Checked Out'){
+        if ($this->reservation->Status == 'Checked Out') {
             session()->flash('message', 'Guest Already Checked Out');
             return;
         }
 
-        if($this->reservation->Status == 'Checked In'){
+        if ($this->reservation->Status == 'Checked In') {
             session()->flash('message', 'Guest Already Checked In');
             return;
         }
@@ -138,7 +181,8 @@ class ViewBookingDetails extends Component
         session()->flash('message', 'Guest Checked In');
     }
 
-    public function checkOut(){
+    public function checkOut()
+    {
 
 
 
@@ -152,7 +196,6 @@ class ViewBookingDetails extends Component
         ]);
 
         session()->flash('message', 'Guest Checked Out');
-
     }
 
 

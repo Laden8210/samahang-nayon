@@ -28,7 +28,12 @@
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
                     Amenities</button>
 
-                    {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
+
+                <button x-data x-on:click="$dispatch('open-modal', {name: 'add-guest'})"
+                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
+                    Subguest</button>
+
+                {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
                         class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Generate Receipt</a>
  --}}
 
@@ -42,8 +47,13 @@
                     <div class="grid gap-4 mb-4 grid-cols-2">
 
                         <div class="col-span-2">
-                            <x-text-field1 name="payment" placeholder="Enter the amnount to paid" model="payment"
-                                label="Payment " type="number" />
+
+
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">Remaining
+                                Balance</label>
+                            <input type="number" wire:model="payment" name="payment"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                                placeholder="Enter the amount to paid" readonly>
                             @error('payment')
                                 <p class="text-red-500 text-xs italic mt-1">
                                     <i class="fas fa-exclamation-circle"></i> {{ $message }}
@@ -158,19 +168,19 @@
                         foreach ($reservation->payments as $payment) {
                             $totalPayment += $payment->AmountPaid;
                         }
-                        echo  $totalPayment;
+                        echo $totalPayment;
                     @endphp</div>
 
                 <div class="font-bold  text-base">Balance</div>
                 <div>
-                    ₱{{ ($reservation->TotalCost + $totalAmenities) - $totalPayment }}
+                    ₱{{ $reservation->TotalCost + $totalAmenities - $totalPayment }}
                 </div>
 
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-            <div class=" p-2 min-h-40 max-h-96">
+            <div class=" p-2 min-h-40 max-h-96" wire:poll>
                 <h1 class="text-xl font-bold">Room Details</h1>
                 <table class="w-full overflow-auto mt-2">
                     <thead class="">
@@ -193,7 +203,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class=" p-2 min-h-40">
+            <div class=" p-2 min-h-40" wire:poll>
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Amenties Details</h1>
 
@@ -235,7 +245,7 @@
                 </table>
             </div>
 
-            <div class="p-2 min-h-40 col-span-2">
+            <div class="p-2 min-h-40 col-span-2" wire:poll>
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Transaction Details</h1>
 
@@ -264,10 +274,9 @@
                                 <td>
                                     @if ($payment->PaymentType === 'Gcash' && $payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
-                                        type="button"
-                                        wire:click="confirmPayment({{$payment->PaymentId }})">Confirm Payment</button>
-
-
+                                            type="button"
+                                            wire:click="confirmPayment({{ $payment->PaymentId }})">Confirm
+                                            Payment</button>
                                     @endif
                                 </td>
                             </tr>
@@ -279,7 +288,7 @@
             </div>
         </div>
 
-        <div class="p-2 min-h-40 col-span-2">
+        <div class="p-2 min-h-40 col-span-2" wire:poll>
             <div class="flex justify-between">
                 <h1 class="text-xl font-bold">Sub Guest</h1>
 
@@ -316,6 +325,81 @@
 
     @if (session()->has('message'))
         <x-success-message-modal message="{{ session('message') }}" />
+    @endif
+
+
+
+    <x-modal title="Add Guest" name="add-guest">
+
+        @slot('body')
+            <form wire:submit.prevent="addSubGuest">
+
+
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <x-text-field1 field1 name="firstname" placeholder="First Name" model="subguestsFirstname"
+                            label="First Name" />
+                        @error('subguestsFirstname')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="middlename" placeholder="Middle Name" model="subguestsMiddlename"
+                            label="Middle Name" />
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="lastname" placeholder="Last Name" model="subguestsLastname"
+                            label="Last Name" />
+                        @error('subguestsLastname')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-combobox name="gender" model="subguestsGender" placeholder="Gender" :options="['Female', 'Male']" />
+                        @error('subguestsGender')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="dob" placeholder="Birthdate" model="subguestsDob" type="date"
+                            label="Birthdate" />
+                        @error('subguestsDob')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="contactnumber" placeholder="Contact Number"
+                            model="subguestsContactnumber" type="number" label="Contact Number" />
+                        @error('subguestsContactnumber')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <x-text-field1 field1 name="email" placeholder="Email" model="subguestsEmail" type="email"
+                            label="Email" />
+                        @error('subguestsEmail')
+                            <span class="text-red-600 text-xs">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="flex justify-end col-span-2 gap-2">
+                        <button class="px-2 py-2 bg-red-600 rounded shadow text-white">Cancel</button>
+                        <button class="px-2 py-2 bg-green-600 rounded shadow text-white" type="submit">Add Guest</button>
+                    </div>
+                </div>
+            </form>
+        @endslot
+
+    </x-modal>
+
+    @if (session()->has('subguest-message'))
+        <x-success-message-modal message="{{ session('subguest-message') }}" />
     @endif
 
 

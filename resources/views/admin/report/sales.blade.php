@@ -224,26 +224,25 @@
             </thead>
             <tbody>
 
-
                 @foreach ($reservations as $reservation)
-                    <tr>
-                        <td>{{ $reservation->room->RoomNumber }}</td>
-                        <td>{{ $reservation->guest->FirstName . ' ' . $reservation->guest->LastName }}</td>
-                        <td>{{ number_format($reservation->TotalCost, 2) }}</td>
-                        <td>{{ number_format($reservation->reservationAmenities->sum('cost'), 2) }}</td>
-                        <td>{{ number_format($reservation->discount ?? 0, 2) }}</td>
-                        <td>{{ number_format($reservation->TotalCost - ($reservation->discount ?? 0), 2) }}
-                        </td>
-                        <td>{{ number_format($reservation->payments->sum('AmountPaid'), 2) }}</td>
-                        <td>
-                            @if ($reservation->payments->sum('AmountPaid') >= $reservation->TotalCost)
-                                Paid
-                            @else
-                                Pending
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td>{{ $reservation->room->RoomNumber }}</td>
+                    <td>{{ $reservation->guest->FirstName . ' ' . $reservation->guest->LastName }}</td>
+                    <td>{{ number_format($reservation->TotalCost, 2) }}</td>
+                    <td>{{ number_format($reservation->reservationAmenities->sum('TotalCost'), 2) }}</td>
+                    <td>{{ number_format($reservation->discount ?? 0, 2) }}</td>
+                    <td>{{ number_format($reservation->TotalCost - ($reservation->discount ?? 0) + (+ $reservation->reservationAmenities->sum('TotalCost')), 2) }}</td>
+                    <td>{{ number_format($reservation->payments->sum('AmountPaid') , 2) }}</td>
+                    <td>
+                        @if ($reservation->payments->sum('AmountPaid') >= $reservation->TotalCost)
+                            Paid
+                        @else
+                            Pending
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+
             </tbody>
 
         </table>
