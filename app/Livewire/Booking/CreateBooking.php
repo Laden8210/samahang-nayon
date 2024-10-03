@@ -124,6 +124,12 @@ class CreateBooking extends Component
         $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
     }
 
+    public function removeSubGuest($index) {
+        unset($this->subguests[$index]);
+        $this->subguests = array_values($this->subguests);
+        session()->flash('subguest-message', 'Subguest removed successfully.');
+    }
+
     public function getAvailableRooms()
     {
         $checkIn = Carbon::parse($this->checkIn);

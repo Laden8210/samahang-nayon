@@ -127,9 +127,10 @@
                                                 </td>
                                                 <td>
                                                     <button type="button"
-                                                        class="bg-red-700 text-white px-2 py-1 rounded">Delete</button>
-                                                    <button type="button"
-                                                        class="bg-green-700 text-white px-2 py-1 rounded">Edit</button>
+                                                        class="bg-red-700 text-white px-2 py-1 rounded"
+                                                        wire:click="removeSubGuest({{ $loop->index }})">Delete</button>
+                                                        </button>
+
                                                 </td>
 
                                             </tr>
