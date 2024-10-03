@@ -389,7 +389,8 @@
                     </div>
 
                     <div class="flex justify-end col-span-2 gap-2">
-                        <button class="px-2 py-2 bg-red-600 rounded shadow text-white">Cancel</button>
+                        <button class="px-2 py-2 bg-red-600 rounded shadow text-white" type="button"
+                        x-on:click="$dispatch('close-modal')">Cancel</button>
                         <button class="px-2 py-2 bg-green-600 rounded shadow text-white" type="submit">Add Guest</button>
                     </div>
                 </div>
