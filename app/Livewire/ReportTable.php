@@ -52,7 +52,7 @@ class ReportTable extends Component
 
         $user = auth()->user();
         $report = new Report();
-        $report->ReportName = $this->type ."-". now()->timestamp;
+        $report->ReportName = $this->type;
 
         $report->type = $this->type;
         $report->EmployeeId = $employeeId;
@@ -60,11 +60,19 @@ class ReportTable extends Component
 
         if ($this->type == 'Weekly Revenue Report') {
             $report->EndDate = Carbon::parse($this->startdate)->addWeek();
-        }
+        }else
 
         if ($this->type == 'Monthly Revenue Report') {
             $report->EndDate = Carbon::parse($this->startdate)->addMonth();
+        }else
+
+        if ($this->type == 'Daily Revenue Report') {
+            $report->EndDate = $this->startdate;
+        }else{
+            $report->EndDate = $this->enddate;
         }
+
+
 
 
         $report->CreatedAt = now();

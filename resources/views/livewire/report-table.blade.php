@@ -9,9 +9,6 @@
                 Report
             </button>
 
-
-
-
         </div>
     </div>
     <div>
@@ -83,7 +80,7 @@
         <div class="bg-gray-50 rounded">
 
 
-            <h5 class="mx-2 font-bold px-2 pt-2">Reprot</h5>
+            <h5 class="mx-2 font-bold px-2 pt-2">Report</h5>
             <div class="relative mb-4 w-1/3 mx-3">
 
                 <input type="text" wire:model.live.debounce.300ms = "search"
@@ -113,7 +110,10 @@
                                 <td class="py-2">
                                     {{ $report->employee->FirstName . ' ' . $report->employee->LastName }}
                                 </td>
-                                <td class="py-2">{{ $report->CreatedAt }}</td>
+                                <td class="py-2">
+                                    {{ $report->Date }}{{ $report->EndDate ? ' - ' . $report->EndDate : '' }}
+                                </td>
+
                                 <td class="py-2 flex justify-center gap-2">
                                     <a class="bg-cyan-400 font-medium text-white px-2 py-1 rounded"
                                         href="{{ route('download-report', $report->ReportId) }}" download>
