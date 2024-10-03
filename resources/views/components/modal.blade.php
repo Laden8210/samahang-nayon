@@ -6,7 +6,7 @@
     x-on:open-modal.window = "open = ($event.detail.name === name);console.log($event.detail.name)"
     x-on:close-modal.window = "open = false"
     x-on:keydown.escape.window = "open = false"
-    style="display: none"
+
     class="fixed z-50 inset-0">
     <div x-on:click="open = false" class="fixed inset-0 bg-gray-300 opacity-40 ">
     </div>
