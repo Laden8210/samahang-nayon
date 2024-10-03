@@ -224,6 +224,13 @@
             </thead>
             <tbody>
 
+                @if ($reservations->isEmpty())
+                    <tr>
+                        <td colspan="8">No records found</td>
+                    </tr>
+
+                @else
+
                 @foreach ($reservations as $reservation)
                 <tr>
                     <td>{{ $reservation->room->RoomNumber }}</td>
@@ -242,6 +249,8 @@
                     </td>
                 </tr>
             @endforeach
+
+            @endif
 
             </tbody>
 

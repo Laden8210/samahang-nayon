@@ -34,9 +34,7 @@ class ReportController extends Controller
                 ->get();
         }
 
-        if ($reservations->isEmpty()) {
-            dd('No reservations found for the given date range');
-        }
+
 
         $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
         return $pdf->stream('invoice.pdf');

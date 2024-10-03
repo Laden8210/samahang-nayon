@@ -31,7 +31,17 @@ class ReportTable extends Component
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        } else {
+        }else if ($this->type === 'Weekly Revenue Report') {
+            $this->validate([
+                'type' => 'required|string',
+                'startdate' => 'required|date|before_or_equal:today',
+            ]);
+        }else if ($this->type === 'Monthly Revenue Report') {
+            $this->validate([
+                'type' => 'required|string',
+                'startdate' => 'required|date|before_or_equal:today',
+            ]);
+        }   else {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
