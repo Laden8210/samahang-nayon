@@ -19,7 +19,8 @@ class Report extends Model
         'Date',
         'type',
         'EndDate',
-        'CreatedAt'
+        'CreatedAt',
+        'GuestId'
     ];
 
     public function scopeSearch($query, $value)

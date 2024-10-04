@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Report;
 use Illuminate\Support\Carbon;
+use App\Models\Guest;
+
 class ReportTable extends Component
 {
 
@@ -15,33 +17,35 @@ class ReportTable extends Component
 
     public $search = '';
 
+    public $guest;
+
     public function render()
     {
         return view('livewire.report-table', [
-            'reports' => Report::search($this->search)->orderBy('ReportId', 'desc')->get()
+            'reports' => Report::search($this->search)->orderBy('ReportId', 'desc')->get(),
+            'guests' => Guest::all()
         ]);
     }
 
 
     public function createReport()
     {
-
         if ($this->type === 'Daily Revenue Report') {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        }else if ($this->type === 'Weekly Revenue Report') {
+        } else if ($this->type === 'Weekly Revenue Report') {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        }else if ($this->type === 'Monthly Revenue Report') {
+        } else if ($this->type === 'Monthly Revenue Report') {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        }   else {
+        } else {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
@@ -60,26 +64,27 @@ class ReportTable extends Component
 
         if ($this->type == 'Weekly Revenue Report') {
             $report->EndDate = Carbon::parse($this->startdate)->addWeek();
-        }else
+        } else
 
         if ($this->type == 'Monthly Revenue Report') {
             $report->EndDate = Carbon::parse($this->startdate)->addMonth();
-        }else
+        } else
 
         if ($this->type == 'Daily Revenue Report') {
             $report->EndDate = $this->startdate;
-        }else{
+        } else if ($this->type == 'Guest History Report') {
+            $report->EndDate = $this->enddate;
+            $report->GuestId = $this->guest;
+        } else {
             $report->EndDate = $this->enddate;
         }
-
-
-
 
         $report->CreatedAt = now();
         $report->save();
     }
 
-    public function disableField(){
+    public function disableField()
+    {
         $this->isEndDateDisabled = str_contains($this->type, 'Revenue Report');
     }
 }

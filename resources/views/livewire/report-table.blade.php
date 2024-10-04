@@ -38,10 +38,34 @@
 
 
 
+                            <div class="col-span-2">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
+                                    Guest</label>
+                                <select name="type" wire:model="guest"
+
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                    <option value="">Select Guest</option>
+                                    @foreach ($guests as $guest)
+                                        <option value="{{ $guest->GuestId }}">
+                                            {{ $guest->FirstName . ' ' . $guest->LastName }}
+                                        </option>
+
+                                    @endforeach
+                                </select>
+                                @error('type')
+                                    <p class="text-red-500 text-xs italic mt-1">
+                                        <i class="fas fa-exclamation-circle"></i>{{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+
+
 
                             <div class="col-span-2">
 
-                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date</label>
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start
+                                    Date</label>
 
                                 <input type="date" wire:model="startdate" name="startdate"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"

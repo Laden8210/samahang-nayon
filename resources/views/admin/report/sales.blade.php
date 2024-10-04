@@ -208,6 +208,59 @@
 
             </tbody>
         </table>
+    @elseif ($report->type === 'Guest History Report')
+
+
+    <h5>
+        Guest Name: {{ $reservations->first()->guest->FirstName . ' ' . $reservations->first()->guest->LastName }}
+    </h5>
+    <h5>
+        Guest Contact: {{ $reservations->first()->guest->ContactNumber }}
+    </h5>
+    <h5>
+        Guest Email: {{ $reservations->first()->guest->EmailAddress }}
+    </h5>
+
+    <h5>
+        Guest Address: {{ $reservations->first()->guest->Street . ', ' . $reservations->first()->guest->Brgy . $reservations->first()->guest->City . ', ' . $reservations->first()->guest->Province }}
+    </h5>
+
+    <table>
+
+        <thead>
+            <tr>
+
+                <th>Stay Date</th>
+                <th>Room No</th>
+                <th>Room Type</th>
+
+                <th>Check In Date</th>
+                <th>Check Out Date</th>
+                <th>No. of nights</th>
+                <th>Booking Source</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach ($reservations as $reservation)
+
+                    <tr>
+                        <td>{{ $reservation->DateCheckIn}}</td>
+                        <td>{{ $reservation->room->RoomNumber }}</td>
+                        <td>{{ $reservation->room->RoomType }}</td>
+
+                        <td>{{ $reservation->DateCheckIn }}</td>
+                        <td>{{ $reservation->DateCheckIn }}</td>
+                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
+                        <td>{{ $reservation->Source }}</td>
+                    </tr>
+
+            @endforeach
+
+        </tbody>
+    </table>
     @else
         <table>
             <thead>
@@ -228,29 +281,28 @@
                     <tr>
                         <td colspan="8">No records found</td>
                     </tr>
-
                 @else
+                    @foreach ($reservations as $reservation)
+                        <tr>
+                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ $reservation->guest->FirstName . ' ' . $reservation->guest->LastName }}</td>
+                            <td>{{ number_format($reservation->TotalCost, 2) }}</td>
+                            <td>{{ number_format($reservation->reservationAmenities->sum('TotalCost'), 2) }}</td>
+                            <td>{{ number_format($reservation->discount ?? 0, 2) }}</td>
+                            <td>{{ number_format($reservation->TotalCost - ($reservation->discount ?? 0) + +$reservation->reservationAmenities->sum('TotalCost'), 2) }}
+                            </td>
+                            <td>{{ number_format($reservation->payments->sum('AmountPaid'), 2) }}</td>
+                            <td>
+                                @if ($reservation->payments->sum('AmountPaid') >= $reservation->TotalCost)
+                                    Paid
+                                @else
+                                    Pending
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
 
-                @foreach ($reservations as $reservation)
-                <tr>
-                    <td>{{ $reservation->room->RoomNumber }}</td>
-                    <td>{{ $reservation->guest->FirstName . ' ' . $reservation->guest->LastName }}</td>
-                    <td>{{ number_format($reservation->TotalCost, 2) }}</td>
-                    <td>{{ number_format($reservation->reservationAmenities->sum('TotalCost'), 2) }}</td>
-                    <td>{{ number_format($reservation->discount ?? 0, 2) }}</td>
-                    <td>{{ number_format($reservation->TotalCost - ($reservation->discount ?? 0) + (+ $reservation->reservationAmenities->sum('TotalCost')), 2) }}</td>
-                    <td>{{ number_format($reservation->payments->sum('AmountPaid') , 2) }}</td>
-                    <td>
-                        @if ($reservation->payments->sum('AmountPaid') >= $reservation->TotalCost)
-                            Paid
-                        @else
-                            Pending
-                        @endif
-                    </td>
-                </tr>
-            @endforeach
-
-            @endif
+                @endif
 
             </tbody>
 
@@ -274,9 +326,10 @@
                 {{ number_format(
                     $reservations->sum(function ($reservation) {
                         return $reservation->TotalCost - ($reservation->discount ?? 0);
-                    }) + $reservations->sum(function ($reservation) {
-                        return $reservation->reservationAmenities->sum('TotalCost');
-                    }),
+                    }) +
+                        $reservations->sum(function ($reservation) {
+                            return $reservation->reservationAmenities->sum('TotalCost');
+                        }),
                     2,
                 ) }}</span>
         </h5>
