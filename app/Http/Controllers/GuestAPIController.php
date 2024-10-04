@@ -51,7 +51,7 @@ class GuestAPIController extends Controller
             'Birthdate' => $validatedData['birthdate'],
             'Gender' => $validatedData['gender'],
             'ContactNumber' => $validatedData['contactnumber'],
-            'Brgy' => $request->brgy ?? "",  // Handle optional field
+            'Brgy' => $request->brgy ?? "",
             'EmailAddress' => $validatedData['emailaddress'],
             'password' => bcrypt($validatedData['password']),
             'DateCreated' => now()->toDateString(),
