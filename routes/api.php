@@ -45,3 +45,5 @@ Route::post('requestOtp', [GuestAPIController::class, 'requestOtp']);
 Route::post('changePassword', [GuestAPIController::class, 'changePassword']);
 
 Route::post('reservation/addSubGuest/', [GuestAPIController::class, 'addSubGuest']);
+
+Route::post('reservation/addAmenities', [GuestAPIController::class, 'addAmenities']);

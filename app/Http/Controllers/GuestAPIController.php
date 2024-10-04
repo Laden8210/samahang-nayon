@@ -541,6 +541,31 @@ class GuestAPIController extends Controller
         return response()->json(['message' => $nGuest], 200);
     }
 
+    public function addAmenities(Request $request){
+
+
+
+        $validatedData = $request->validate([
+            'reservation_id' => 'required|integer',
+            'amenities_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'total_cost' => 'required|numeric'
+        ]);
+
+        $reservation = Reservation::find($validatedData['reservation_id']);
+
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+
+
+        $reservation->reservationAmenities()->create([
+            'AmenitiesId' => $validatedData['amenities_id'],
+            'Quantity' => $validatedData['quantity'],
+            'TotalCost' => $validatedData['total_cost'],
+        ]);
+    }
+
     public function addSubGuest(Request $request) {
         // Validate the incoming request
         $validatedData = $request->validate([
@@ -578,4 +603,5 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Failed to add sub-guest', 'error' => $e->getMessage()], 500);
         }
     }
+
 }

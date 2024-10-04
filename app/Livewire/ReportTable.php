@@ -45,7 +45,15 @@ class ReportTable extends Component
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        } else {
+        } else if($this->type === 'Guest History Report') {
+            $this->validate([
+                'type' => 'required|string',
+                'startdate' => 'required|date|before_or_equal:today',
+
+                'guest' => 'required|integer'
+            ]);
+
+        }else {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
