@@ -18,6 +18,8 @@ use App\Models\Promotion;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use App\Models\SystemLog;
+use App\Models\SubGuest;
+
 class GuestAPIController extends Controller
 {
     private $apiKey;
@@ -58,8 +60,8 @@ class GuestAPIController extends Controller
 
         SystemLog::create([
             'log' => 'New guest created from IP: ' . FacadesRequest::ip() .
-                     ' for email: ' . $validatedData['emailaddress'] . // Use the email from validated data
-                     ' on ' . now()->toDateTimeString(),
+                ' for email: ' . $validatedData['emailaddress'] . // Use the email from validated data
+                ' on ' . now()->toDateTimeString(),
             'action' => 'Create Guest',
             'date_created' => now()->toDateString(),
         ]);
@@ -102,8 +104,8 @@ class GuestAPIController extends Controller
         if (!Hash::check($validatedData['password'], $guest->Password)) {
             SystemLog::create([
                 'log' => 'Guest login failed from IP: ' . FacadesRequest::ip() .
-                         ' for email: ' . $validatedData['emailaddress'] .
-                         ' on ' . now()->toDateTimeString(),
+                    ' for email: ' . $validatedData['emailaddress'] .
+                    ' on ' . now()->toDateTimeString(),
                 'action' => 'Guest Login',
                 'date_created' => now()->toDateString(),
             ]);
@@ -363,8 +365,8 @@ class GuestAPIController extends Controller
 
                     SystemLog::create([
                         'log' => 'Reservation created successfully from IP: ' . FacadesRequest::ip() .
-                                 ' for email: ' . $request->email .
-                                 ' on ' . date('Y-m-d H:i:s'),
+                            ' for email: ' . $request->email .
+                            ' on ' . date('Y-m-d H:i:s'),
                         'action' => 'Create Reservation',
                         'date_created' => date('Y-m-d')
                     ]);
@@ -436,8 +438,8 @@ class GuestAPIController extends Controller
 
         SystemLog::create([
             'log' => 'Reservation canceled successfully from IP: ' . FacadesRequest::ip() .
-                     ' for email: ' . $request->email .
-                     ' on ' . date('Y-m-d H:i:s'),
+                ' for email: ' . $request->email .
+                ' on ' . date('Y-m-d H:i:s'),
             'action' => 'Cancel Reservation',
             'date_created' => date('Y-m-d')
         ]);
@@ -530,8 +532,8 @@ class GuestAPIController extends Controller
         // Log the password change
         SystemLog::create([
             'log' => 'Password changed successfully from IP: ' . FacadesRequest::ip() .
-                     ' for email: ' . $guest->EmailAddress .
-                     ' on ' . date('Y-m-d H:i:s'),
+                ' for email: ' . $guest->EmailAddress .
+                ' on ' . date('Y-m-d H:i:s'),
             'action' => 'Change Password',
             'date_created' => date('Y-m-d')
         ]);
@@ -539,4 +541,41 @@ class GuestAPIController extends Controller
         return response()->json(['message' => $nGuest], 200);
     }
 
+    public function addSubGuest(Request $request) {
+        // Validate the incoming request
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'birthdate' => 'required|date',
+            'contact_number' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'gender' => 'required|string',
+            'reservation_id' => 'required|integer'
+
+        ]);
+
+        try {
+
+            $subGuest = SubGuest::create([
+                'FirstName' => $validatedData['first_name'],
+                'LastName' => $validatedData['last_name'],
+                'MiddleName' => $validatedData['middle_name'],
+                'Birthdate' => $validatedData['birthdate'],
+                'ContactNumber' => $validatedData['contact_number'],
+                'EmailAddress' => $validatedData['email'],
+                'Gender' => $validatedData['gender'],
+                'ReservationId' => $validatedData['reservation_id']
+            ]);
+
+
+            return response()->json([
+                'message' => 'Sub-guest added successfully',
+                'sub_guest' => $subGuest
+            ], 201);
+        } catch (\Exception $e) {
+
+            return response()->json(['message' => 'Failed to add sub-guest', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
