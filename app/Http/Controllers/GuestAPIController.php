@@ -389,7 +389,6 @@ class GuestAPIController extends Controller
         }
     }
 
-
     public function getReservation(Request $request)
     {
         $guest = Auth::guard('api')->user();
@@ -397,19 +396,21 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-
         $status = $request->status;
 
         $reservations = Reservation::where('GuestId', $guest->GuestId)
             ->when($status, function ($query, $status) {
+                if (in_array($status, ['Booked', 'Reserved'])) {
+                    return $query->whereIn('Status', ['Booked', 'Reserved']);
+                }
                 return $query->where('Status', $status);
             })
             ->with(['room', 'reservationAmenities', 'payments'])
             ->get();
 
-
         return response()->json($reservations);
     }
+
 
     public function cancelReservation(Request $request)
     {
