@@ -14,7 +14,6 @@ class RoomAPIController extends Controller
 {
     public function getRoom(Request $request)
     {
-
         $checkIn = Carbon::parse($request->startDate);
         $checkOut = Carbon::parse($request->endDate);
 
@@ -29,47 +28,9 @@ class RoomAPIController extends Controller
                               ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
-            ->select('rooms.*', 'promotions.*')
+            ->select('rooms.*', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
             ->distinct()
             ->get();
-
-
-
-
-        $rooms->map(function ($room) use ($checkIn, $checkOut) {
-
-            $room->StartingDate = null;
-            $room->EndingDate = null;
-
-            if ($room->Discount && $room->StartDate && $room->EndDate) {
-                $promotionStart = Carbon::parse($room->StartDate);
-                $promotionEnd = Carbon::parse($room->EndDate);
-
-                if ($checkIn->lessThanOrEqualTo($promotionEnd) && $checkOut->greaterThanOrEqualTo($promotionStart)) {
-
-                    $room->StartingDate = $room->StartDate;
-                    $room->EndingDate = $room->EndDate;
-                    $room->Promotion = $room->Promotion;
-                    $room->Description = $room->Description;
-                } else {
-
-                    unset($room->Discount);
-                    unset($room->StartDate);
-                    unset($room->EndDate);
-                    unset($room->Promotion);
-                    unset($room->Description);
-                }
-            } else {
-
-                unset($room->Discount);
-                unset($room->StartDate);
-                unset($room->EndDate);
-                unset($room->Promotion);
-                unset($room->Description);
-            }
-
-            return $room;
-        });
 
         return response()->json($rooms);
     }

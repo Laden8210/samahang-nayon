@@ -60,7 +60,7 @@ class GuestAPIController extends Controller
 
         SystemLog::create([
             'log' => 'New guest created from IP: ' . FacadesRequest::ip() .
-                ' for email: ' . $validatedData['emailaddress'] . // Use the email from validated data
+                ' for email: ' . $validatedData['emailaddress'] .
                 ' on ' . now()->toDateTimeString(),
             'action' => 'Create Guest',
             'date_created' => now()->toDateString(),
