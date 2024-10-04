@@ -51,7 +51,7 @@ class GuestAPIController extends Controller
             'ContactNumber' => $validatedData['contactnumber'],
             'Brgy' => $request->brgy ?? "",  // Handle optional field
             'EmailAddress' => $validatedData['emailaddress'],
-            'password' => $validatedData['password'],
+            'password' => bcrypt($validatedData['password']),
             'DateCreated' => now()->toDateString(),
             'TimeCreated' => now()->toTimeString(),
         ]);
@@ -506,7 +506,7 @@ class GuestAPIController extends Controller
         ]);
         $token = $guest->createToken('Samahang-Nayon')->plainTextToken;
 
-        return response()->json(['otp' => $otp, 'token' => $token], 200);
+        return response()->json(['otp' => $otp, 'token' => $token, 'guest' => $guest], 200);
     }
 
     public function changePassword(Request $request)
@@ -536,7 +536,7 @@ class GuestAPIController extends Controller
             'date_created' => date('Y-m-d')
         ]);
 
-        return response()->json(['message' => 'Password changed successfully'], 200);
+        return response()->json(['message' => $nGuest], 200);
     }
 
 }

@@ -37,10 +37,6 @@ class Guest extends Authenticatable
         'TimeCreated',
     ];
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
 
 
     public function reservations()
