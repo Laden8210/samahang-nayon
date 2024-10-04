@@ -40,24 +40,56 @@
                             <div class="col-span-2 sm:col-span-1">
                                 <x-combobox name="gender" model="gender" placeholder="Gender" :options="['Female', 'Male']" />
                             </div>
+                            <div class="col-span-2">
+                                <div class="mt-1">
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                                    <select wire:model="selectedProvince" wire:change="fetchCities" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                        <option value="">Select Province</option>
+                                        @foreach ($apiProvince as $region)
+                                            <option value="{{ $region['code'] }}">
+                                                {{ $region['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-span-2">
+                                <div class="mt-1">
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
+                                    <select wire:model="selectedCity" wire:change="fetchBarangays" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                        <option value="">Select City</option>
+                                        @foreach ($apiCity as $city)
+                                            <option value="{{ $city['code'] }}">
+                                                {{ $city['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-span-2">
+                                <div class="mt-1">
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
+                                    <select wire:model="selectedBrgy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                        <option value="">Select Barangay</option>
+                                        @foreach ($apiBrgy as $brgy)
+                                            <option value="{{ $brgy['code'] }}">
+                                                {{ $brgy['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="street" placeholder="Street" model="street"
                                     label="Street" />
                             </div>
 
-                            <div class="col-span-2">
-                                <x-text-field1 field1 name="brgy" placeholder="Brgy" model="brgy" label="Brgy" />
-                            </div>
 
-                            <div class="col-span-2">
-                                <x-text-field1 field1 name="city" placeholder="City" model="city" label="City" />
-                            </div>
 
-                            <div class="col-span-2">
-                                <x-text-field1 field1 name="province" placeholder="Povince" model="province"
-                                    label="Province" />
-                            </div>
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="email" placeholder="Email" model="email"
@@ -129,7 +161,7 @@
                                                     <button type="button"
                                                         class="bg-red-700 text-white px-2 py-1 rounded"
                                                         wire:click="removeSubGuest({{ $loop->index }})">Delete</button>
-                                                        </button>
+                                                    </button>
 
                                                 </td>
 
@@ -242,16 +274,19 @@
                         <div class="grid grid-rows-2 gap-2 mt-2">
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="None" name="discount-type" wire:model.live="discountType">
+                                <input type="radio" value="None" name="discount-type"
+                                    wire:model.live="discountType">
                                 <label for="">None</label>
                             </div>
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="discount-type" wire:model.live="discountType">
+                                <input type="radio" value="Senior" name="discount-type"
+                                    wire:model.live="discountType">
                                 <label for="">PWD</label>
                             </div>
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="discount-type" wire:model.live="discountType">
+                                <input type="radio" value="Senior" name="discount-type"
+                                    wire:model.live="discountType">
                                 <label for="">Senior</label>
                             </div>
 
@@ -279,7 +314,7 @@
                         <div class="flex justify-between text-xs">
 
                             @if ($discount)
-                                <p>Discount({{$discount->Discount}})</p>
+                                <p>Discount({{ $discount->Discount }})</p>
                                 <p>{{ $total * ($discount->Discount / 100) }}</p>
                             @endif
 
@@ -290,7 +325,7 @@
                         <div class="flex justify-between text-xs">
 
                             @if ($discountType == 'Senior' || $discountType == 'PWD')
-                                <p>{{$discountType }} Discount(10%)</p>
+                                <p>{{ $discountType }} Discount(10%)</p>
                                 <p>{{ $total * (10 / 100) }}</p>
                             @endif
 
@@ -626,7 +661,7 @@
 
                     <div class="flex justify-end col-span-2 gap-2">
                         <button class="px-2 py-2 bg-red-600 rounded shadow text-white" type="button"
-                        x-on:click="$dispatch('close-modal')">Cancel</button>
+                            x-on:click="$dispatch('close-modal')">Cancel</button>
                         <button class="px-2 py-2 bg-green-600 rounded shadow text-white" type="submit">Add Guest</button>
                     </div>
                 </div>

@@ -70,13 +70,50 @@ class CreateBooking extends Component
     public $searchCustomer;
 
 
+    public $apiProvince = [];
+    public $apiCity = [];
+    public $apiBrgy = [];
+    public $selectedProvince = null;
+    public $selectedCity = null;
+
+    public $selectedBrgy = null;
+
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
-        $this->checkOut = Carbon::today()->addDay()->format('Y-m-d');  // Default to one day after check-in
+        $this->checkOut = Carbon::today()->addDay()->format('Y-m-d');
         $this->availableRooms = $this->getAvailableRooms();
         $this->totalGuests = 1;
         $this->totalChildren = 0;
+        $this->fetchRegions();
+    }
+
+    public function fetchRegions()
+    {
+        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/regions/')->json();
+    }
+
+    public function fetchCities()
+    {
+        if ($this->selectedProvince) {
+
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/regions/{$this->selectedProvince}/cities/")->json();
+
+        } else {
+            $this->apiCity = [];
+        }
+    }
+
+    public function fetchBarangays()
+    {
+        if ($this->selectedCity) {
+
+            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities/{$this->selectedCity}/barangays.json")->json();
+
+
+        } else {
+            $this->apiBrgy = [];
+        }
     }
 
     public function render()
@@ -94,13 +131,14 @@ class CreateBooking extends Component
             $this->availableRooms = $this->getAvailableRooms();
         }
 
-        if(in_array($propertyName, ['discountType'])){
+        if (in_array($propertyName, ['discountType'])) {
 
             $this->applyDiscount();
         }
     }
 
-    public function addSubGuest() {
+    public function addSubGuest()
+    {
         $this->validate([
             'subguestsFirstname' => 'required',
             'subguestsLastname' => 'required',
@@ -124,7 +162,8 @@ class CreateBooking extends Component
         $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
     }
 
-    public function removeSubGuest($index) {
+    public function removeSubGuest($index)
+    {
         unset($this->subguests[$index]);
         $this->subguests = array_values($this->subguests);
         session()->flash('subguest-message', 'Subguest removed successfully.');
@@ -136,7 +175,11 @@ class CreateBooking extends Component
         $checkOut = Carbon::parse($this->checkOut);
 
         // Calculate total number of guests
-        $total = $this->totalChildren + $this->totalGuests;
+        $totalChildren = is_null($this->totalChildren) ? 0 : (int)$this->totalChildren;
+        $totalGuests = is_null($this->totalGuests) ? 0 : (int)$this->totalGuests;
+
+
+        $total = $totalChildren + $totalGuests;
 
 
         return Room::where('Capacity', '>=', $total)
@@ -157,6 +200,32 @@ class CreateBooking extends Component
     public function saveBooking()
     {
 
+        $province = "";
+        $city = "";
+        $brgy = "";
+
+        foreach ($this->apiProvince as $prov) {
+            if ($prov['code'] == $this->selectedProvince) {
+                $province = $prov['name'];
+                break;
+            }
+        }
+
+        foreach ($this->apiCity as $cit) {
+            if ($cit['code'] == $this->selectedCity) {
+                $city = $cit['name'];
+                break;
+            }
+        }
+
+        foreach ($this->apiBrgy as $b) {
+            if ($b['code'] == $this->selectedBrgy) {
+                $brgy = $b['name'];
+                break;
+            }
+        }
+
+
         if ($this->selectedGuestId) {
             $guest = Guest::find($this->selectedGuestId);
         } else {
@@ -168,6 +237,9 @@ class CreateBooking extends Component
             ) {
                 $guest = new Guest();
 
+
+
+
                 $guest->FirstName = $this->firstname;
                 $guest->MiddleName = $this->middlename;
                 $guest->LastName = $this->lastname;
@@ -175,9 +247,9 @@ class CreateBooking extends Component
                 $guest->Gender = $this->gender;
                 $guest->EmailAddress = $this->email;
                 $guest->Street = $this->street;
-                $guest->Brgy = $this->brgy;
-                $guest->City = $this->city;
-                $guest->Province = $this->province;
+                $guest->Brgy = $brgy;
+                $guest->City = $city;
+                $guest->Province = $province;
                 $guest->ContactNumber = $this->contactnumber;
                 $guest->Password = bcrypt('password');
                 $guest->DateCreated = date('Y-m-d');
@@ -325,7 +397,8 @@ class CreateBooking extends Component
         }
     }
 
-    public function applyDiscount(){
+    public function applyDiscount()
+    {
         $checkIn = Carbon::parse($this->checkIn);
         $checkOut = Carbon::parse($this->checkOut);
         $this->lengthOfStay = $checkIn->diffInDays($checkOut);
@@ -350,19 +423,18 @@ class CreateBooking extends Component
             if ($this->discount) {
 
                 $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
-            }else{
+            } else {
 
-                if($this->discountType != 'None'){
+                if ($this->discountType != 'None') {
                     $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
-                }else{
+                } else {
                     $this->discountedRoomRate = $this->total;
                 }
-
             }
         } else {
-            if($this->discountType != 'None'){
+            if ($this->discountType != 'None') {
                 $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
-            }else{
+            } else {
                 $this->discountedRoomRate = $this->total;
             }
         }
@@ -402,13 +474,11 @@ class CreateBooking extends Component
             if ($this->discount) {
 
                 $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
-            }else{
+            } else {
                 $this->discountedRoomRate = $this->total;
-
             }
         } else {
             $this->discountedRoomRate = $this->total;
-
         }
     }
 
