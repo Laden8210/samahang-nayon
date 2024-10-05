@@ -1,168 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Official Receipt</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 14px;
             margin: 0;
-            padding: 0;
-        }
-
-        .receipt-container {
-            width: 80%;
-            margin: 20px auto;
             padding: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
             border: 1px solid #000;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
-
-        h1, h2, p {
-            margin: 0;
-            padding: 0;
-        }
-
-        .header, .subtitle, .customer-information, .service-list {
+        .header {
+            text-align: center;
             margin-bottom: 20px;
         }
-
         .header h1 {
-            text-align: center;
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .header h2 {
+            margin: 5px 0;
             font-size: 18px;
         }
-
         .header p {
-            text-align: center;
+            margin: 2px 0;
+            font-size: 14px;
         }
-
-        .subtitle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .underline {
-            border-bottom: 1px solid #000;
-            padding: 0 5px;
-            display: inline-block;
-            width: 70%;
-        }
-
-        .flex {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .service-list table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 10px;
         }
-
-        .service-list th, .service-list td {
+        td {
+            padding: 5px;
+            border: none;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .payment-info {
+            margin-top: 20px;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+        .signature-section {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .services-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .services-table th, .services-table td {
             border: 1px solid #000;
             padding: 8px;
             text-align: left;
         }
-
-        .service-list th {
+        .services-table th {
             background-color: #f0f0f0;
-        }
-
-        .service-list td {
-            text-align: right;
-        }
-
-        .service-list td:first-child {
-            text-align: left;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777;
         }
     </style>
 </head>
-
 <body>
 
-    <div class="receipt-container">
+    <div class="container">
         <div class="header">
             <h1>FEDERATION OF SOCSARGEN SAMAHANG NAYON COOPERATIVE</h1>
-            <p>Samahang Nayon Bldg. Corner Osmena-Roxas Street, Zone II, Koronadal City</p>
-            <p>NON VAT Reg TIN: 000-000-000-000</p>
+            <p>Samahang Nayon Bldg. Corner Osmena-Roxas Streets, Zone II, Koronadal City</p>
+            <p>NON VAT Reg TIN 004-416-359-000</p>
+            <h2>OFFICIAL RECEIPT</h2>
+            <p>(Hotel)</p>
         </div>
 
-        <div class="subtitle">
+        <table>
+            <tr>
+                <td class="bold">Invoice No.</td>
+                <td colspan="3"></td>
+                <td class="bold">Amount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="bold">Total Sales</td>
+                <td colspan="3"></td>
+                <td class="bold">Less SCPWD Discount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="bold">Total Due</td>
+                <td colspan="3"></td>
+                <td class="bold">Less: Withholding Tax</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="bold">Payment Due</td>
+                <td colspan="3"></td>
+            </tr>
+        </table>
+
+        <div class="payment-info">
+            <p class="bold">Form of Payment:</p>
+            <p>Bank Name:</p>
+            <p>
+                Cash <input type="checkbox">
+                &nbsp;&nbsp;&nbsp; Check <input type="checkbox">
+            </p>
+        </div>
+
+        <table>
+            <tr>
+                <td class="bold">Name:</td>
+                <td colspan="4"></td>
+            </tr>
+            <tr>
+                <td class="bold">Address at:</td>
+                <td colspan="4"></td>
+            </tr>
+            <tr>
+                <td class="bold">The sum of:</td>
+                <td colspan="3"></td>
+                <td class="bold">TIN:</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="bold">Full payment of:</td>
+                <td colspan="4"></td>
+            </tr>
+        </table>
+
+        <div class="signature-section">
             <div>
-                <h2>Official Receipt</h2>
-                <p>(Hotel)</p>
+                <span class="bold">Sr. Citizen TIN:</span> <span></span>
             </div>
             <div>
-                <p>Reservation/Booking No: {{ $payment->ReferenceNumber }}</p>
-                <h2>Date: {{ \Carbon\Carbon::parse($payment->DateCreated)->format('F d, Y') }}</h2>
+                <span class="bold">OSCA/PWD ID No.:</span> <span></span>
+            </div>
+            <div>
+                <span class="bold">Signature:</span> <span></span>
+            </div>
+            <div>
+                <span class="bold">By:</span> Cashier/Authorized Representative
             </div>
         </div>
 
-        <div class="customer-information">
-            <div class="flex">
-                <p>Received from: </p>
-                <div class="underline">
-                    <span>{{ $payment->guest->FirstName }} {{ $payment->guest->LastName }}</span>
-                </div>
-            </div>
-
-            <div class="flex">
-                <p>With address at: </p>
-                <div class="underline">
-                    <span>{{ $payment->guest->Brgy . " " . $payment->guest->City . " " . $payment->guest->Province }}</span>
-                </div>
-            </div>
-
-            <div class="flex">
-                <p>Business Style: </p>
-                <div class="underline">
-                    <span>Hotel Reservation</span>
-                </div>
-            </div>
-
-            <div class="flex">
-                <p>TIN: </p>
-                <div class="underline">
-                    <span>{{ $payment->guest->TIN }}</span>
-                </div>
-            </div>
-
-            <div class="flex">
-                <p>Amount: </p>
-                <div class="underline">
-                    <span>PHP {{ number_format($payment->AmountPaid, 2) }} ({{ $amountInWords }})</span>
-                </div>
-            </div>
-
-            <div class="flex">
-                <p>By: </p>
-                <div class="underline">
-                    <span>{{ $payment->Cashier }}</span>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="footer">
-            <p>Thank you for your business!</p>
-        </div>
-
+        <table class="services-table">
+            <tr>
+                <th class="bold">PAYMENT OF THE FOLLOWING SERVICE/AMENITIES</th>
+                <th class="bold">QUANTITY</th>
+                <th class="bold">UNIT PRICE</th>
+                <th class="bold">AMOUNT</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
     </div>
 
 </body>
-
 </html>

@@ -24,7 +24,14 @@
                 <div class="flex justify-normal p-2 w-full">
 
                     <div class="w-1/2 mx-2">
-                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="[' Single bed', 'Two single beds', 'Two double beds', 'Matrimonial', 'Family', 'King size ']" />
+                        <x-combobox name="roomType" model="roomType" placeholder="Room Type"
+                        :options="[
+                            'Single bed',
+                        'Two single beds',
+                        'Two double beds',
+                        'Matrimonial bed',
+                        'Family bed',
+                        'King size bed',]" />
 
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i

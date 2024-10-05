@@ -28,9 +28,9 @@
                             'Single bed',
                             'Two single beds',
                             'Two double beds',
-                            'Matrimonial',
-                            'Family',
-                            'King size ',
+                            'Matrimonial bed',
+                            'Family bed',
+                            'King size bed',
                         ]" />
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i

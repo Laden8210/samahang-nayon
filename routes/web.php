@@ -87,3 +87,5 @@ Route::get('manager/promotions', [PromotionController::class, 'index'])->name('p
 Route::get('download/report/{id}', [ReportController::class, 'downloadReport'])->name('download-report');
 
 Route::get('settings', [UserController::class, 'settings'])->name('settings');
+
+Route::get('printReceipt', [ReceiptController::class, 'printReceipt'])->name('printReceipt');

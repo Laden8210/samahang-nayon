@@ -21,8 +21,7 @@
                 @endif
 
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-modal-payment'})"
-                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
-                    Payment</button>
+                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Check Balance</button>
 
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-modal-amenities'})"
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
@@ -32,6 +31,10 @@
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-guest'})"
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
                     Subguest</button>
+
+
+                <button x-data x-on:click="$dispatch('open-modal', {name: 'add-guest'})"
+                class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Print Receipt</button>
 
                 {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
                         class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Generate Receipt</a>
@@ -144,6 +147,11 @@
 
 
             <div class="grid grid-cols-2 mt-2">
+
+                <div class="font-bold  text-base">Discount Type</div>
+                <div>
+                    {{ $reservation->DiscountType }}
+                </div>
                 <div class="font-bold  text-base">Total Room Cost</div>
                 <div> ₱
                     {{ $reservation->TotalCost }}
@@ -158,6 +166,11 @@
                         }
                         echo $totalAmenities;
                     @endphp
+                </div>
+
+                <div class="font-bold  text-base">Discount Type</div>
+                <div>
+                    {{ $reservation->Discount }}
                 </div>
 
                 <div class="font-bold  text-base">Total Payment</div>
@@ -187,7 +200,7 @@
                         <tr class="bg-slate-100">
                             <th class="px-2 py-3">Room Type</th>
                             <th class="px-2 py-3">Room Number</th>
-                            <th class="px-2 py-3">Price</th>
+                            <th class="px-2 py-3">Room Rate</th>
 
                             <th class="px-2 py-3">Total</th>
                         </tr>

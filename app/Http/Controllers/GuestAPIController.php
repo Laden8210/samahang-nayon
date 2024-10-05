@@ -23,6 +23,37 @@ use App\Models\SubGuest;
 class GuestAPIController extends Controller
 {
     private $apiKey;
+
+
+    private function isPasswordValid($password)
+    {
+        // Check for minimum length
+        if (strlen($password) < 8) {
+            return false;
+        }
+
+        // Check for at least one uppercase letter
+        if (!preg_match('/[A-Z]/', $password)) {
+            return false;
+        }
+
+        // Check for at least one lowercase letter
+        if (!preg_match('/[a-z]/', $password)) {
+            return false;
+        }
+
+        // Check for at least one numeric digit
+        if (!preg_match('/[0-9]/', $password)) {
+            return false;
+        }
+
+        // Check for at least one special character
+        if (!preg_match('/[\W_]/', $password)) {
+            return false;
+        }
+
+        return true; // Password is valid
+    }
     public function create(Request $request)
     {
         // Validate the incoming request data
@@ -39,6 +70,23 @@ class GuestAPIController extends Controller
             'emailaddress' => 'required|email|max:255',
             'password' => 'required|string|max:32',
         ]);
+
+
+        $existingGuest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
+
+        if ($existingGuest) {
+            return response()->json(['error' => 'Email address already exists'], 200);
+        }
+
+        if (Guest::where('ContactNumber', $validatedData['contactnumber'])->first()) {
+            return response()->json(['error' => 'Contact number already exists'], 200);
+        }
+
+        $password = $validatedData['password'];
+
+        if (!$this->isPasswordValid($password)) {
+            return response()->json(['error' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'], 400);
+        }
 
 
         $guest = Guest::create([
@@ -146,6 +194,8 @@ class GuestAPIController extends Controller
             'payment_option' => 'required|string|in:full,partial',
             'total_adult' => 'required|integer',
             'total_children' => 'required|integer',
+            'discountType' => 'nullable|string',
+            'id_number' => 'nullable|string'
         ]);
 
 
@@ -164,16 +214,21 @@ class GuestAPIController extends Controller
         $totalCost = $room->RoomPrice * $lengthOfStay;
 
 
-        $promotion = Promotion::where('StartDate', '<=', $checkOut)
-            ->where('EndDate', '>=', $checkIn)
-            ->whereHas('discountedRooms', function ($query) use ($room) {
-                $query->where('RoomId', $room->RoomId);
-            })
-            ->first();
+        if ($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD') {
+            $totalCost = $totalCost - ($totalCost * 0.10);
+        } else {
+            $promotion = Promotion::where('StartDate', '<=', $checkOut)
+                ->where('EndDate', '>=', $checkIn)
+                ->whereHas('discountedRooms', function ($query) use ($room) {
+                    $query->where('RoomId', $room->RoomId);
+                })
+                ->first();
 
-        if ($promotion) {
-            $totalCost = $totalCost - ($totalCost * ($promotion->Discount / 100));
+            if ($promotion) {
+                $totalCost = $totalCost - ($totalCost * ($promotion->Discount / 100));
+            }
         }
+
 
 
 
@@ -189,7 +244,10 @@ class GuestAPIController extends Controller
             'TotalAdult' => $validatedData['total_adult'],
             'TotalChildren' => $validatedData['total_children'],
             'OriginalCost' => $room->RoomPrice * $lengthOfStay,
-            'Discount' => $promotion->Discount ?? 0
+            'Discount' => $validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0),
+
+            'DiscountType' => $validatedData['discountType'] ?? null,
+            'IdNumber' => $validatedData['id_number'] ?? null
         ]);
 
 
@@ -542,7 +600,8 @@ class GuestAPIController extends Controller
         return response()->json(['message' => $nGuest], 200);
     }
 
-    public function addAmenities(Request $request){
+    public function addAmenities(Request $request)
+    {
 
 
 
@@ -567,7 +626,8 @@ class GuestAPIController extends Controller
         ]);
     }
 
-    public function addSubGuest(Request $request) {
+    public function addSubGuest(Request $request)
+    {
         // Validate the incoming request
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
@@ -604,5 +664,4 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Failed to add sub-guest', 'error' => $e->getMessage()], 500);
         }
     }
-
 }
