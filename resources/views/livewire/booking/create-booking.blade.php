@@ -245,7 +245,7 @@
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
                                     <p>{{ $amenity['name'] }}</p>
-                                    <p>{{ $amenity['price'] }}</p>
+                                    <p>{{ $amenity['price']}}</p>
                                 </div>
                             @endforeach
 
@@ -326,7 +326,7 @@
 
                             @if ($discountType == 'Senior' || $discountType == 'PWD')
                                 <p>{{ $discountType }} Discount(10%)</p>
-                                <p>{{ $total * (10 / 100) }}</p>
+                                <p>{{ $selectedRoom->RoomPrice * (10 / 100) }}</p>
                             @endif
 
                         </div>
@@ -339,7 +339,7 @@
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
                                     <p>{{ $amenity['name'] . ' x ' . $amenity['quantity'] }}</p>
-                                    <p>{{ $amenity['price'] }}</p>
+                                    <p>{{ $amenity['price']  * $amenity['quantity'] }}</p>
                                 </div>
                             @endforeach
 
@@ -440,22 +440,22 @@
                             <p class="text-slate-800">{{ $amenity->Name }}</p>
                         </div>
                         <div class="flex justify-evenly gap-2 w-1/3 items-center">
-                            <div>
+                            {{-- <div>
                                 <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }}, -1)"
                                     type="button"
                                     class="bg-red-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-red-900 duration-75 transition-all hover:text-slate-950">
                                     <i class="fa fa-minus" aria-hidden="true"></i>
                                 </button>
-                            </div>
+                            </div> --}}
                             <div>
                                 <input wire:model.defer="quantity.{{ $amenity->AmenitiesId }}" type="number"
                                     name="quantity[{{ $amenity->AmenitiesId }}]" min="0"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" />
                             </div>
                             <div>
-                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }}, 1)" type="button"
+                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }},1)" type="button"
                                     class="bg-green-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    Confirm
                                 </button>
                             </div>
                         </div>
@@ -498,7 +498,7 @@
                     </label>
                     <select name="totalChildren" wire:model.live="totalChildren"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option value="">Total Adult</option>
+                        <option value="">Total Children</option>
                         @for ($i = 1; $i < 11; $i++)
                             <option value="{{ $i }}">{{ $i }}</option>
                         @endfor

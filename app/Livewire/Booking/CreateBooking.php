@@ -90,14 +90,14 @@ class CreateBooking extends Component
 
     public function fetchRegions()
     {
-        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/regions/')->json();
+        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/provinces/')->json();
     }
 
     public function fetchCities()
     {
         if ($this->selectedProvince) {
 
-            $this->apiCity = Http::get("https://psgc.gitlab.io/api/regions/{$this->selectedProvince}/cities/")->json();
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
 
         } else {
             $this->apiCity = [];
@@ -129,6 +129,8 @@ class CreateBooking extends Component
     {
         if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
             $this->availableRooms = $this->getAvailableRooms();
+
+
         }
 
         if (in_array($propertyName, ['discountType'])) {
@@ -270,20 +272,26 @@ class CreateBooking extends Component
 
         $room = Room::find($this->selectedRoomId);
 
+        $totalAmenities = 0;
 
+        foreach ($this->selectedAmenities as $amenity) {
+            $totalAmenities += $amenity['price'] * $amenity['quantity'];
+        }
 
         $reservation = new Reservation();
         $reservation->RoomId = $room->RoomId;
         $reservation->GuestId = $guest->GuestId;
         $reservation->DateCheckIn = $this->checkIn;
         $reservation->DateCheckOut = $this->checkOut;
-        $reservation->TotalCost =  $this->discountedRoomRate;
+        $reservation->TotalCost =  $this->discountedRoomRate - $totalAmenities;
         $reservation->Status = 'Booked';
-        $reservation->Discount = $this->discount->Discount ?? 0;
+        $reservation->Discount = ( $room->RoomPrice * $this->lengthOfStay) - $this->discountedRoomRate;
+
         $reservation->OriginalCost =  $room->RoomPrice * $this->lengthOfStay;
         $reservation->TotalAdult = $this->totalGuests;
         $reservation->TotalChildren = $this->totalChildren ?? 0;
         $reservation->Source = 'Walk In';
+        $reservation->DiscountType = $this->discountType;
 
         $purpose = "";
 
@@ -321,16 +329,20 @@ class CreateBooking extends Component
             return;
         }
 
-        $reservation->payments()->create([
-            'GuestId' => $guest->GuestId,
-            'AmountPaid' => $this->paymentAmount ?? 0,
-            'DateCreated' => date('Y-m-d'),
-            'TimeCreated' => date('H:i:s'),
-            'Status' => 'Confirmed`',
-            'PaymentType' => $this->paymentType,
-            'ReferenceNumber' => $this->generateReferenceNumber(),
-            'Purpose' => $purpose,
-        ]);
+        if ($this->paymentAmount != 0) {
+            $reservation->payments()->create([
+                'GuestId' => $guest->GuestId,
+                'AmountPaid' => $this->paymentAmount ?? 0,
+                'DateCreated' => date('Y-m-d'),
+                'TimeCreated' => date('H:i:s'),
+                'Status' => 'Confirmed`',
+                'PaymentType' => $this->paymentType,
+                'ReferenceNumber' => $this->generateReferenceNumber(),
+                'Purpose' => $purpose,
+            ]);
+        }
+
+
         $this->reset();
 
         session()->flash('message', 'Room Booking created successfully.');
@@ -363,13 +375,13 @@ class CreateBooking extends Component
         $this->selectedGuestId = $guestId;
     }
 
-    public function updateAmenityQuantity($amenityId, $change)
+    public function updateAmenityQuantity($amenityId)
     {
         $amenity = Amenities::find($amenityId);
 
         if ($amenity) {
             $currentQuantity = $this->quantity[$amenityId] ?? 0;
-            $newQuantity = $currentQuantity + $change;
+            $newQuantity = $currentQuantity;
 
             if ($newQuantity > 0) {
                 $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
@@ -392,8 +404,8 @@ class CreateBooking extends Component
             $this->total = $this->computeTotal();
 
             $this->dispatch('close-modal');
+            $this->total = $this->computeTotal();
 
-            $this->applyDiscount();
         }
     }
 

@@ -75,17 +75,17 @@ class GuestAPIController extends Controller
         $existingGuest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
 
         if ($existingGuest) {
-            return response()->json(['error' => 'Email address already exists'], 200);
+            return response()->json(['message' => 'Email address already exists'], 200);
         }
 
         if (Guest::where('ContactNumber', $validatedData['contactnumber'])->first()) {
-            return response()->json(['error' => 'Contact number already exists'], 200);
+            return response()->json(['message' => 'Contact number already exists'], 200);
         }
 
         $password = $validatedData['password'];
 
         if (!$this->isPasswordValid($password)) {
-            return response()->json(['error' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'], 400);
+            return response()->json(['message' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.']);
         }
 
 
@@ -255,6 +255,7 @@ class GuestAPIController extends Controller
 
         $totalPayment = 0;
 
+        $totalAmenityCost = 0;
         foreach ($validatedData['amenities'] as $amenity) {
 
             $sum = $amenity['price'] * $amenity['quantity'];
@@ -266,6 +267,7 @@ class GuestAPIController extends Controller
                 'TotalCost' => $sum,
             ]);
             $totalPayment += $sum;
+            $totalAmenityCost += $sum;
         }
 
         foreach ($validatedData['sub_guests'] as $sub_guest) {
@@ -280,8 +282,24 @@ class GuestAPIController extends Controller
             ]);
         }
 
+        if($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD') {
+            $totalCost = $totalCost - ($totalCost * 0.10);
+        } else {
+            $promotion = Promotion::where('StartDate', '<=', $checkOut)
+                ->where('EndDate', '>=', $checkIn)
+                ->whereHas('discountedRooms', function ($query) use ($room) {
+                    $query->where('RoomId', $room->RoomId);
+                })
+                ->first();
 
-        $partialPaymentAmount = $totalCost * 0.30;
+            if ($promotion) {
+                $totalCost = $totalCost - ($totalCost * ($promotion->Discount / 100));
+            }
+        }
+        $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay)) * 0.30;
+
+
+
         if ($validatedData['payment_option'] == 'partial') {
             $reservation->payments()->create([
                 'GuestId' => $guest->GuestId,
@@ -478,6 +496,25 @@ class GuestAPIController extends Controller
         }
 
         $reservation = Reservation::find($request->reservation_id);
+
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found'], 404);
+        }
+
+        if ($reservation->Status == 'Cancelled') {
+            return response()->json(['message' => 'Reservation already cancelled'], 200);
+        }
+
+
+        // only canceel if 3 days before check in
+
+        $checkIn = Carbon::parse($reservation->DateCheckIn);
+
+        if ($checkIn->diffInDays(now()) < 3) {
+            return response()->json(['message' => 'Cannot cancel reservation 3 days before check in'], 200);
+        }
+
+
 
         if (!$reservation) {
             return response()->json(['message' => 'Reservation not found'], 404);

@@ -49,7 +49,7 @@
             <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
                 <thead class="text-xs uppercase bg-gray-100 ">
                     <tr class="text-center">
-                        <th class="py-2">ID</th>
+
 
                         <th class="py-2">Type</th>
                         <th class="py-2">Price</th>
@@ -59,7 +59,7 @@
                 <tbody>
                     @foreach ($amenities as $amenity)
                         <tr class="text-center">
-                            <td class="py-3">{{ $amenity->AmenitiesId }}</td>
+
                             <td class="py-3">{{ $amenity->Name }}</td>
                             <td class="py-3">{{ $amenity->Price }}</td>
                             <td class="py-3 flex justify-center">

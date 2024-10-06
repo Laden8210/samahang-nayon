@@ -288,7 +288,7 @@
                             <td>{{ $reservation->guest->FirstName . ' ' . $reservation->guest->LastName }}</td>
                             <td>{{ number_format($reservation->TotalCost, 2) }}</td>
                             <td>{{ number_format($reservation->reservationAmenities->sum('TotalCost'), 2) }}</td>
-                            <td>{{ number_format($reservation->discount ?? 0, 2) }}</td>
+                            <td>{{ number_format($reservation->Discount ?? 0, 2) }}</td>
                             <td>{{ number_format($reservation->TotalCost - ($reservation->discount ?? 0) + +$reservation->reservationAmenities->sum('TotalCost'), 2) }}
                             </td>
                             <td>{{ number_format($reservation->payments->sum('AmountPaid'), 2) }}</td>

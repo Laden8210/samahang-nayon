@@ -10,7 +10,7 @@ use App\Models\UserAccount;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Rules\Age;
-
+use Illuminate\Support\Facades\Http;
 class CreateUser extends Component
 {
 
@@ -78,9 +78,14 @@ class CreateUser extends Component
             'Status' => 'Active',
             'Username' => $this->email,
             'email' => $this->email,
-            'password' => bcrypt("password"),
+            'password' => bcrypt($defaultPassword),
             'DateCreated' => now()->format('Y-m-d'),
             'TimeCreated' => now()->format('H:i:s'),
+        ]);
+
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $this->contactNumber,
+            'message' => "Your account has been created. Your username is your email and your password is $defaultPassword. Please change your password after logging in.",
         ]);
 
         session()->flash('message', 'User created successfully!');

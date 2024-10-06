@@ -45,7 +45,7 @@ class MessageController extends Controller
         $hasPreviousMessages = Message::where('GuestId', $guest->GuestId)->exists();
 
         // If there are previous messages, send an automated response
-        if ($hasPreviousMessages) {
+        if (!$hasPreviousMessages) {
             $response = new Message();
             $response->GuestId = $guest->GuestId;
             $response->IsReadEmployee = false;
