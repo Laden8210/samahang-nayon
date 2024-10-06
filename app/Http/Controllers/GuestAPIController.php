@@ -298,7 +298,7 @@ class GuestAPIController extends Controller
         }
 
         if($validatedData['discountType'] != ''){
-            $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) *0.1) * 0.30;
+            $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * 0.1)) * 0.30;
         }else{
             $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay)) * 0.30;
         }
