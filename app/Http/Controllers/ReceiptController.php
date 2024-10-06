@@ -11,7 +11,7 @@ use App\Exports\ReceiptExport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Reservation;
 use PhpOffice\PhpSpreadsheet\Writer\Html;
-
+use Illuminate\Support\Facades\Auth;
 
 class ReceiptController extends Controller
 {
@@ -103,37 +103,58 @@ class ReceiptController extends Controller
         return trim($words);
     }
 
-    public function printReceipt(Request $request)
+    public function printReceipt($id)
     {
-        // Load your predefined template
+
         $spreadsheet = IOFactory::load(storage_path('app/template.xlsx'));
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Fetch data from the database
-        $reservations = Reservation::all();
 
-        // Inject data into specific cells
-        foreach ($reservations as $index => $reservation) {
-            // Assuming you want to fill data starting from row 6
-            $row = $index + 6; // Replace 6 with the actual starting row for data
+        $reservation = Reservation::find($id);
 
 
-            $amenityRow = 19; // Initialize the row for amenities
+        $totalPayment = 0;
 
-            // Loop through each reservation's amenities
-            foreach ($reservation->reservationAmenities as $reservationAmenity) {
-                // Fill the amenities data starting from row 19
-                $sheet->setCellValue("B$amenityRow", $reservationAmenity->amenity->Name);
-                $sheet->setCellValue("G$amenityRow", $reservationAmenity->Quantity);
-                $sheet->setCellValue("k$amenityRow", $reservationAmenity->amenity->Price);
-                $sheet->setCellValue("p$amenityRow", $reservationAmenity->TotalCost);
-                // Increment the amenity row for the next amenity
-                $amenityRow++;
-            }
+
+        $amenityRow = 20;
+
+        $lenghtOfStay = Carbon::parse($reservation->DateCheckIn)->diffInDays(Carbon::parse($reservation->DateCheckOut));
+
+        $sheet->setCellValue('B19', $reservation->room->RoomType);
+        $sheet->setCellValue('G19', $lenghtOfStay);
+        $sheet->setCellValue('K19', $reservation->room->RoomPrice);
+        $sheet->setCellValue('P19', $reservation->room->RoomPrice * $lenghtOfStay);
+
+        foreach ($reservation->reservationAmenities as $reservationAmenity) {
+
+            $sheet->setCellValue("B$amenityRow", $reservationAmenity->amenity->Name);
+            $sheet->setCellValue("G$amenityRow", $reservationAmenity->Quantity);
+            $sheet->setCellValue("k$amenityRow", $reservationAmenity->amenity->Price);
+            $sheet->setCellValue("p$amenityRow", $reservationAmenity->TotalCost);
+
+            $amenityRow++;
         }
 
+        foreach($reservation->payments as $payment){
+            $totalPayment += $payment->AmountPaid;
+        }
+
+
+        $amountInWords = $this->convertNumberToWords($payment->AmountPaid);
+
+        $sheet->setCellValue('O7',  Carbon::now()->toDateString());
+        $sheet->setCellValue('f9',  $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
+
+        $employee = Auth::user();
+
+        $sheet->setCellValue('O14', $employee->FirstName . ' ' . $employee->LastName);
+
+        $sheet->setCellValue('F11', $amountInWords);
+
+        $sheet->setCellValue('F10', $totalPayment);
         // Create a writer to convert the spreadsheet to HTML
         $writer = new Html($spreadsheet);
+
 
         // Set headers for HTML output
         header('Content-Type: text/html');

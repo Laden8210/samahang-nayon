@@ -33,7 +33,7 @@
                     Subguest</button>
 
 
-                <a href="{{route('printReceipt')}}" target="_blank"
+                <a href="{{route('printReceipt',$reservation->ReservationId )}}" target="_blank"
                 class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Print Receipt</a>
 
                 {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
@@ -110,59 +110,59 @@
             @endslot
         </x-modal>
 
-        <div class="grid grid-cols-3 mt-2 shadow-lg rounded-lg mb-5 p-5">
+        <div class="grid grid-cols-3 mt-2 shadow-lg rounded-lg mb-5 p-5 text-xs ">
             <div class="grid grid-cols-2 gap-2 items-start">
-                <div class="font-bold text-base">Reservation Number:</div>
+                <div class="font-bold text-xs">Reservation Number:</div>
                 <div>{{ $reservation->ReservationId }}</div>
-                <div class="font-bold  text-base">Date</div>
+                <div class="font-bold  text-xs">Date</div>
                 <div>{{ $reservation->DateCreated }}</div>
-                <div class="font-bold  text-base">Guest</div>
+                <div class="font-bold text-xs">Guest</div>
                 <div>
                     {{ $reservation->guest->FirstName . ' ' . $reservation->guest->MiddleName[0] . '. ' . $reservation->guest->LastName }}
                 </div>
-                <div class="font-bold  text-base">Contact Number</div>
+                <div class="font-bold  text-xs">Contact Number</div>
                 <div>
                     {{ $reservation->guest->ContactNumber }}
                 </div>
 
-                <div class="font-bold  text-base">Email</div>
+                <div class="font-bold  text-xs">Email</div>
                 <div>
                     {{ $reservation->guest->EmailAddress }}
                 </div>
             </div>
 
             <div class="grid grid-cols-2 mt-2">
-                <div class="font-bold  text-base">Total guest</div>
+                <div class="font-bold text-xs">Total guest</div>
                 <div>
                     {{ 'Adults ' . $reservation->TotalAdult . ' Children ' . $reservation->TotalChildren }}
                 </div>
-                <div class="font-bold  text-base">Status:</div>
+                <div class="font-bold  text-xs">Status:</div>
                 <div>{{ $reservation->Status }}</div>
-                <div class="font-bold  text-base">Check In Date:</div>
+                <div class="font-bold text-xs">Check In Date:</div>
                 <div>{{ $reservation->DateCheckIn }}</div>
-                <div class="font-bold  text-base">Check Out Date:</div>
+                <div class="font-bold  text-xs">Check Out Date:</div>
                 <div>{{ $reservation->DateCheckOut }}</div>
             </div>
 
 
 
-            <div class="grid grid-cols-2 mt-2">
+            <div class="grid grid-cols-2 mt-2 text-xs">
 
-                <div class="font-bold  text-base">Discount Type</div>
+                <div class="font-bold  text-xs">Discount Type</div>
                 <div>
                     {{ $reservation->DiscountType }}
                 </div>
 
-                <div class="font-bold  text-base">Id Number</div>
+                <div class="font-bold text-xs">Id Number</div>
                 <div>
                     {{ $reservation->IdNumber }}
                 </div>
-                <div class="font-bold  text-base">Total Room Cost</div>
+                <div class="font-bold  text-xs">Total Room Cost</div>
                 <div> ₱
                     {{ $reservation->TotalCost }}
                 </div>
 
-                <div class="font-bold  text-base">Total Amenities Cost</div>
+                <div class="font-bold text-xs">Total Amenities Cost</div>
                 <div>₱
                     @php
                         $totalAmenities = 0;
@@ -174,7 +174,7 @@
                 </div>
 
 
-                <div class="font-bold  text-base">Total Payment</div>
+                <div class="font-bold  text-xs">Total Payment</div>
                 <div>
                     ₱
                     @php
@@ -185,7 +185,7 @@
                         echo $totalPayment;
                     @endphp</div>
 
-                <div class="font-bold  text-base">Balance</div>
+                <div class="font-bold  text-xs">Balance</div>
                 <div>
                     ₱{{ $reservation->TotalCost + $totalAmenities - $totalPayment }}
                 </div>
