@@ -297,10 +297,21 @@ class GuestAPIController extends Controller
             }
         }
 
-        if($validatedData['discountType'] != ''){
+        if($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD'){
             $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * 0.1)) * 0.30;
         }else{
-            $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay)) * 0.30;
+            $promotion = Promotion::where('StartDate', '<=', $checkOut)
+                ->where('EndDate', '>=', $checkIn)
+                ->whereHas('discountedRooms', function ($query) use ($room) {
+                    $query->where('RoomId', $room->RoomId);
+                })
+                ->first();
+
+            if ($promotion) {
+                $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * ($promotion->Discount / 100))) * 0.30;
+            }else{
+                $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) * 0.30);
+            }
         }
 
 
