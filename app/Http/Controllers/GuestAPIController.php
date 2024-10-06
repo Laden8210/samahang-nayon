@@ -403,8 +403,7 @@ class GuestAPIController extends Controller
                         'line_items' => [
                             [
                                 'currency' => 'PHP',
-                                'amount' => (int)($reservation->room->RoomPrice * 100) -
-                                    (($reservation->room->RoomPrice * 100) * (($promotion->Discount ?? 0) / 100)),
+                                'amount' => $totalCost * 100,
 
                                 'description' => 'Room Reservation',
                                 'name' => $reservation->Room->RoomType,
