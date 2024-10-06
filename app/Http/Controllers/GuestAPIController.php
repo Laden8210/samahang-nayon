@@ -75,17 +75,17 @@ class GuestAPIController extends Controller
         $existingGuest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
 
         if ($existingGuest) {
-            return response()->json(['message' => 'Email address already exists'], 200);
+            return response()->json(['error' => 'Email address already exists'], 200);
         }
 
         if (Guest::where('ContactNumber', $validatedData['contactnumber'])->first()) {
-            return response()->json(['message' => 'Contact number already exists'], 200);
+            return response()->json(['error' => 'Contact number already exists'], 200);
         }
 
         $password = $validatedData['password'];
 
         if (!$this->isPasswordValid($password)) {
-            return response()->json(['message' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.']);
+            return response()->json(['error' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.']);
         }
 
 
