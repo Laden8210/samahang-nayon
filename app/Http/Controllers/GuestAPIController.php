@@ -82,12 +82,33 @@ class GuestAPIController extends Controller
             return response()->json(['error' => 'Contact number already exists'], 200);
         }
 
+
+        // TODO: validate format contact number
+
+        $contactNumber = $request->input('contactnumber');
+        if (!preg_match('/^(09\d{9}|\+639\d{9})$/', $contactNumber)) {
+            return response()->json(['error' => 'Invalid Philippine contact number format'], 400);
+        }
+
+
+
         $password = $validatedData['password'];
+
+
 
         if (!$this->isPasswordValid($password)) {
             return response()->json(['error' => 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.']);
         }
 
+        // TODO: validate age, 18 above
+
+
+        $birthdate = Carbon::parse($validatedData['birthdate']);
+        $now = Carbon::now();
+
+        if ($birthdate->diffInYears($now) < 18) {
+            return response()->json(['error' => 'Guest must be at least 18 years old']);
+        }
 
         $guest = Guest::create([
             'FirstName' => $validatedData['firstname'],
@@ -205,6 +226,16 @@ class GuestAPIController extends Controller
             return response()->json(['error' => 'Invalid Session'], 200);
         }
 
+        // TODO: validate if room is available
+
+        if (Reservation::where('RoomId', $validatedData['room_id'])
+            ->where('DateCheckIn', '<=', $validatedData['check_out'])
+            ->where('DateCheckOut', '>=', $validatedData['check_in'])
+            ->where('Status', '!=', 'Cancelled')
+            ->exists()) {
+            return response()->json(['error' => 'Room is not available'], 200);
+        }
+
         $room = Room::find($validatedData['room_id']);
 
         $checkIn = Carbon::parse($validatedData['check_in']);
@@ -244,7 +275,7 @@ class GuestAPIController extends Controller
             'TotalAdult' => $validatedData['total_adult'],
             'TotalChildren' => $validatedData['total_children'],
             'OriginalCost' => $room->RoomPrice * $lengthOfStay,
-            'Discount' => $validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0),
+            'Discount' => $validatedData['discountType'] != 'None' ? 10 : ($promotion->Discount ?? 0),
 
             'DiscountType' => $validatedData['discountType'] ?? null,
             'IdNumber' => $validatedData['id_number'] ?? null
@@ -282,20 +313,6 @@ class GuestAPIController extends Controller
             ]);
         }
 
-        if($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD') {
-            $totalCost = $totalCost - ($totalCost * 0.10);
-        } else {
-            $promotion = Promotion::where('StartDate', '<=', $checkOut)
-                ->where('EndDate', '>=', $checkIn)
-                ->whereHas('discountedRooms', function ($query) use ($room) {
-                    $query->where('RoomId', $room->RoomId);
-                })
-                ->first();
-
-            if ($promotion) {
-                $totalCost = $totalCost - ($totalCost * ($promotion->Discount / 100));
-            }
-        }
 
         if($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD'){
             $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * 0.1)) * 0.30;

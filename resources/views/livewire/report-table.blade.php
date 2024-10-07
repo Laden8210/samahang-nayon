@@ -24,8 +24,11 @@
                                 <option value="Weekly Revenue Report">Weekly Revenue Report</option>
                                 <option value="Monthly Revenue Report">Monthly Revenue Report</option>
                                 <option value="Reservation Report">Reservation Report</option>
+                                <option value="Booking Report">Booking Report</option>
                                 <option value="Arrival and Departure Report">Arrival and Departure Report</option>
-                                <option value="Cancellation Report">Cancellation Report</option>
+                                <option value="Cancellation and No Show Report">Cancellation and No Show Report</option>
+                                <option value="Check In Report">Check In Report</option>
+                                <option value="Check Out Report">Check Out Report</option>
                                 <option value="Guest History Report">Guest History Report</option>
                             </select>
                             @error('type')

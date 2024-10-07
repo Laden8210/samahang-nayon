@@ -150,7 +150,7 @@
 
                 <div class="font-bold  text-xs">Discount Type</div>
                 <div>
-                    {{ $reservation->DiscountType }}
+                    {{ $reservation->DiscountType ?? 'No Discount' }}
                 </div>
 
                 <div class="font-bold text-xs">Id Number</div>
@@ -172,6 +172,10 @@
                         echo $totalAmenities;
                     @endphp
                 </div>
+
+                <div class="font-bold  text-xs">Penalty</div>
+                <div>
+                    ₱ 0</div>
 
 
                 <div class="font-bold  text-xs">Total Payment</div>

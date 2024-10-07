@@ -97,7 +97,7 @@ class CreateBooking extends Component
     {
         if ($this->selectedProvince) {
 
-            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/ /{$this->selectedProvince}/cities-municipalities/")->json();
 
         } else {
             $this->apiCity = [];

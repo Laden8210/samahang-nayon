@@ -56,8 +56,8 @@ class ReportTable extends Component
         }else {
             $this->validate([
                 'type' => 'required|string',
-                'startdate' => 'required|date|before_or_equal:today',
-                'enddate' => 'required|date|before_or_equal:today',
+                'startdate' => 'required|date',
+                'enddate' => 'required|date',
             ]);
         }
         $employeeId = auth()->id();
