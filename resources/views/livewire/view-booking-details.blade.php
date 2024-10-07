@@ -118,7 +118,7 @@
                 <div>{{ $reservation->DateCreated }}</div>
                 <div class="font-bold text-xs">Guest</div>
                 <div>
-                    {{ $reservation->guest->FirstName . ' '  . $reservation->guest->LastName }}
+                    {{ $reservation->guest->FirstName ?? '' . ' '  . $reservation->guest->LastName ?? '' }}
                 </div>
                 <div class="font-bold  text-xs">Contact Number</div>
                 <div>
