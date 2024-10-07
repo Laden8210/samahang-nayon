@@ -276,7 +276,7 @@ class GuestAPIController extends Controller
             'TotalChildren' => $validatedData['total_children'],
             'OriginalCost' => $room->RoomPrice * $lengthOfStay,
             'Discount' => $validatedData['discountType'] != 'None' ? 10 : ($promotion->Discount ?? 0),
-
+            'Source' => 'Online',
             'DiscountType' => $validatedData['discountType'] ?? null,
             'IdNumber' => $validatedData['id_number'] ?? null
         ]);
