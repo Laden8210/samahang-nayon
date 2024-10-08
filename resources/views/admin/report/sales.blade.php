@@ -157,7 +157,8 @@
             </thead>
             <tbody>
                 @foreach ($reservations as $reservation)
-                    @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved' || $reservation->Status === 'Checked In')
+
+                    @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved')
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
