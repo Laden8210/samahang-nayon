@@ -31,7 +31,21 @@ class ReportController extends Controller
 
                 $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
                 return $pdf->stream('invoice.pdf');
-        } else {
+        }else if($report->type === 'Arrival and Departure Report'){
+            if ($report->EndDate) {
+                // Fetch reservations where both DateCheckIn and DateCheckOut are within the date range
+                $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
+                    ->whereBetween('DateCheckIn', [$report->Date, $report->EndDate])
+                    ->whereBetween('DateCheckOut', [$report->Date, $report->EndDate])
+                    ->get();
+            } else {
+                // Only use the start date if EndDate is null, fetching reservations created on that date
+                $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
+                    ->whereDate('DateCreated', '=', $report->Date)
+                    ->get();
+            }
+
+        }else {
             if ($report->EndDate) {
                 $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
                     ->whereBetween('DateCreated', [$report->Date, $report->EndDate])
