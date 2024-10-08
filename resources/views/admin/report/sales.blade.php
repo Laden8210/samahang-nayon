@@ -310,7 +310,7 @@
 
         <h5>
             Guest Address:
-            {{ $reservations->first()->guest->Street . ', ' . $reservations->first()->guest->Brgy . $reservations->first()->guest->City . ', ' . $reservations->first()->guest->Province }}
+            {{ $reservations->first()->guest->Street . ', ' . $reservations->first()->guest->Brgy. " " . $reservations->first()->guest->City . ', ' . $reservations->first()->guest->Province }}
         </h5>
 
         <table>
