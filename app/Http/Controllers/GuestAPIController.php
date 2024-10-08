@@ -622,17 +622,17 @@ class GuestAPIController extends Controller
     {
         $guest = Auth::guard('api')->user();
         if (!$guest) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $reservation = Reservation::find($request->reservation_id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['error' => 'Reservation not found'], 404);
         }
 
         if ($reservation->Status == 'Cancelled') {
-            return response()->json(['message' => 'Reservation already cancelled'], 200);
+            return response()->json(['error' => 'Reservation already cancelled'], 200);
         }
 
 
@@ -641,13 +641,13 @@ class GuestAPIController extends Controller
         $checkIn = Carbon::parse($reservation->DateCheckIn);
 
         if ($checkIn->diffInDays(now()) < 3) {
-            return response()->json(['message' => 'Cannot cancel reservation 3 days before check in'], 200);
+            return response()->json(['error' => 'Cannot cancel reservation 3 days before check in'], 200);
         }
 
 
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['error' => 'Reservation not found'], 404);
         }
 
         $reservation->update([
