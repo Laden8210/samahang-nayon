@@ -100,7 +100,7 @@
 
                     <div class=" mx-2">
 
-                        <x-text-field1 name="brgy" placeholder="Enter Street" model="brgy" label="Brgy" />
+                        <x-text-field1 name="brgy" placeholder="Enter Brgy" model="brgy" label="Brgy" />
                         @error('brgy')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}

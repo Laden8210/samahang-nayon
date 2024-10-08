@@ -7,7 +7,7 @@ use Livewire\Component;
 use App\Models\Reservation;
 use Xendit\Refund\Refund;
 use App\Models\Payment;
-
+use Carbon\Carbon;
 class ViewBookingDetails extends Component
 {
     public $ReservationId;
@@ -40,16 +40,24 @@ class ViewBookingDetails extends Component
 
         foreach ($this->reservation->reservationAmenities as $amenity) {
             $remainingBalance += $amenity->TotalCost;
-
         }
         foreach ($this->reservation->payments as $payment) {
             $remainingBalance -= $payment->AmountPaid;
-
-
         }
 
         $this->payment = $remainingBalance;
 
+        $penaltyRatePerHour = 100;
+
+
+        $checkoutTime = Carbon::parse($this->reservation->DateCheckOut)->setTime(14, 0);
+
+        if($this->reservation->Status == 'Checked In'){
+            if (now()->greaterThan($checkoutTime)) {
+                $hoursLate = $checkoutTime->diffInHours(now());
+                $this->reservation->TotalCost += $hoursLate * $penaltyRatePerHour;
+            }
+        }
 
     }
 
@@ -79,7 +87,6 @@ class ViewBookingDetails extends Component
 
         session()->flash('subguest-message', 'Subguest added successfully.');
         $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
-
     }
     public function addPayment()
     {

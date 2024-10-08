@@ -240,6 +240,8 @@ class GuestAPIController extends Controller
         );
     }
 
+    public function changeName(Request $$requ)
+
     public function getCurrentUser(Request $request)
     {
         $guest = Auth::guard('api')->user();

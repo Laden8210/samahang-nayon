@@ -12,7 +12,8 @@
                             <div>
                                 <button type="button"
                                     x-on:click="$dispatch('open-modal', {name: 'select-customer-modal'})"
-                                    class="bg-green-700 px-2 py-1 rounded shadow text-white">Select Old Customer</button>
+                                    class="bg-green-700 px-2 py-1 rounded shadow text-white">Select Old
+                                    Customer</button>
                             </div>
 
                             <x-modal title="Select Customer" name="select-customer-modal">
@@ -24,7 +25,8 @@
 
 
                                             <div>
-                                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
+                                                <label
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
                                                     Search Guest
                                                 </label>
                                                 <input type="text" wire:model.live="searchCustomer"
@@ -40,7 +42,8 @@
                                         @foreach ($guests as $guest)
                                             <div class="p-2 shadow rounded-lg mx-1 my-4 flex justify-between items-center">
                                                 <div>
-                                                    <p>{{ $guest->FirstName . ' ' . $guest->MiddleName . ' ' . $guest->LastName }}</p>
+                                                    <p>{{ $guest->FirstName . ' ' . $guest->MiddleName . ' ' . $guest->LastName }}
+                                                    </p>
                                                 </div>
 
                                                 <div>
@@ -356,15 +359,27 @@
                                 <label for="">None</label>
                             </div>
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="discount-type"
+                                <input type="radio" value="PWD" name="discount-type"
                                     wire:model.live="discountType">
                                 <label for="">PWD</label>
                             </div>
 
                             <div class="text-xs flex items-center gap-2">
-                                <input type="radio" value="Senior" name="discount-type"
+                                <input type="radio" value="Senior Citizen" name="discount-type"
                                     wire:model.live="discountType">
                                 <label for="">Senior</label>
+                            </div>
+
+
+                            <div>
+                                <div class="flex justify-between">
+                                    <p class="font-bold text-blue-950">Enter PWD or Senior ID Number</p>
+
+                                </div>
+                                <div>
+                                    <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number"
+                                        type="text" model="idNumber" />
+                                </div>
                             </div>
 
 
@@ -403,7 +418,11 @@
 
                             @if ($discountType == 'Senior' || $discountType == 'PWD')
                                 <p>{{ $discountType }} Discount(10%)</p>
-                                <p>{{ $selectedRoom->RoomPrice * (10 / 100) }}</p>
+
+                                @if ($selectedRoom)
+                                    <p>{{ $selectedRoom->RoomPrice * (10 / 100) }}</p>
+                                @endif
+
                             @endif
 
                         </div>
@@ -422,16 +441,6 @@
 
                         </div>
 
-                        <div>
-                            <div class="flex justify-between">
-                                <p class="font-bold text-blue-950">Enter PWD or Senior ID Number</p>
-
-                            </div>
-                            <div>
-                                <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number" type="number"
-                                model="idNumber" />
-                            </div>
-                        </div>
 
                         <hr class="mt-1">
 

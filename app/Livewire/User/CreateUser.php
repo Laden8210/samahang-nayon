@@ -32,9 +32,30 @@ class CreateUser extends Component
     {
         $this->validate(
             [
-                'firstname' => 'required|string|max:255',
-                'middlename' => 'nullable|string|max:255',
-                'lastname' => 'required|string|max:255',
+                'firstname' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'middlename' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'lastname' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'contactNumber' => [
+                    'required',
+                    'string',
+                    'max:12',
+                    'regex:/^(?:\+63|0)9\d{9}$/'
+                ],
                 'contactNumber' => [
                     'required',
                     'string',

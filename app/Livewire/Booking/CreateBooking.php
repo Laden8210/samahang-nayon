@@ -78,6 +78,7 @@ class CreateBooking extends Component
 
     public $selectedBrgy = null;
 
+    public $idNumber;
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
@@ -107,7 +108,7 @@ class CreateBooking extends Component
     {
         if ($this->selectedCity) {
 
-            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities/{$this->selectedCity}/barangays.json")->json();
+            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json();
         } else {
             $this->apiBrgy = [];
         }
@@ -179,37 +180,63 @@ class CreateBooking extends Component
         $total = $totalChildren + $totalGuests;
 
 
-        return Room::where('Capacity', '>=', $total)
-            ->leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+
+
+        $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+            ->leftJoin('discountedrooms', 'rooms.RoomId', '=', 'discountedrooms.RoomId')
+            ->leftJoin('promotions', 'discountedrooms.PromotionId', '=', 'promotions.PromotionId')
             ->where(function ($query) use ($checkIn, $checkOut) {
                 $query->whereNull('reservations.RoomId')
                     ->orWhere('reservations.Status', 'Checked Out')
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
+
                         $query->where('reservations.DateCheckOut', '<', $checkIn)
-                            ->orWhere('reservations.DateCheckIn', '>', $checkOut);
+                              ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
-            ->select('rooms.*')
+            ->select('rooms.*', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
             ->distinct()
-            ->get();
+            ->get()
+            ->values();
+
+
+        if ($total > 0) {
+            $rooms = $rooms->filter(function ($room) use ($total) {
+                return $room->Capacity >= $total;
+            })->values();
+        }
+
+        if ($rooms->isEmpty()) {
+            return collect([]);
+        }
+
+        $bookedRooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+            ->where('reservations.Status', 'Checked In')
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                // Booked if dates overlap with check-in/check-out
+                $query->whereBetween('reservations.DateCheckIn', [$checkIn, $checkOut])
+                    ->orWhereBetween('reservations.DateCheckOut', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('reservations.DateCheckIn', '<=', $checkIn)
+                              ->where('reservations.DateCheckOut', '>=', $checkOut);
+                    });
+            })
+            ->select('rooms.RoomId')
+            ->distinct()
+            ->pluck('RoomId'); // Get only RoomIds
+
+
+        return $rooms->reject(function ($room) use ($bookedRooms) {
+            return $bookedRooms->contains($room->RoomId);
+        })->values();
+
     }
 
     public function saveBooking()
     {
 
-        $this->validate([
-            'firstname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
-            'lastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
-            'dob' => 'required|date',
-            'gender' => 'required',
-            'email' => 'required|email',
-            'street' => 'required',
-            'brgy' => 'required',
-            'city' => 'required',
-            'province' => 'required',
-            'contactnumber' => 'required|digits:10|regex:/^(\+63|0)[0-9]{10}$/'
 
-        ]);
+
 
         $province = "";
         $city = "";
@@ -241,15 +268,25 @@ class CreateBooking extends Component
             $guest = Guest::find($this->selectedGuestId);
         } else {
 
+
+            $this->validate([
+                'firstname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+                'lastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+                'dob' => 'required|date',
+                'gender' => 'required',
+                'email' => 'required|email',
+                'street' => 'required',
+                'selectedBrgy' => 'required',
+                'selectedCity' => 'required',
+                'selectedProvince' => 'required',
+                'contactnumber' => ['required', 'regex:/^(09|\+639)[0-9]{9}$/'],
+            ]);
             if (
                 $this->selectedGuestId || $this->firstname || $this->middlename || $this->lastname || $this->dob ||
                 $this->gender || $this->email || $this->street || $this->brgy || $this->city ||
                 $this->province || $this->contactnumber
             ) {
                 $guest = new Guest();
-
-
-
 
                 $guest->FirstName = $this->firstname;
                 $guest->MiddleName = $this->middlename;
@@ -302,7 +339,41 @@ class CreateBooking extends Component
         $reservation->Source = 'Walk In';
         $reservation->DiscountType = $this->discountType;
 
+
+
         $purpose = "";
+
+        if($this->discountType== 'Senior Citizen'){
+            $purpose = "Senior Citizen Discount";
+
+            if($this->idNumber == null){
+                session()->flash('message', 'Please enter the ID Number');
+                return;
+            }
+
+            if(strlen($this->idNumber) != 12){
+                session()->flash('message', 'Invalid ID Number');
+                return;
+            }
+
+
+            $reservation->IdNumber = $this->idNumber;
+        }else if($this->discountType == 'PWD'){
+            $purpose = "PWD Discount";
+            if($this->idNumber == null){
+                session()->flash('message', 'Please enter the ID Number');
+                return;
+            }
+
+            if(strlen($this->idNumber) != 12){
+                session()->flash('message', 'Invalid ID Number');
+                return;
+            }
+
+            $reservation->IdNumber = $this->idNumber;
+        }else if($this->discountType == 'None'){
+            $purpose = "No Discount";
+        }
 
         $reservation->DateCreated = date('Y-m-d');
         $reservation->TimeCreated = date('H:i:s');

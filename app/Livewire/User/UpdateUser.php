@@ -6,7 +6,7 @@ use App\Models\Employee;
 use App\Models\UserAccount;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
-
+use App\Rules\Age;
 
 class UpdateUser extends Component
 {
@@ -21,6 +21,7 @@ class UpdateUser extends Component
     public $dob;
     public $gender;
     public $position;
+    public $brgy;
 
     public $userId;
 
@@ -46,24 +47,54 @@ class UpdateUser extends Component
         $this->gender = $user->Gender;
         $this->position = $user->Position;
         $this->userId = $userId;
+        $this->brgy = $user->Brgy;
     }
 
     public function updateUser()
     {
-        $this->validate([
-            'firstname' => 'required|string|max:255',
-            'middlename' => 'nullable|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'contactNumber' => 'required|string|max:15',
-            'email' => ['required', 'email', Rule::unique('employees', 'email')->ignore($this->userId, 'EmployeeId')],
-            'street' => 'nullable|string|max:255',
-            'city' => 'required|string|max:255',
-            'province' => 'required|string|max:255',
-            'dob' => 'required|date',
-            'gender' => ['required', Rule::in(['Male', 'Female'])],
-            'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
-        ]);
+        $this->validate(
+            [
+                'firstname' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'middlename' => [
+                    'nullable',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'lastname' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^[\p{L} .-]+$/u'
+                ],
+                'contactNumber' => [
+                    'required',
+                    'string',
+                    'max:12',
+                    'regex:/^(?:\+63|0)9\d{9}$/'
+                ],
+                'contactNumber' => [
+                    'required',
+                    'string',
+                    'max:12',
+                    'regex:/^(?:\+63|0)9\d{9}$/',
+                ],
+                'email' => 'required|email|unique:employees,email',
+                'street' => 'required|string|max:255',
+                'brgy' => 'required|string|max:255',
+                'city' => 'required|string|max:255',
+                'province' => 'required|string|max:255',
+                'dob' => ['required', 'date',new Age],
+                'gender' => ['required', Rule::in(['Male', 'Female'])],
+                'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
+            ],
 
+        );
         $user = Employee::where('EmployeeId', $this->userId)->firstOrFail();
 
         $user->update([
