@@ -56,39 +56,36 @@ class GuestAPIController extends Controller
     }
     public function create(Request $request)
     {
-        // Validate the incoming request data
-        // $validatedData = $request->validate([
-        //     'firstname' => 'required|string|max:255',
-        //     'lastname' => 'required|string|max:255',
-        //     'middlename' => 'nullable|string|max:255',
-        //     'street' => 'required|string|max:255',
-        //     'city' => 'required|string|max:255',
-        //     'province' => 'required|string|max:255',
-        //     'birthdate' => 'required|date',
-        //     'gender' => 'required|string|max:255',
-        //     'contactnumber' => 'required|string|max:12',
-        //     'emailaddress' => 'required|email|max:255',
-        //     'password' => 'required|string|max:32',
-        // ]);
-
-        if (empty($request->input('firstname'))) {
+        // Check firstname
+        $firstname = trim($request->input('firstname'));
+        if (empty($firstname)) {
             return response()->json(['error' => 'First name is required.'], 200);
-        } elseif (!is_string($request->input('firstname')) || strlen($request->input('firstname')) > 255) {
+        } elseif (!is_string($firstname) || strlen($firstname) > 255) {
             return response()->json(['error' => 'First name must be a string and cannot exceed 255 characters.'], 200);
+        } elseif (!preg_match('/^[a-zA-Z\s]+$/', $firstname)) {
+            return response()->json(['error' => 'First name must only contain letters and spaces.'], 200);
         }
 
         // Check lastname
-        if (empty($request->input('lastname'))) {
+        $lastname = trim($request->input('lastname'));
+        if (empty($lastname)) {
             return response()->json(['error' => 'Last name is required.'], 200);
-        } elseif (!is_string($request->input('lastname')) || strlen($request->input('lastname')) > 255) {
+        } elseif (!is_string($lastname) || strlen($lastname) > 255) {
             return response()->json(['error' => 'Last name must be a string and cannot exceed 255 characters.'], 200);
+        } elseif (!preg_match('/^[a-zA-Z\s]+$/', $lastname)) {
+            return response()->json(['error' => 'Last name must only contain letters and spaces.'], 200);
         }
 
-        // Check middlename (nullable)
-        if ($request->input('middlename') !== null && !is_string($request->input('middlename'))) {
-            return response()->json(['error' => 'Middle name must be a string and cannot exceed 255 characters.'], 200);
-        } elseif (strlen($request->input('middlename')) > 255) {
-            return response()->json(['error' => 'Middle name cannot exceed 255 characters.'], 200);
+        // Check middlename if it exists
+        $middlename = trim($request->input('middlename'));
+        if (!is_null($middlename)) {
+            if (!is_string($middlename)) {
+                return response()->json(['error' => 'Middle name must be a string.'], 200);
+            } elseif (strlen($middlename) > 255) {
+                return response()->json(['error' => 'Middle name cannot exceed 255 characters.'], 200);
+            } elseif (!preg_match('/^[a-zA-Z\s]+$/', $middlename)) {
+                return response()->json(['error' => 'Middle name must only contain letters and spaces.'], 200);
+            }
         }
 
         // Check street
@@ -178,7 +175,7 @@ class GuestAPIController extends Controller
 
         $contactNumber = $request->input('contactnumber');
         if (!preg_match('/^(09\d{9}|\+639\d{9})$/', $contactNumber)) {
-            return response()->json(['error' => 'Invalid Philippine contact number format'], 400);
+            return response()->json(['error' => 'Invalid Philippine contact number format'], 200);
         }
 
 
@@ -328,7 +325,8 @@ class GuestAPIController extends Controller
             ->where('DateCheckIn', '<=', $validatedData['check_out'])
             ->where('DateCheckOut', '>=', $validatedData['check_in'])
             ->where('Status', '!=', 'Cancelled')
-            ->exists()) {
+            ->exists()
+        ) {
             return response()->json(['error' => 'Room is not available'], 200);
         }
 
@@ -410,9 +408,9 @@ class GuestAPIController extends Controller
         }
 
 
-        if($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD'){
-            $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * 0.1)) * 0.30;
-        }else{
+        if ($validatedData['discountType'] == 'Senior Citizen' || $validatedData['discountType'] == 'PWD') {
+            $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - (($room->RoomPrice * $lengthOfStay) * 0.1)) * 0.30;
+        } else {
             $promotion = Promotion::where('StartDate', '<=', $checkOut)
                 ->where('EndDate', '>=', $checkIn)
                 ->whereHas('discountedRooms', function ($query) use ($room) {
@@ -421,8 +419,8 @@ class GuestAPIController extends Controller
                 ->first();
 
             if ($promotion) {
-                $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - ( ($room->RoomPrice * $lengthOfStay) * ($promotion->Discount / 100))) * 0.30;
-            }else{
+                $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) - (($room->RoomPrice * $lengthOfStay) * ($promotion->Discount / 100))) * 0.30;
+            } else {
                 $partialPaymentAmount = (($room->RoomPrice * $lengthOfStay) * 0.30);
             }
         }
@@ -443,12 +441,13 @@ class GuestAPIController extends Controller
             ]);
 
 
-
-
             $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
             $data = [
                 'data' => [
                     'attributes' => [
+                        'cancel_url' => 'https://nasaph8210.online/cancel'.$reservation->payments->first()->ReferenceNumber,
+                        'success_url' => 'https://nasaph8210.online/success/'.$reservation->payments->first()->ReferenceNumber,
+
                         'billing' => [
                             'name' => $guest->FirstName . ' ' . $guest->LastName,
                             'email' => $guest->EmailAddress,
@@ -515,6 +514,9 @@ class GuestAPIController extends Controller
             $data = [
                 'data' => [
                     'attributes' => [
+                        'cancel_url' => 'https://nasaph8210.online/cancel'.$reservation->payments->first()->ReferenceNumber,
+                        'success_url' => 'https://nasaph8210.online/success/'.$reservation->payments->first()->ReferenceNumber,
+
                         'billing' => [
                             'name' => $guest->FirstName . ' ' . $guest->LastName,
                             'email' => $guest->EmailAddress,

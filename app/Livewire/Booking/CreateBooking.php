@@ -97,8 +97,7 @@ class CreateBooking extends Component
     {
         if ($this->selectedProvince) {
 
-            $this->apiCity = Http::get("https://psgc.gitlab.io/api/ /{$this->selectedProvince}/cities-municipalities/")->json();
-
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
         } else {
             $this->apiCity = [];
         }
@@ -109,8 +108,6 @@ class CreateBooking extends Component
         if ($this->selectedCity) {
 
             $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities/{$this->selectedCity}/barangays.json")->json();
-
-
         } else {
             $this->apiBrgy = [];
         }
@@ -129,8 +126,6 @@ class CreateBooking extends Component
     {
         if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
             $this->availableRooms = $this->getAvailableRooms();
-
-
         }
 
         if (in_array($propertyName, ['discountType'])) {
@@ -142,8 +137,8 @@ class CreateBooking extends Component
     public function addSubGuest()
     {
         $this->validate([
-            'subguestsFirstname' => 'required',
-            'subguestsLastname' => 'required',
+            'subguestsFirstname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'subguestsLastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
             'subguestsDob' => 'required|date',
             'subguestsGender' => 'required',
             'subguestsEmail' => 'required|email',
@@ -201,6 +196,20 @@ class CreateBooking extends Component
 
     public function saveBooking()
     {
+
+        $this->validate([
+            'firstname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'lastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'dob' => 'required|date',
+            'gender' => 'required',
+            'email' => 'required|email',
+            'street' => 'required',
+            'brgy' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'contactnumber' => 'required|digits:10|regex:/^(\+63|0)[0-9]{10}$/'
+
+        ]);
 
         $province = "";
         $city = "";
@@ -285,7 +294,7 @@ class CreateBooking extends Component
         $reservation->DateCheckOut = $this->checkOut;
         $reservation->TotalCost =  $this->discountedRoomRate - $totalAmenities;
         $reservation->Status = 'Booked';
-        $reservation->Discount = ( $room->RoomPrice * $this->lengthOfStay) - $this->discountedRoomRate;
+        $reservation->Discount = ($room->RoomPrice * $this->lengthOfStay) - $this->discountedRoomRate;
 
         $reservation->OriginalCost =  $room->RoomPrice * $this->lengthOfStay;
         $reservation->TotalAdult = $this->totalGuests;
@@ -373,6 +382,34 @@ class CreateBooking extends Component
         $this->gender = $guest->Gender;
         $this->dispatch('close-modal');
         $this->selectedGuestId = $guestId;
+
+
+        $this->fetchRegions();
+
+        foreach ($this->apiProvince as $prov) {
+            if ($prov['name'] == $guest->Province) {
+                $this->selectedProvince = $prov['code'];
+                break;
+            }
+        }
+
+        $this->fetchCities();
+
+        foreach ($this->apiCity as $cit) {
+            if ($cit['name'] == $guest->City) {
+                $this->selectedCity = $cit['code'];
+                break;
+            }
+        }
+
+        $this->fetchBarangays();
+
+        foreach ($this->apiBrgy as $b) {
+            if ($b['name'] == $guest->Brgy) {
+                $this->selectedBrgy = $b['code'];
+                break;
+            }
+        }
     }
 
     public function updateAmenityQuantity($amenityId)
@@ -405,7 +442,6 @@ class CreateBooking extends Component
 
             $this->dispatch('close-modal');
             $this->total = $this->computeTotal();
-
         }
     }
 

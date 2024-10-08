@@ -12,38 +12,96 @@
                             <div>
                                 <button type="button"
                                     x-on:click="$dispatch('open-modal', {name: 'select-customer-modal'})"
-                                    class="bg-green-700 px-2 py-1 rounded shadow text-white">Search</button>
+                                    class="bg-green-700 px-2 py-1 rounded shadow text-white">Select Old Customer</button>
                             </div>
+
+                            <x-modal title="Select Customer" name="select-customer-modal">
+
+                                @slot('body')
+
+                                    <div class="my-2" wire:ignore>
+                                        <div class="grid grid-cols-1 gap-2">
+
+
+                                            <div>
+                                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
+                                                    Search Guest
+                                                </label>
+                                                <input type="text" wire:model.live="searchCustomer"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                                                    placeholder="Search Guest">
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+                                    <div class="max-h-96 overflow-auto bg-white rounded-md">
+                                        @foreach ($guests as $guest)
+                                            <div class="p-2 shadow rounded-lg mx-1 my-4 flex justify-between items-center">
+                                                <div>
+                                                    <p>{{ $guest->FirstName . ' ' . $guest->MiddleName . ' ' . $guest->LastName }}</p>
+                                                </div>
+
+                                                <div>
+                                                    <button wire:click="selectGuest({{ $guest->GuestId }})" type="button"
+                                                        class="bg-green-700 text-white px-2 py-1 rounded
+                                                        hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">Select</button>
+                                                </div>
+
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endslot
+                            </x-modal>
                         </div>
 
                         <div class="grid gap-4 mb-4 grid-cols-4">
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="firstname" placeholder="First Name" model="firstname"
                                     label="First Name" />
+                                @error('firstname')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="middlename" placeholder="Middle Name" model="middlename"
                                     label="Middle Name" />
+                                @error('middlename')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="lastname" placeholder="Last Name" model="lastname"
                                     label="Last Name" />
+                                @error('lastname')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
-                                <x-text-field1 field1 name="dob" placeholder="First Name" model="dob"
+                                <x-text-field1 field1 name="dob" placeholder="Date of Birth" model="dob"
                                     type="date" label="Birthdate" />
+                                @error('dob')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="col-span-2 sm:col-span-1">
                                 <x-combobox name="gender" model="gender" placeholder="Gender" :options="['Female', 'Male']" />
+                                @error('gender')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
+
                             <div class="col-span-2">
                                 <div class="mt-1">
-                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
-                                    <select wire:model="selectedProvince" wire:change="fetchCities" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                    <label
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                                    <select wire:model="selectedProvince" wire:change="fetchCities"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                                         <option value="">Select Province</option>
                                         @foreach ($apiProvince as $region)
                                             <option value="{{ $region['code'] }}">
@@ -51,13 +109,18 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('selectedProvince')
+                                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-span-2">
                                 <div class="mt-1">
-                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
-                                    <select wire:model="selectedCity" wire:change="fetchBarangays" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                    <label
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
+                                    <select wire:model="selectedCity" wire:change="fetchBarangays"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                                         <option value="">Select City</option>
                                         @foreach ($apiCity as $city)
                                             <option value="{{ $city['code'] }}">
@@ -65,13 +128,18 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('selectedCity')
+                                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-span-2">
                                 <div class="mt-1">
-                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
-                                    <select wire:model="selectedBrgy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                                    <label
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
+                                    <select wire:model="selectedBrgy"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                                         <option value="">Select Barangay</option>
                                         @foreach ($apiBrgy as $brgy)
                                             <option value="{{ $brgy['code'] }}">
@@ -79,27 +147,36 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('selectedBrgy')
+                                        <span class="text-red-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
-
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="street" placeholder="Street" model="street"
                                     label="Street" />
+                                @error('street')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
-
-
-
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="email" placeholder="Email" model="email"
                                     label="Email" />
+                                @error('email')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="col-span-2">
                                 <x-text-field1 field1 name="contactnumber" placeholder="Contact Number"
                                     model="contactnumber" label="Contact Number" />
+                                @error('contactnumber')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
+
 
                         </div>
 
@@ -245,7 +322,7 @@
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
                                     <p>{{ $amenity['name'] }}</p>
-                                    <p>{{ $amenity['price']}}</p>
+                                    <p>{{ $amenity['price'] }}</p>
                                 </div>
                             @endforeach
 
@@ -339,11 +416,23 @@
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
                                     <p>{{ $amenity['name'] . ' x ' . $amenity['quantity'] }}</p>
-                                    <p>{{ $amenity['price']  * $amenity['quantity'] }}</p>
+                                    <p>{{ $amenity['price'] * $amenity['quantity'] }}</p>
                                 </div>
                             @endforeach
 
                         </div>
+
+                        <div>
+                            <div class="flex justify-between">
+                                <p class="font-bold text-blue-950">Enter PWD or Senior ID Number</p>
+
+                            </div>
+                            <div>
+                                <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number" type="number"
+                                model="idNumber" />
+                            </div>
+                        </div>
+
                         <hr class="mt-1">
 
                         <div class="flex justify-between ">
@@ -351,7 +440,7 @@
                             <p>{{ $discountedRoomRate ?? 0 }}</p>
                         </div>
                         <div>
-                            <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount"
+                            <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount" type="number"
                                 model="paymentAmount" />
 
                         </div>
@@ -375,45 +464,7 @@
     @endif
 
 
-    <x-modal title="Select Customer" name="select-customer-modal">
 
-        @slot('body')
-
-            <div class="my-2">
-                <div class="grid grid-cols-1 gap-2">
-
-
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
-                            Search Guest
-                        </label>
-                        <input type="text" wire:model.live="searchCustomer"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
-                            placeholder="Search Guest">
-                    </div>
-
-
-                </div>
-
-            </div>
-            <div class="max-h-96 overflow-auto bg-white rounded-md">
-                @foreach ($guests as $guest)
-                    <div class="p-2 shadow rounded-lg mx-1 my-4 flex justify-between items-center">
-                        <div>
-                            <p>{{ $guest->FirstName . ' ' . $guest->MiddleName . ' ' . $guest->LastName }}</p>
-                        </div>
-
-                        <div>
-                            <button wire:click="selectGuest({{ $guest->GuestId }})" type="button"
-                                class="bg-green-700 text-white px-2 py-1 rounded
-                                hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">Select</button>
-                        </div>
-
-                    </div>
-                @endforeach
-            </div>
-        @endslot
-    </x-modal>
 
     <x-modal title="Select Amenities" name="select-amenities-modal">
         @slot('body')
@@ -424,6 +475,7 @@
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
                             Search Amenities
+
                         </label>
                         <input type="text" wire:model.live="searchAmenity"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
@@ -606,7 +658,7 @@
             <form wire:submit.prevent="addSubGuest">
 
 
-                <div class="grid grid-cols-2 gap-5">
+                <div class="grid grid-cols-2 gap-5" wire:ignore>
                     <div>
                         <x-text-field1 field1 name="firstname" placeholder="First Name" model="subguestsFirstname"
                             label="First Name" />

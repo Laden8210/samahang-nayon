@@ -89,3 +89,7 @@ Route::get('download/report/{id}', [ReportController::class, 'downloadReport'])-
 Route::get('settings', [UserController::class, 'settings'])->name('settings');
 
 Route::get('printReceipt/{id}', [ReceiptController::class, 'printReceipt'])->name('printReceipt');
+
+
+Route::get('success/{reference}', [ReceiptController::class, 'success'])->name('success');
+Route::get('failed/{reference}', [ReceiptController::class, 'failed'])->name('failed');

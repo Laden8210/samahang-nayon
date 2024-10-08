@@ -39,9 +39,10 @@ class AmenitiesTable extends Component
     public function createAmenities()
     {
         $this->validate([
-            'name' => 'required',
-            'price' => 'required'
+            'name' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'price' => 'required|numeric'
         ]);
+
 
         $amenities = Amenities::create([
             'Name' => $this->name,
@@ -58,6 +59,13 @@ class AmenitiesTable extends Component
 
     public function update()
     {
+
+        $this->validate([
+            'updateName' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'updatePrice' => 'required|numeric'
+        ]);
+
+
         $this->selectedAmenities->update([
             'Name' => $this->updateName,
             'Price' => $this->updatePrice

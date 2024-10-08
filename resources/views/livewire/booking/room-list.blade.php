@@ -13,25 +13,25 @@
                         class="h-24
                         @switch($room->RoomType)
                             @case('Single bed')
-                                bg-cyan-200
+                                 bg-sky-500
                                 @break
                             @case('Two single beds')
-                                bg-violet-200
+                               bg-violet-500
                                 @break
                             @case('Two double beds')
-                                bg-blue-200
+                               bg-violet-500
                                 @break
                             @case('Matrimonial')
-                                bg-green-200
+                                bg-blue-800
                                 @break
                             @case('Family')
-                                bg-orange-200
+                                bg-orange-500
                                 @break
                             @case('King size')
                                 bg-red-200
                                 @break
                             @default
-                                bg-gray-200
+                             bg-sky-500
                         @endswitch
                         items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
                         {{ $room->RoomNumber }}

@@ -8,7 +8,7 @@
                     <div class="col-span-2">
                         <x-text-field1 name="name" placeholder="Type amenities name" model="name" label="Name"
                             type="text" />
-                            @error('name')
+                        @error('name')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
@@ -18,7 +18,7 @@
 
                         <x-text-field1 name="price" placeholder="Type amenities price" model="price" label="Price"
                             type="number" />
-                            @error('price')
+                        @error('price')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
                             </p>
@@ -33,7 +33,7 @@
         @endslot
     </x-modal>
 
-    <div class="bg-gray-50 rounded" >
+    <div class="bg-gray-50 rounded">
         <h5 class="mx-2 font-bold px-2 pt-2">Amenities Information</h5>
         <div class="relative mb-4 w-1/3 mx-3">
 
@@ -106,27 +106,37 @@
             </table>
         </div>
     </div>
-        <x-modal title="Update Amenities" name="update-modal">
-            @slot('body')
-                <form wire:submit.prevent="update">
-                    <div class="grid gap-4 mb-4 grid-cols-2">
+    <x-modal title="Update Amenities" name="update-modal">
+        @slot('body')
+            <form wire:submit.prevent="update">
+                <div class="grid gap-4 mb-4 grid-cols-2">
 
-                        <div class="col-span-2">
-                            <x-text-field1 name="update-name" placeholder="Enter amenities name" model="updateName"
-                                label="Name" type="text"/>
-                        </div>
-                        <div class="col-span-2">
-                            <x-text-field1 name="updatePrice" placeholder="Enter amenities price" model="updatePrice"
-                                label="Price" type="number"  />
-                        </div>
+                    <div class="col-span-2">
+                        <x-text-field1 name="update-name" placeholder="Enter amenities name" model="updateName"
+                            label="Name" type="text" />
                     </div>
-                    <button type="submit"
-                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Update amenities
-                    </button>
-                </form>
-            @endslot
-        </x-modal>
+                    @error('updateName')
+                        <p class="text-red-500 text-xs italic mt-1"><i
+                                class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                        </p>
+                    @enderror
+                    <div class="col-span-2">
+                        <x-text-field1 name="updatePrice" placeholder="Enter amenities price" model="updatePrice"
+                            label="Price" type="number" />
+                    </div>
+                    @error('updatePrice')
+                        <p class="text-red-500 text-xs italic mt-1"><i
+                                class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                        </p>
+                    @enderror
+                </div>
+                <button type="submit"
+                    class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Update amenities
+                </button>
+            </form>
+        @endslot
+    </x-modal>
 
 
 

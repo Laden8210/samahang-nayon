@@ -49,16 +49,16 @@ class ReportController extends Controller
 
 
         }else {
-            if ($report->EndDate) {
-                $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
-                    ->whereBetween('DateCreated', [$report->Date, $report->EndDate])
-                    ->get();
-            } else {
-                // Only use the start date if EndDate is null
-                $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
-                    ->whereDate('DateCreated', '=', $report->Date)
-                    ->get();
-            }
+            $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
+            ->when($report->EndDate, function ($query) use ($report) {
+                // Use the date range if EndDate is present
+                return $query->whereBetween('DateCreated', [$report->Date, $report->EndDate]);
+            }, function ($query) use ($report) {
+                // Otherwise, only use the start date
+                return $query->whereDate('DateCreated', '=', $report->Date);
+            })
+            ->get();
+
         }
 
 

@@ -169,4 +169,19 @@ class ReceiptController extends Controller
         return response($htmlOutput, 200)
             ->header('Content-Type', 'text/html');
     }
+
+
+    public function success($reference)
+    {
+        // $payment = Payment::where('ReferenceNumber', $reference)->first();
+
+        return view('receipt.success');
+    }
+
+    public function failed($reference)
+    {
+        $payment = Payment::where('ReferenceNumber', $reference)->first();
+
+        return view('receipt.failed');
+    }
 }

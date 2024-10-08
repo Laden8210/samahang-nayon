@@ -14,8 +14,16 @@ class RoomAPIController extends Controller
 {
     public function getRoom(Request $request)
     {
-        $checkIn = Carbon::parse($request->startDate);
-        $checkOut = Carbon::parse($request->endDate);
+        // Parse check-in and check-out dates
+        $checkIn = Carbon::parse($request->checkIn);
+        $checkOut = Carbon::parse($request->checkOut);
+
+        // Calculate total guests
+        $adults = $request->adult;
+        $children = $request->children;
+        $totalGuests = $adults + $children;
+
+
 
         $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->leftJoin('discountedrooms', 'rooms.RoomId', '=', 'discountedrooms.RoomId')
@@ -24,18 +32,54 @@ class RoomAPIController extends Controller
                 $query->whereNull('reservations.RoomId')
                     ->orWhere('reservations.Status', 'Checked Out')
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
+
                         $query->where('reservations.DateCheckOut', '<', $checkIn)
                               ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
             ->select('rooms.*', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
             ->distinct()
-            ->get();
+            ->get()
+            ->values();
 
-        return response()->json($rooms);
+
+        if ($totalGuests > 0) {
+            $rooms = $rooms->filter(function ($room) use ($totalGuests) {
+                return $room->Capacity >= $totalGuests;
+            })->values();
+        }
+
+        if ($rooms->isEmpty()) {
+            return response()->json(['error' => 'No available rooms'], 200);
+        }
+
+        $bookedRooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
+            ->where('reservations.Status', 'Checked In')
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                // Booked if dates overlap with check-in/check-out
+                $query->whereBetween('reservations.DateCheckIn', [$checkIn, $checkOut])
+                    ->orWhereBetween('reservations.DateCheckOut', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('reservations.DateCheckIn', '<=', $checkIn)
+                              ->where('reservations.DateCheckOut', '>=', $checkOut);
+                    });
+            })
+            ->select('rooms.RoomId')
+            ->distinct()
+            ->pluck('RoomId'); // Get only RoomIds
+
+
+        $availableRooms = $rooms->reject(function ($room) use ($bookedRooms) {
+            return $bookedRooms->contains($room->RoomId);
+        })->values();
+
+
+        if ($availableRooms->isEmpty()) {
+            return response()->json(['error' => 'No available rooms'], 200);
+        }
+
+        return response()->json($availableRooms);
     }
-
-
 
 
 
