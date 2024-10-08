@@ -217,7 +217,7 @@
             <tbody>
                 @foreach ($reservations as $reservation)
                     @foreach ($reservation->checkInOuts as $checkInOut)
-                        @if ($checkInOut->Type === 'Checked In')
+                        @if ($checkInOut->Type === 'Checked In' || $checkInOut->Type === 'Checked Out')
                             <tr>
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
