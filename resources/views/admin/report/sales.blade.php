@@ -158,42 +158,40 @@
             <tbody>
                 @foreach ($reservations as $reservation)
                     @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved' || $reservation->Status === 'Checked In')
-                        @continue
+                        <tr>
+                            <td>{{ $reservation->ReservationId }}</td>
+                            <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                            </td>
+                            <td>{{ ucfirst($reservation->room->RoomType) }}</td>
+                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                            <td>2:00 PM</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
+                            </td>
+                            <td>
+                                @switch($reservation->Status)
+                                    @case('Checked In')
+                                        Occupied
+                                    @break
+
+                                    @case('Reserved')
+                                        Reserved
+                                    @break
+
+                                    @case('Booked')
+                                        Booked
+                                    @break
+
+                                    @case('Cancelled')
+                                        Cancelled
+                                    @break
+
+                                    @default
+                                        Unknown
+                                @endswitch
+                            </td>
+                        </tr>
                     @endif
-
-                    <tr>
-                        <td>{{ $reservation->ReservationId }}</td>
-                        <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
-                        </td>
-                        <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                        <td>{{ $reservation->room->RoomNumber }}</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
-                        <td>2:00 PM</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
-                        </td>
-                        <td>
-                            @switch($reservation->Status)
-                                @case('Checked In')
-                                    Occupied
-                                @break
-
-                                @case('Reserved')
-                                    Reserved
-                                @break
-
-                                @case('Booked')
-                                    Booked
-                                @break
-
-                                @case('Cancelled')
-                                    Cancelled
-                                @break
-
-                                @default
-                                    Unknown
-                            @endswitch
-                        </td>
-                    </tr>
                 @endforeach
             </tbody>
 
@@ -219,7 +217,7 @@
             <tbody>
                 @foreach ($reservations as $reservation)
                     @foreach ($reservation->checkInOuts as $checkInOut)
-                        @if ($checkInOut->Type === 'Checked In' )
+                        @if ($checkInOut->Type === 'Checked In')
                             <tr>
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
@@ -366,7 +364,8 @@
                         @if ($checkInOut->Type === 'Checked Out')
                             <tr>
                                 <td>{{ $reservation->ReservationId }}</td>
-                                <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}</td>
+                                <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                                </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
@@ -400,7 +399,8 @@
                         @if ($checkInOut->Type === 'Checked In')
                             <tr>
                                 <td>{{ $reservation->ReservationId }}</td>
-                                <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}</td>
+                                <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                                </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
@@ -435,7 +435,8 @@
                     @if ($reservation->Status === 'Cancelled')
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
-                            <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}</td>
+                            <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                            </td>
                             <td>{{ $reservation->room->RoomType }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
                             <td>{{ $reservation->DateCreated }}</td>
@@ -474,7 +475,8 @@
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}</td>
+                            <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                            </td>
                             <td>{{ number_format($reservation->TotalCost, 2) }}</td>
                             <td>{{ number_format($reservation->reservationAmenities->sum('TotalCost'), 2) }}
                             </td>
