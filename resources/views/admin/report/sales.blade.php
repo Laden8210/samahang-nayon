@@ -360,8 +360,8 @@
                     <th>Guest Name</th>
                     <th>Room Type</th>
                     <th>Room No</th>
-                    <th>Check in Date</th>
-                    <th>Check in Time</th>
+                    <th>Check Out Date</th>
+                    <th>Check Out Time</th>
 
 
                 </tr>
@@ -378,7 +378,7 @@
                                 </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
                             </tr>
                         @endif
