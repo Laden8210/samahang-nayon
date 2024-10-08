@@ -157,7 +157,7 @@
             </thead>
             <tbody>
                 @foreach ($reservations as $reservation)
-                    @if ($reservation->Status === 'Checked Out' || $reservation->Status === 'Cancelled')
+                    @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved')
                         @continue
                     @endif
 
