@@ -290,6 +290,13 @@
             </tbody>
         </table>
     @elseif ($report->type === 'Guest History Report')
+
+
+        @if ($reservations->isEmpty())
+            <h3>No records found</h3>
+
+        @else
+
         <h5>
             Guest Name:
             {{ $reservations->first()->guest->FirstName . ' ' . $reservations->first()->guest->LastName }}
@@ -332,6 +339,7 @@
                         <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
                         <td>{{ $reservation->room->RoomNumber }}</td>
                         <td>{{ $reservation->room->RoomType }}</td>
+                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
                         <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
                         <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
                         </td>
@@ -343,6 +351,7 @@
 
             </tbody>
         </table>
+        @endif
     @elseif ($report->type === 'Check Out Report')
         <table>
             <thead>
