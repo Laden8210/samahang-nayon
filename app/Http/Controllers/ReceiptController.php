@@ -143,8 +143,8 @@ class ReceiptController extends Controller
         $amountInWords = $this->convertNumberToWords($payment->AmountPaid);
 
         $sheet->setCellValue('O7',  Carbon::now()->toDateString());
-        $sheet->setCellValue('f9',  $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
-
+        $sheet->setCellValue('f9',  "with address at ". $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
+        $sheet->setCellValue('f8', "Received from: ". $reservation->guest->FirstName . ' ' . $reservation->guest->LastName);
         $employee = Auth::user();
 
         $sheet->setCellValue('O14', $employee->FirstName . ' ' . $employee->LastName);
@@ -152,17 +152,15 @@ class ReceiptController extends Controller
         $sheet->setCellValue('F11', $amountInWords);
 
         $sheet->setCellValue('F10', $totalPayment);
-        // Create a writer to convert the spreadsheet to HTML
+
         $writer = new Html($spreadsheet);
 
 
-        // Set headers for HTML output
         header('Content-Type: text/html');
         header('Content-Disposition: inline; filename="receipts.html"');
         header('Cache-Control: max-age=0');
         header('Cache-Control: max-age=1');
 
-        // Start output buffering
         ob_start();
         $writer->save('php://output');
         $htmlOutput = ob_get_clean();

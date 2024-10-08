@@ -57,19 +57,110 @@ class GuestAPIController extends Controller
     public function create(Request $request)
     {
         // Validate the incoming request data
-        $validatedData = $request->validate([
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'middlename' => 'nullable|string|max:255',
-            'street' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'province' => 'required|string|max:255',
-            'birthdate' => 'required|date',
-            'gender' => 'required|string|max:255',
-            'contactnumber' => 'required|string|max:12',
-            'emailaddress' => 'required|email|max:255',
-            'password' => 'required|string|max:32',
+        // $validatedData = $request->validate([
+        //     'firstname' => 'required|string|max:255',
+        //     'lastname' => 'required|string|max:255',
+        //     'middlename' => 'nullable|string|max:255',
+        //     'street' => 'required|string|max:255',
+        //     'city' => 'required|string|max:255',
+        //     'province' => 'required|string|max:255',
+        //     'birthdate' => 'required|date',
+        //     'gender' => 'required|string|max:255',
+        //     'contactnumber' => 'required|string|max:12',
+        //     'emailaddress' => 'required|email|max:255',
+        //     'password' => 'required|string|max:32',
+        // ]);
+
+        if (empty($request->input('firstname'))) {
+            return response()->json(['error' => 'First name is required.'], 200);
+        } elseif (!is_string($request->input('firstname')) || strlen($request->input('firstname')) > 255) {
+            return response()->json(['error' => 'First name must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check lastname
+        if (empty($request->input('lastname'))) {
+            return response()->json(['error' => 'Last name is required.'], 200);
+        } elseif (!is_string($request->input('lastname')) || strlen($request->input('lastname')) > 255) {
+            return response()->json(['error' => 'Last name must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check middlename (nullable)
+        if ($request->input('middlename') !== null && !is_string($request->input('middlename'))) {
+            return response()->json(['error' => 'Middle name must be a string and cannot exceed 255 characters.'], 200);
+        } elseif (strlen($request->input('middlename')) > 255) {
+            return response()->json(['error' => 'Middle name cannot exceed 255 characters.'], 200);
+        }
+
+        // Check street
+        if (empty($request->input('street'))) {
+            return response()->json(['error' => 'Street is required.'], 200);
+        } elseif (!is_string($request->input('street')) || strlen($request->input('street')) > 255) {
+            return response()->json(['error' => 'Street must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check city
+        if (empty($request->input('city'))) {
+            return response()->json(['error' => 'City is required.'], 200);
+        } elseif (!is_string($request->input('city')) || strlen($request->input('city')) > 255) {
+            return response()->json(['error' => 'City must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check province
+        if (empty($request->input('province'))) {
+            return response()->json(['error' => 'Province is required.'], 200);
+        } elseif (!is_string($request->input('province')) || strlen($request->input('province')) > 255) {
+            return response()->json(['error' => 'Province must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check birthdate
+        if (empty($request->input('birthdate'))) {
+            return response()->json(['error' => 'Birthdate is required.'], 200);
+        } elseif (!strtotime($request->input('birthdate'))) {
+            return response()->json(['error' => 'Birthdate must be a valid date.'], 200);
+        }
+
+        // Check gender
+        if (empty($request->input('gender'))) {
+            return response()->json(['error' => 'Gender is required.'], 200);
+        } elseif (!is_string($request->input('gender')) || strlen($request->input('gender')) > 255) {
+            return response()->json(['error' => 'Gender must be a string and cannot exceed 255 characters.'], 200);
+        }
+
+        // Check contactnumber
+        if (empty($request->input('contactnumber'))) {
+            return response()->json(['error' => 'Contact number is required.'], 200);
+        } elseif (!is_string($request->input('contactnumber')) || strlen($request->input('contactnumber')) > 12) {
+            return response()->json(['error' => 'Contact number must be a string and cannot exceed 12 characters.'], 200);
+        }
+
+        // Check emailaddress
+        if (empty($request->input('emailaddress'))) {
+            return response()->json(['error' => 'Email address is required.'], 200);
+        } elseif (!filter_var($request->input('emailaddress'), FILTER_VALIDATE_EMAIL) || strlen($request->input('emailaddress')) > 255) {
+            return response()->json(['error' => 'Email address must be a valid email.'], 200);
+        }
+
+        // Check password
+        if (empty($request->input('password'))) {
+            return response()->json(['error' => 'Password is required.'], 200);
+        } elseif (!is_string($request->input('password')) || strlen($request->input('password')) > 32) {
+            return response()->json(['error' => 'Password must be a string and cannot exceed 32 characters.'], 200);
+        }
+
+        $validatedData = $request->only([
+            'firstname',
+            'lastname',
+            'middlename',
+            'street',
+            'city',
+            'province',
+            'birthdate',
+            'gender',
+            'contactnumber',
+            'emailaddress',
+            'password'
         ]);
+
 
 
         $existingGuest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
@@ -110,6 +201,11 @@ class GuestAPIController extends Controller
             return response()->json(['error' => 'Guest must be at least 18 years old']);
         }
 
+
+        // TODO: capitalize first letter of each word
+        $validatedData['firstname'] = ucwords(strtolower($validatedData['firstname']));
+        $validatedData['lastname'] = ucwords(strtolower($validatedData['lastname']));
+        $validatedData['middlename'] = ucwords(strtolower($validatedData['middlename']));
         $guest = Guest::create([
             'FirstName' => $validatedData['firstname'],
             'LastName' => $validatedData['lastname'],
