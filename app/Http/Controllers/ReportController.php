@@ -64,6 +64,6 @@ class ReportController extends Controller
 
 
         $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
-        return $pdf->stream('invoice.pdf');
+        return $pdf->stream($report->type.'.pdf');
     }
 }

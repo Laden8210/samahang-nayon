@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Official Receipt</title>
+    <title>{{$report->type}}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -378,7 +378,7 @@
                                 </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->format('Y-m-d') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
                             </tr>
                         @endif
