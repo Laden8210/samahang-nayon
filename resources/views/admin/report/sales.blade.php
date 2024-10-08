@@ -31,7 +31,7 @@
         }
 
         td {
-            text-align: right;
+            text-align: left;
         }
 
         td:first-child {
@@ -221,6 +221,7 @@
                     @foreach ($reservation->checkInOuts as $checkInOut)
                         @if ($checkInOut->Type === 'Checked In' || $checkInOut->Type === 'Checked Out')
                             <tr>
+                                <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                                 </td>
                                 <td>{{ ucfirst($reservation->room->RoomType) }}</td>
