@@ -835,4 +835,109 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Failed to add sub-guest', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+    public function updateUser(Request $request)
+    {
+
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 200);
+        }
+
+        $validatedData = $request->validate([
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'middleName' => 'nullable|string|max:255',
+            'password' => 'required|string|max:255'
+        ]);
+
+        if (!Hash::check($validatedData['password'], $guest->Password)) {
+            return response()->json(['message' => 'Invalid password'], 200);
+        }
+
+        $guest->FirstName = $validatedData['firstName'];
+        $guest->LastName = $validatedData['lastName'];
+        $guest->MiddleName = $validatedData['middleName'];
+        $guest->save();
+
+        return response()->json(['message' => 'Guest updated successfully', 'guest' => $guest], 200);
+    }
+
+    public function updatePhone(Request $request){
+
+
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 200);
+        }
+
+        $validatedData = $request->validate([
+            'contactNumber' => 'required|string|max:12',
+            'password' => 'required|string|max:255'
+        ]);
+
+
+        if (!Hash::check($validatedData['password'], $guest->Password)) {
+            return response()->json(['message' => 'Invalid password'], 200);
+        }
+
+        $guest->ContactNumber = $validatedData['contactNumber'];
+
+        $guest->save();
+
+
+    }
+    public function updateEmail(Request $request){
+
+
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 200);
+        }
+
+
+        $validatedData = $request->validate([
+            'email' => 'required|string|max:255',
+            'password' => 'required|string|max:255'
+        ]);
+
+
+        if (!Hash::check($validatedData['password'], $guest->Password)) {
+            return response()->json(['message' => 'Invalid password'], 200);
+        }
+
+
+        $guest->EmailAddress = $validatedData['email'];
+
+    }
+    public function updatePassword(Request $request){
+
+        $guest = Auth::guard('api')->user();
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized'], 200);
+        }
+
+
+        $validatedData = $request->validate([
+            'newPassword' => 'required|string|max:255',
+            'oldPassword' => 'required|string|max:255',
+            'confirmPassword' => 'required|string|max:255'
+        ]);
+
+        if (!Hash::check($validatedData['oldPassword'], $guest->Password)) {
+            return response()->json(['message' => 'Invalid password'], 200);
+        }
+
+
+        if ($validatedData['newPassword'] != $validatedData['confirmPassword']) {
+            return response()->json(['message' => 'Passwords do not match'], 200);
+        }
+
+        $guest->Password = bcrypt($validatedData['newPassword']);
+
+        $guest->save();
+
+    }
 }
+

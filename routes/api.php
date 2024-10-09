@@ -47,3 +47,9 @@ Route::post('changePassword', [GuestAPIController::class, 'changePassword']);
 Route::post('reservation/addSubGuest/', [GuestAPIController::class, 'addSubGuest']);
 
 Route::post('reservation/addAmenities', [GuestAPIController::class, 'addAmenities']);
+
+
+Route::post('user/update', [GuestAPIController::class, 'updateUser']);
+Route::post('user/updateNumber', [GuestAPIController::class, 'updatePhone']);
+Route::post('user/updateEmail', [GuestAPIController::class, 'updateEmail']);
+Route::post('user/updatePassword', [GuestAPIController::class, 'updatePassword']);
