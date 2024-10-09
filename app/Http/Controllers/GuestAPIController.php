@@ -240,7 +240,6 @@ class GuestAPIController extends Controller
         );
     }
 
-    public function changeName(Request $$requ)
 
     public function getCurrentUser(Request $request)
     {
@@ -856,10 +855,12 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Invalid password'], 200);
         }
 
-        $guest->FirstName = $validatedData['firstName'];
-        $guest->LastName = $validatedData['lastName'];
-        $guest->MiddleName = $validatedData['middleName'];
-        $guest->save();
+        $nGuest = Guest::find($guest->GuestId);
+        $nGuest->FirstName = $validatedData['firstName'];
+        $nGuest->LastName = $validatedData['lastName'];
+        $nGuest->MiddleName = $validatedData['middleName'];
+        $nGuest->MiddleName = $validatedData['middleName'];
+        $nGuest->save();
 
         return response()->json(['message' => 'Guest updated successfully', 'guest' => $guest], 200);
     }
@@ -882,9 +883,11 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Invalid password'], 200);
         }
 
-        $guest->ContactNumber = $validatedData['contactNumber'];
+        $nGuest = Guest::find($guest->GuestId);
 
-        $guest->save();
+        $nGuest->ContactNumber = $validatedData['contactNumber'];
+
+        $nGuest->save();
 
 
     }
@@ -907,8 +910,11 @@ class GuestAPIController extends Controller
             return response()->json(['message' => 'Invalid password'], 200);
         }
 
+        $nGuest = Guest::find($guest->GuestId);
 
-        $guest->EmailAddress = $validatedData['email'];
+        $nGuest->EmailAddress = $validatedData['email'];
+
+        $nGuest->save();
 
     }
     public function updatePassword(Request $request){
@@ -926,17 +932,19 @@ class GuestAPIController extends Controller
         ]);
 
         if (!Hash::check($validatedData['oldPassword'], $guest->Password)) {
-            return response()->json(['message' => 'Invalid password'], 200);
+            return response()->json(['error' => 'Invalid password'], 200);
         }
 
 
         if ($validatedData['newPassword'] != $validatedData['confirmPassword']) {
-            return response()->json(['message' => 'Passwords do not match'], 200);
+            return response()->json(['error' => 'Passwords do not match'], 200);
         }
+        $nGuest = Guest::find($guest->GuestId);
+        $nGuest->Password = bcrypt($validatedData['newPassword']);
 
-        $guest->Password = bcrypt($validatedData['newPassword']);
+        $nGuest->save();
 
-        $guest->save();
+        return response()->json(['message' => 'Password updated successfully'], 200);
 
     }
 }
