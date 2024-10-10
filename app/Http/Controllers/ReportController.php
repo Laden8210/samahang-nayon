@@ -33,8 +33,7 @@ class ReportController extends Controller
                 })
                 ->get();
 
-                $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
-                return $pdf->stream('invoice.pdf');
+
         }else if($report->type === 'Arrival and Departure Report'){
             if ($report->EndDate) {
                 // Fetch reservations where both DateCheckIn and DateCheckOut are within the date range
