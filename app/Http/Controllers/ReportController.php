@@ -38,15 +38,16 @@ class ReportController extends Controller
             if ($report->EndDate) {
                 // Fetch reservations where both DateCheckIn and DateCheckOut are within the date range
                 $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
-                    ->where(function ($query) use ($report) {
-                        $query->whereBetween('DateCheckIn', [$report->Date, $report->EndDate])
-                              ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
-                    })
-                    ->get();
+                ->where(function ($query) use ($report) {
+                    $query->where('DateCheckIn', '<=', $report->EndDate)
+                          ->where('DateCheckOut', '>=', $report->Date);
+                })
+                ->get();
+
             } else {
                 // Only use the start date if EndDate is null, fetching reservations created on that date
                 $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
-                    ->whereDate('DateCreated', '=', $report->Date)
+                    ->whereDate('DateCheckIn', '=', $report->Date)
                     ->get();
             }
 
