@@ -81,7 +81,7 @@ class ReportTable extends Component
         } else
 
         if ($this->type == 'Daily Revenue Report') {
-            $report->EndDate = $this->startdate;
+            $report->EndDate = Carbon::parse($this->startdate)->addDay();
         } else if ($this->type == 'Guest History Report') {
             $report->EndDate = $this->enddate;
             $report->GuestId = $this->guest;
