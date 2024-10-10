@@ -27,6 +27,10 @@ class ReportController extends Controller
 
             $reservations = Reservation::with(['guest', 'room', 'reservationAmenities', 'checkInOuts'])
                 ->where('GuestId', $report->GuestId)
+                ->where(function ($query) use ($report) {
+                    $query->whereBetween('DateCheckIn', [$report->Date, $report->EndDate])
+                          ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
+                })
                 ->get();
 
                 $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
