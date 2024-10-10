@@ -62,7 +62,7 @@ class LoginController extends Controller
             ])->withInput($request->only('email'));
         }
 
-        if ($employee->status == 'Inactive') {
+        if ($employee->Status == 'Inactive') {
             SystemLog::create([
                 'log' => 'Login failed from IP: ' . FacadesRequest::ip() . ' for email: ' . $request->email . ' - Reason: Account inactive',
                 'action' => 'Login Failed',

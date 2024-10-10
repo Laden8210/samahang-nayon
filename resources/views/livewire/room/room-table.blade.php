@@ -43,10 +43,7 @@
 
                             </div>
                             <div class="flex justify-end">
-                                <div>
-                                    <a href="{{ route('viewRoom', Crypt::encrypt($room->RoomId)) }}"
-                                        class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-xs"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                                </div>
+
                                 <div>
                                     <a href="{{ route('updateRoom', Crypt::encrypt($room->RoomId)) }}"
                                         class=" text-xs block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-edit" aria-hidden="true"></i></a>
