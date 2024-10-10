@@ -312,8 +312,9 @@
         @else
             <h5>
                 Guest Name:
-                {{ $reservations->first()->guest->FirstName . ' ' . $reservations->first()->guest->LastName }}
+                {{ ucfirst($reservations->first()->guest->FirstName) . ' ' . ucfirst($reservations->first()->guest->LastName) }}
             </h5>
+
             <h5>
                 Guest Contact: {{ $reservations->first()->guest->ContactNumber }}
             </h5>
@@ -347,24 +348,22 @@
 
                 <tbody>
                     @foreach ($reservations as $reservation)
+                        @if ($reservation->Status != 'Booked' || $reservation->Status === 'Reserved')
+                            <tr>
+                                <td>{{ $reservation->ReservationId }}</td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                                </td>
+                                <td>{{ $reservation->room->RoomNumber }}</td>
+                                <td>{{ $reservation->room->RoomType }}</td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
 
-                    @if ($reservation->Status != 'Booked' || $reservation->Status === 'Reserved')
-                        <tr>
-                            <td>{{ $reservation->ReservationId }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y')  }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ $reservation->room->RoomType }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
-
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
-                            </td>
-                            <td>{{ $reservation->Source }}</td>
-                        </tr>
-
-                    @endif
-
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
+                                </td>
+                                <td>{{ $reservation->Source }}</td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
 
