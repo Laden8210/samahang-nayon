@@ -175,13 +175,9 @@ class CreateBooking extends Component
         // Calculate total number of guests
         $totalChildren = is_null($this->totalChildren) ? 0 : (int)$this->totalChildren;
         $totalGuests = is_null($this->totalGuests) ? 0 : (int)$this->totalGuests;
-
-
         $total = $totalChildren + $totalGuests;
 
-
-
-
+        // Get available rooms by excluding those that are booked during the desired check-in/check-out period
         $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->leftJoin('discountedrooms', 'rooms.RoomId', '=', 'discountedrooms.RoomId')
             ->leftJoin('promotions', 'discountedrooms.PromotionId', '=', 'promotions.PromotionId')
@@ -189,48 +185,47 @@ class CreateBooking extends Component
                 $query->whereNull('reservations.RoomId')
                     ->orWhere('reservations.Status', 'Checked Out')
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
-
                         $query->where('reservations.DateCheckOut', '<', $checkIn)
-                              ->orWhere('reservations.DateCheckIn', '>', $checkOut);
+                            ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
-            ->select('rooms.*', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
-            ->distinct()
-            ->get()
-            ->values();
+            ->select('rooms.RoomId', 'rooms.Capacity', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
+            ->distinct('rooms.RoomId') // Ensure distinct rooms by RoomId
+            ->get();
 
-
+        // Filter by room capacity if total guests is greater than 0
         if ($total > 0) {
             $rooms = $rooms->filter(function ($room) use ($total) {
                 return $room->Capacity >= $total;
             })->values();
         }
 
+        // If no rooms meet the capacity requirement, return an empty collection
         if ($rooms->isEmpty()) {
             return collect([]);
         }
 
+        // Get booked room IDs for the desired check-in/check-out period
         $bookedRooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
             ->where('reservations.Status', 'Checked In')
             ->where(function ($query) use ($checkIn, $checkOut) {
-                // Booked if dates overlap with check-in/check-out
                 $query->whereBetween('reservations.DateCheckIn', [$checkIn, $checkOut])
                     ->orWhereBetween('reservations.DateCheckOut', [$checkIn, $checkOut])
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
                         $query->where('reservations.DateCheckIn', '<=', $checkIn)
-                              ->where('reservations.DateCheckOut', '>=', $checkOut);
+                            ->where('reservations.DateCheckOut', '>=', $checkOut);
                     });
             })
             ->select('rooms.RoomId')
             ->distinct()
-            ->pluck('RoomId'); // Get only RoomIds
+            ->pluck('RoomId');
 
-
+        // Remove booked rooms from the available rooms collection
         return $rooms->reject(function ($room) use ($bookedRooms) {
             return $bookedRooms->contains($room->RoomId);
         })->values();
-
     }
+
 
     public function saveBooking()
     {
