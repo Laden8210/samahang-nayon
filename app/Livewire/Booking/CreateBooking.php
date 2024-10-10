@@ -189,7 +189,7 @@ class CreateBooking extends Component
                             ->orWhere('reservations.DateCheckIn', '>', $checkOut);
                     });
             })
-            ->select('rooms.RoomId', 'rooms.RoomType','rooms.Capacity', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
+            ->select('rooms.RoomId', 'rooms.RoomType', 'rooms.RoomNumber','rooms.Capacity', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
             ->distinct('rooms.RoomId') // Ensure distinct rooms by RoomId
             ->get();
 
