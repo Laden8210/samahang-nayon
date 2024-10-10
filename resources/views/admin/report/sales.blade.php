@@ -351,7 +351,7 @@
                     @if ($reservation->Status != 'Booked' || $reservation->Status === 'Reserved')
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y')  }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
                             <td>{{ $reservation->room->RoomType }}</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
