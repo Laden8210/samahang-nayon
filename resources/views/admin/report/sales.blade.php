@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{$report->type}}</title>
+    <title>{{ $report->type }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,7 +64,11 @@
 
 
     <h3 style="text-align: center;">{{ $report->type ?? 'N/A' }}</h3>
-    <p style="text-align: center;">Period: From {{ $report->Date }} {{ 'to ' . $report->EndDate ?? '' }} </p>
+    <p style="text-align: center;">
+        Period: From {{ \Carbon\Carbon::parse($report->Date)->timezone('Asia/Manila')->format('F j, Y') }}
+        to {{ \Carbon\Carbon::parse($report->EndDate ?? '')->timezone('Asia/Manila')->format('F j, Y') }}
+    </p>
+
 
     @if ($report->type === 'Reservation Report')
 
@@ -75,6 +79,7 @@
                     <th>Guest Name</th>
                     <th>Room Type</th>
                     <th>Room No</th>
+                    <th>Reservation Date</th>
                     <th>Check in Date</th>
                     <th>Check out date</th>
                     <th>No. of Nights</th>
@@ -90,8 +95,11 @@
                             </td>
                             <td>{{ ucfirst($reservation->room->RoomType) }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ $reservation->DateCheckIn }}</td>
-                            <td>{{ $reservation->DateCheckOut }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
                             </td>
                             <td>{{ $reservation->Source }}</td>
@@ -127,8 +135,10 @@
                             </td>
                             <td>{{ ucfirst($reservation->room->RoomType) }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
                             </td>
                             <td>{{ ucfirst($reservation->Source) }}</td>
@@ -157,7 +167,6 @@
             </thead>
             <tbody>
                 @foreach ($reservations as $reservation)
-
                     @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved')
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
@@ -165,7 +174,9 @@
                             </td>
                             <td>{{ ucfirst($reservation->room->RoomType) }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+
                             <td>2:00 PM</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
                             </td>
@@ -218,14 +229,16 @@
             <tbody>
                 @foreach ($reservations as $reservation)
                     @foreach ($reservation->checkInOuts as $checkInOut)
-                        @if ($checkInOut->Type === 'Checked In' )
+                        @if ($checkInOut->Type === 'Checked In')
                             <tr>
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                                 </td>
                                 <td>{{ ucfirst($reservation->room->RoomType) }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                                </td>
+
                                 <td>12:00 PM</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
                                 </td>
@@ -258,8 +271,8 @@
                 <tr>
                     <th>Reservation Id</th>
                     <th>Guest Name</th>
-                    <th>Room No</th>
                     <th>Room Type</th>
+                    <th>Room No</th>
                     <th>Reservation Date</th>
                     <th>Check In Date</th>
                     <th>Date of Cancellation</th>
@@ -278,9 +291,13 @@
                             </td>
                             <td>{{ ucfirst($reservation->room->RoomType) }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->format('Y-m-d') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reservation->DateCancelled)->format('Y-m-d') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCancelled)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
                         </tr>
                     @endif
                 @endforeach
@@ -290,67 +307,70 @@
             </tbody>
         </table>
     @elseif ($report->type === 'Guest History Report')
-
-
         @if ($reservations->isEmpty())
             <h3>No records found</h3>
-
         @else
+            <h5>
+                Guest Name:
+                {{ $reservations->first()->guest->FirstName . ' ' . $reservations->first()->guest->LastName }}
+            </h5>
+            <h5>
+                Guest Contact: {{ $reservations->first()->guest->ContactNumber }}
+            </h5>
+            <h5>
+                Guest Email: {{ $reservations->first()->guest->EmailAddress }}
+            </h5>
 
-        <h5>
-            Guest Name:
-            {{ $reservations->first()->guest->FirstName . ' ' . $reservations->first()->guest->LastName }}
-        </h5>
-        <h5>
-            Guest Contact: {{ $reservations->first()->guest->ContactNumber }}
-        </h5>
-        <h5>
-            Guest Email: {{ $reservations->first()->guest->EmailAddress }}
-        </h5>
+            <h5>
+                Guest Address:
+                {{ $reservations->first()->guest->Street . ', ' . $reservations->first()->guest->Brgy . ' ' . $reservations->first()->guest->City . ', ' . $reservations->first()->guest->Province }}
+            </h5>
 
-        <h5>
-            Guest Address:
-            {{ $reservations->first()->guest->Street . ', ' . $reservations->first()->guest->Brgy. " " . $reservations->first()->guest->City . ', ' . $reservations->first()->guest->Province }}
-        </h5>
+            <table>
 
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Reservation Id</th>
-                    <th>Stay Date</th>
-                    <th>Room No</th>
-                    <th>Room Type</th>
-
-                    <th>Check In Date</th>
-                    <th>Check Out Date</th>
-                    <th>No. of nights</th>
-                    <th>Booking Source</th>
-
-                </tr>
-            </thead>
-            <tbody>
-
-
-            <tbody>
-                @foreach ($reservations as $reservation)
+                <thead>
                     <tr>
-                        <td>{{ $reservation->ReservationId }}</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
-                        <td>{{ $reservation->room->RoomNumber }}</td>
-                        <td>{{ $reservation->room->RoomType }}</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('Y-m-d') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
-                        </td>
-                        <td>{{ $reservation->Source }}</td>
+                        <th>Reservation Id</th>
+                        <th>Stay Date</th>
+                        <th>Room No</th>
+                        <th>Room Type</th>
+
+                        <th>Check In Date</th>
+                        <th>Check Out Date</th>
+                        <th>No. of nights</th>
+                        <th>Booking Source</th>
+
                     </tr>
-                @endforeach
-            </tbody>
+                </thead>
+                <tbody>
 
 
-            </tbody>
-        </table>
+                <tbody>
+                    @foreach ($reservations as $reservation)
+
+                    @if ($reservation->Status != 'Booked' || $reservation->Status === 'Reserved')
+                        <tr>
+                            <td>{{ $reservation->ReservationId }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ $reservation->room->RoomType }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
+
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
+                            </td>
+                            <td>{{ $reservation->Source }}</td>
+                        </tr>
+
+                    @endif
+
+                    @endforeach
+                </tbody>
+
+
+                </tbody>
+            </table>
         @endif
     @elseif ($report->type === 'Check Out Report')
         <table>
@@ -378,7 +398,8 @@
                                 </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
                             </tr>
                         @endif
@@ -413,7 +434,8 @@
                                 </td>
                                 <td>{{ $reservation->room->RoomType }}</td>
                                 <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
                             </tr>
                         @endif
@@ -435,6 +457,7 @@
                     <th>Reservation Date</th>
                     <th>Check In Date</th>
                     <th>Date of Cancellation</th>
+                    <th>Remarks</th>
 
                 </tr>
             </thead>
@@ -449,9 +472,24 @@
                             </td>
                             <td>{{ $reservation->room->RoomType }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ $reservation->DateCreated }}</td>
-                            <td>{{ $reservation->DateCheckIn }}</td>
-                            <td>{{ $reservation->DateCancelled }}</td>
+
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+
+                            <td>{{ \Carbon\Carbon::parse($reservation->DateCancelled)->timezone('Asia/Manila')->format('F j, Y') }}
+                            </td>
+
+                            <td>
+                                @if ($reservation->Status === 'Cancelled')
+                                    Cancelled
+                                @else
+                                    No Show
+                                @endif
+                            </td>
+
                         </tr>
                     @endif
                 @endforeach

@@ -166,7 +166,7 @@
                         const selectedValue = reportType.value;
                         if (selectedValue === 'Guest History Report') {
                             dateFields.style.display = 'block';
-                            endDateField.style.display = 'none';
+                            endDateField.style.display = 'block';
                             guestField.style.display = 'block';
                         } else {
                             dateFields.style.display = 'block';
