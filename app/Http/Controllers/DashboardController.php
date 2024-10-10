@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CheckInOut;
 use App\Models\Employee;
 use App\Models\Reservation;
-use App\Models\Room; // Assuming you have a Room model
+use App\Models\Room;
+use Carbon\Carbon; // Import Carbon for date handling
 
 class DashboardController extends Controller
 {
@@ -12,14 +14,28 @@ class DashboardController extends Controller
     {
         $totalRooms = Room::count();
         $occupiedRooms = Room::where('status', 'occupied')->count();
-        $totalBooking = Reservation::where('Status', 'Booked')->count();
-        $totalReservation = Reservation::where('Status', 'Reserved')->count();
-
         $availableRooms = $totalRooms - $occupiedRooms;
 
-        $user = Employee::where('Status', 'Active')->count();
+        // Get the current date
+        $today = Carbon::today();
 
-        // Fetch other necessary data...
+        // Only count reservations created today
+        $totalBooking = Reservation::where('Status', 'Booked')
+            ->whereDate('DateCreated', $today)
+            ->count();
+        $totalReservation = Reservation::where('Status', 'Reserved')
+            ->whereDate('DateCreated', $today)
+            ->count();
+
+        $totalCheckIn = CheckInOut::where('Type', 'Check In')
+            ->whereDate('DateCreated', $today)
+            ->count();
+
+        $totalCheckOut = CheckInOut::where('Type', 'Check Out')
+            ->whereDate('DateCreated', $today)
+            ->count();
+
+        $user = Employee::where('Status', 'Active')->count();
 
         return view('admin.dashboard.index', [
             'totalRooms' => $totalRooms,
@@ -28,7 +44,8 @@ class DashboardController extends Controller
             'totalBooking' => $totalBooking,
             'totalReservation' => $totalReservation,
             'user' => $user,
-
+            'totalCheckIn' => $totalCheckIn,
+            'totalCheckOut' => $totalCheckOut,
         ]);
     }
 }
