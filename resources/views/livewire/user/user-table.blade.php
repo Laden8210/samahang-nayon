@@ -30,7 +30,7 @@
                         <td class="py-3">{{ $user->EmployeeId }}</td>
                         <td class="py-3">{{ $user->Username }}</td>
                         <td class="py-3">
-                            {{ $user->FirstName . (empty($user->MiddleName) ? '' : ' ' . $user->MiddleName[0] . '. ') . $user->LastName }}
+                            {{ $user->FirstName . (empty($user->MiddleName) ? ' ' : ' ' . $user->MiddleName[0] . '. ') . $user->LastName }}
                         </td>
                         <td class="py-3">{{ $user->Position }}</td>
                         <td class="py-3">{{ utf8_encode($user->email) }}</td>

@@ -57,17 +57,14 @@
             <hr>
             <div class="grid grid-flow-row gap-3 mt-2">
                 <div class="flex justify-normal gap-2 items-center">
-                    <div class="rounded-full border border-pink-500 w-3 h-3"></div>
-                    <div class="text-sm">Reserve</div>
+                    <div class="rounded-full border border-gray-700 w-3 h-3"></div>
+                    <div class="text-sm">Available</div>
                 </div>
                 <div class="flex justify-normal gap-2 items-center">
                     <div class="rounded-full border border-red-500 w-3 h-3"></div>
-                    <div class="text-sm">Occupied</div>
+                    <div class="text-sm">Not Available</div>
                 </div>
-                <div class="flex justify-normal gap-2 items-center">
-                    <div class="rounded-full border border-slate-800 w-3 h-3"></div>
-                    <div class="text-sm">Book</div>
-                </div>
+
             </div>
         </div>
 

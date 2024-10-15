@@ -49,8 +49,7 @@
             <x-menu-item title="Booking" url="{{ route('booking') }}" icon="fas fa-calendar-check mx-2" />
             <x-menu-item title="Room" url="{{ route('receptionistRoom') }}" icon="fas fa-door-open mx-2" />
             <x-menu-item title="Payment" url="{{ route('payment') }}" icon="fas fa-credit-card mx-2" />
-            <x-menu-item title="Message" url="{{ route('message') }}" icon="fas fa-comments mx-2" badge="true"
-                badgeCount="1" />
+            <x-menu-item title="Message" url="{{ route('message') }}" icon="fas fa-comments mx-2" />
             <x-menu-item title="Amenities" url="{{ route('amenities') }}" icon="fas fa-concierge-bell mx-2" />
             <x-menu-item title="Check-in/out" url="{{ route('check-in-out') }}" icon="fas fa-user-check mx-2" />
             <x-menu-item title="Report" url="{{ route('report') }}" icon="fas fa-chart-line mx-2" />

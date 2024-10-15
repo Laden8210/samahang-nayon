@@ -646,7 +646,8 @@ class GuestAPIController extends Controller
 
         $checkIn = Carbon::parse($reservation->DateCheckIn);
 
-        if ($checkIn->diffInDays(now()) >= 3) {
+        // Ensure the reservation can only be canceled if more than 3 days before check-in
+        if ($checkIn->diffInDays(now()) < 3) {
             return response()->json(['error' => 'Cannot cancel reservation less than 3 days before check-in'], 200);
         }
 
@@ -963,13 +964,16 @@ class GuestAPIController extends Controller
             return response()->json(['error' => 'Unauthorized'], 200);
         }
 
+        $reservation = Reservation::with('payments')->whereHas('payments', function ($query) use ($request) {
+            $query->where('ReferenceNumber', $request->reference_number);
+        })->first();
 
-        $payment = Payment::where('ReferenceNumber', $request->reference_number)->first();
 
-        if (!$payment) {
+
+        if (!$reservation) {
             return response()->json(['error' => 'Payment not found'], 200);
         }
 
-        return response()->json($payment);
+        return response()->json($reservation);
     }
 }

@@ -13,6 +13,7 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class CreateBooking extends Component
 {
@@ -118,15 +119,18 @@ class CreateBooking extends Component
     {
         return view('livewire.booking.create-booking', [
             'guests' => Guest::search($this->searchCustomer)->get(),
-            'rooms' => $this->availableRooms,  // Use available rooms here
+
             'amenities' => Amenities::search($this->searchAmenity)->get(),
         ]);
     }
 
     public function updated($propertyName)
     {
-        if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
+
+
+        if (in_array($propertyName, ['checkOut', 'totalChildren', 'totalGuests'])) {
             $this->availableRooms = $this->getAvailableRooms();
+
         }
 
         if (in_array($propertyName, ['discountType'])) {
@@ -178,53 +182,56 @@ class CreateBooking extends Component
         $total = $totalChildren + $totalGuests;
 
         // Get available rooms by excluding those that are booked during the desired check-in/check-out period
-        $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
-            ->leftJoin('discountedrooms', 'rooms.RoomId', '=', 'discountedrooms.RoomId')
-            ->leftJoin('promotions', 'discountedrooms.PromotionId', '=', 'promotions.PromotionId')
+        $bookedRooms = Reservation::whereIn('Status', ['Checked In', 'Reserved', 'Booked'])
             ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereNull('reservations.RoomId')
-                    ->orWhere('reservations.Status', 'Checked Out')
+
+                $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
+                    ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('reservations.DateCheckOut', '<', $checkIn)
-                            ->orWhere('reservations.DateCheckIn', '>', $checkOut);
+                        $query->where('DateCheckIn', '<=', $checkIn)
+                            ->where('DateCheckOut', '>=', $checkOut);
                     });
             })
-            ->select('rooms.RoomId', 'rooms.RoomType', 'rooms.RoomNumber','rooms.Capacity', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
-            ->distinct('rooms.RoomId') // Ensure distinct rooms by RoomId
-            ->get();
-
-        // Filter by room capacity if total guests is greater than 0
-        if ($total > 0) {
-            $rooms = $rooms->filter(function ($room) use ($total) {
-                return $room->Capacity >= $total;
-            })->values();
-        }
-
-        // If no rooms meet the capacity requirement, return an empty collection
-        if ($rooms->isEmpty()) {
-            return collect([]);
-        }
-
-        // Get booked room IDs for the desired check-in/check-out period
-        $bookedRooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
-            ->where('reservations.Status', 'Checked In')
-            ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->whereBetween('reservations.DateCheckIn', [$checkIn, $checkOut])
-                    ->orWhereBetween('reservations.DateCheckOut', [$checkIn, $checkOut])
-                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('reservations.DateCheckIn', '<=', $checkIn)
-                            ->where('reservations.DateCheckOut', '>=', $checkOut);
-                    });
-            })
-            ->select('rooms.RoomId')
+            ->select('RoomId')
             ->distinct()
             ->pluck('RoomId');
 
-        // Remove booked rooms from the available rooms collection
-        return $rooms->reject(function ($room) use ($bookedRooms) {
-            return $bookedRooms->contains($room->RoomId);
+
+        $rooms = Room::where('Capacity', '>=', $total)
+            ->get()
+            ->values();
+
+        $availableRooms = $rooms->reject(function ($room) use ($bookedRooms) {
+            return $bookedRooms->contains($room->RoomId); // Compare with booked room IDs
         })->values();
+
+
+
+
+        $discounted = Promotion::where('StartDate', '<=', $checkOut)
+            ->where('EndDate', '>=', $checkIn)
+            ->with('discountedRooms')
+            ->first();
+
+
+        if ($discounted && $discounted->discountedRooms->isNotEmpty()) {
+            foreach ($availableRooms as $room) {
+                // Check if the room is in the list of discounted rooms
+                $discountedRoom = $discounted->discountedRooms->firstWhere('RoomId', $room->RoomId);
+
+                if ($discountedRoom) {
+                    // Apply the discount to the room
+                    $room->Discount = $discounted->Discount; // Use discount from the promotion
+                    $room->PromotionDescription = $discounted->Description;
+                    $room->StartDate = $discounted->StartDate;
+                    $room->EndDate = $discounted->EndDate;
+                }
+            }
+        }
+
+        return collect($availableRooms);
     }
+
 
 
     public function saveBooking()
@@ -338,35 +345,35 @@ class CreateBooking extends Component
 
         $purpose = "";
 
-        if($this->discountType== 'Senior Citizen'){
+        if ($this->discountType == 'Senior Citizen') {
             $purpose = "Senior Citizen Discount";
 
-            if($this->idNumber == null){
+            if ($this->idNumber == null) {
                 session()->flash('message', 'Please enter the ID Number');
                 return;
             }
 
-            if(strlen($this->idNumber) != 12){
+            if (strlen($this->idNumber) != 12) {
                 session()->flash('message', 'Invalid ID Number');
                 return;
             }
 
 
             $reservation->IdNumber = $this->idNumber;
-        }else if($this->discountType == 'PWD'){
+        } else if ($this->discountType == 'PWD') {
             $purpose = "PWD Discount";
-            if($this->idNumber == null){
+            if ($this->idNumber == null) {
                 session()->flash('message', 'Please enter the ID Number');
                 return;
             }
 
-            if(strlen($this->idNumber) != 12){
+            if (strlen($this->idNumber) != 12) {
                 session()->flash('message', 'Invalid ID Number');
                 return;
             }
 
             $reservation->IdNumber = $this->idNumber;
-        }else if($this->discountType == 'None'){
+        } else if ($this->discountType == 'None') {
             $purpose = "No Discount";
         }
 

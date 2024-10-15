@@ -76,9 +76,16 @@ class AmenitiesTable extends Component
         session()->flash('message', 'Amenities updated successfully.');
     }
 
-    public function delete($id)
+    public function setAmenitiesId($amenities)
     {
-        Amenities::find($id)->delete();
+
+        $this->selectedAmenities = Amenities::find($amenities);
+        $this->dispatch('open-modal', name: 'delete-modal');
+    }
+
+    public function delete()
+    {
+        $this->selectedAmenities->delete();
         session()->flash('message', 'Amenities deleted successfully.');
         $this->dispatch('close-modal');
     }

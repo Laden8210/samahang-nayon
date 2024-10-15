@@ -14,7 +14,7 @@
             </div>
 
             <!-- Contacts List -->
-            <div class="space-y-4 overflow-auto h-full">
+            <div class="space-y-1 overflow-auto h-full">
                 @foreach ($guests as $guest)
                     <div class="p-2 bg-white rounded shadow-sm cursor-pointer hover:bg-gray-200">
                         <button class="flex justify-between items-start outline-none w-full"
@@ -25,7 +25,10 @@
                                     $latestMessage = $guest->messages->first(); // Get the latest message
                                 @endphp
                                 <span>{{ \Carbon\Carbon::createFromFormat('H:i:s', $latestMessage->TimeSent)->format('h:i A') }}</span>
+
                             @endif
+
+
                         </button>
                     </div>
                 @endforeach

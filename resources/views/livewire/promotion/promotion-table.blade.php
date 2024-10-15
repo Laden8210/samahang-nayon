@@ -46,7 +46,7 @@
                                 {{ $promotion->Promotion }}
                             </td>
                             <td class="py-2">
-                                {{ $promotion->Discount }}
+                                {{ $promotion->Discount }}%
                             </td>
                             <td class="py-2">
                                 {{ $promotion->StartDate }}
@@ -78,7 +78,7 @@
                             </td>
                         </tr>
 
-                        <x-modal title="Delete Amenities" name="delete-modal-{{ $promotion->PromotionId }}">
+                        <x-modal title="Delete Promotion" name="delete-modal-{{ $promotion->PromotionId }}">
 
                             @slot('body')
                                 <div class="p-4 md:p-5 text-center">
@@ -121,28 +121,43 @@
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter Promotion Name" model="promotionName"
                                 label="Promotion Name" type="text" />
+                            @error('promotionName') <!-- Display error message for promotionName -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
+
                         <div class="col-span-1">
                             <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount" label="Enter Discount"
                                 type="number" />
+                            @error('discount') <!-- Display error message for discount -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter starting date" model="startingDate"
                                 label="Enter starting date" type="date" />
+                            @error('startingDate') <!-- Display error message for startingDate -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
+
                         <div class="col-span-1">
                             <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate" label="Enter ending date"
                                 type="date" />
+                            @error('endDate') <!-- Display error message for endDate -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="col-span-2 ">
-
                             <textarea wire:model="description"
                                 class="h-28 mt-1  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
                                 placeholder="Enter Description"></textarea>
+                            @error('description') <!-- Display error message for description -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
-
 
                     </div>
 
@@ -175,6 +190,7 @@
 
                         </table>
                     </div>
+
                     <button type="submit"
                         class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Add Promotion
@@ -182,6 +198,7 @@
                 </form>
             @endslot
         </x-modal>
+
 
         <x-modal title="Update Promotion" name="update-modal">
             @slot('body')
@@ -191,29 +208,43 @@
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter Promotion Name" model="promotionName"
                                 label="Promotion Name" type="text" />
+                            @error('promotionName') <!-- Display error message for promotionName -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
+
                         <div class="col-span-1">
                             <x-text-field1 name="updatePrice" placeholder="Enter Discount" model="discount"
                                 label="Enter Discount" type="number" />
+                            @error('discount') <!-- Display error message for discount -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="col-span-1">
                             <x-text-field1 name="update-name" placeholder="Enter starting date" model="startingDate"
                                 label="Starting date" type="date" />
+                            @error('startingDate') <!-- Display error message for startingDate -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
+
                         <div class="col-span-1">
                             <x-text-field1 name="updatePrice" placeholder="Enter ending date" model="endDate"
                                 label="Ending date" type="date" />
+                            @error('endDate') <!-- Display error message for endDate -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
 
-                        <div class="col-span-2 ">
-
-
+                        <div class="col-span-2">
                             <textarea wire:model="description"
-                                class="h-28 mt-1  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                                class="h-28 mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
                                 placeholder="Enter Description"></textarea>
+                            @error('description') <!-- Display error message for description -->
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
                         </div>
-
 
                     </div>
 
@@ -227,32 +258,28 @@
                                     <th scope="col" class="px-6 py-3">
                                         Room Type
                                     </th>
-
-
                                 </tr>
                             </thead>
 
-                            <tbody class="bg-white border-b  hover:bg-gray-50">
-
+                            <tbody class="bg-white border-b hover:bg-gray-50">
                                 @if ($discountedrooms)
-                                @foreach ($discountedrooms as $room)
-                                    <tr class="text-center">
-                                        <td class="px-6 py-4">
-                                            <input type="checkbox" name="room[]" value="{{ $room->RoomType }}"
-                                                wire:model="updateSelectRoom"
-                                                {{ $room->isChecked ? 'checked' : '' }}>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            {{ $room->RoomType }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-
-
+                                    @foreach ($discountedrooms as $room)
+                                        <tr class="text-center">
+                                            <td class="px-6 py-4">
+                                                <input type="checkbox" name="room[]" value="{{ $room->RoomType }}"
+                                                    wire:model="updateSelectRoom"
+                                                    {{ $room->isChecked ? 'checked' : '' }}>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ $room->RoomType }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
+
                     <button type="submit"
                         class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Update Promotion
@@ -260,7 +287,6 @@
                 </form>
             @endslot
         </x-modal>
-
 
     </div>
 </div>

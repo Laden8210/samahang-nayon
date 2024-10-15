@@ -27,6 +27,14 @@ class CreateUser extends Component
     public $position;
     public $brgy;
 
+    public $apiProvince = [];
+    public $apiCity = [];
+    public $apiBrgy = [];
+    public $selectedProvince = null;
+    public $selectedCity = null;
+
+    public $selectedBrgy = null;
+
 
     public function createUser()
     {
@@ -54,24 +62,22 @@ class CreateUser extends Component
                     'required',
                     'string',
                     'max:12',
-                    'regex:/^(?:\+63|0)9\d{9}$/'
-                ],
-                'contactNumber' => [
-                    'required',
-                    'string',
-                    'max:12',
                     'regex:/^(?:\+63|0)9\d{9}$/',
+                    'unique:employees,ContactNumber', // Ensure unique contact number
                 ],
                 'email' => 'required|email|unique:employees,email',
                 'street' => 'required|string|max:255',
-                'brgy' => 'required|string|max:255',
-                'city' => 'required|string|max:255',
-                'province' => 'required|string|max:255',
-                'dob' => ['required', 'date',new Age],
+                'selectedProvince' => 'required',
+                'selectedCity' => 'required',
+                'selectedBrgy' => 'required',
+                'dob' => [
+                    'required',
+                    'date',
+                    'before_or_equal:' . now()->subYears(18)->toDateString(), // Ensure at least 18 years old
+                ],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
-            ],
-
+            ]
         );
 
             $birthdate = new \DateTime($this->dob);
@@ -83,6 +89,34 @@ class CreateUser extends Component
 
 
 
+
+
+        $province = "";
+        $city = "";
+        $brgy = "";
+
+        foreach ($this->apiProvince as $prov) {
+            if ($prov['code'] == $this->selectedProvince) {
+                $province = $prov['name'];
+                break;
+            }
+        }
+
+        foreach ($this->apiCity as $cit) {
+            if ($cit['code'] == $this->selectedCity) {
+                $city = $cit['name'];
+                break;
+            }
+        }
+
+        foreach ($this->apiBrgy as $b) {
+            if ($b['code'] == $this->selectedBrgy) {
+                $brgy = $b['name'];
+                break;
+            }
+        }
+
+
         Employee::create([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
@@ -90,9 +124,9 @@ class CreateUser extends Component
             'ContactNumber' => $this->contactNumber,
             'email' => $this->email,
             'Street' => $this->street,
-            'Brgy' => $this->brgy,
-            'City' => $this->city,
-            'Province' => $this->province,
+            'Brgy' => $brgy,
+            'City' => $city,
+            'Province' => $province,
             'Birthdate' => $this->dob,
             'Gender' => $this->gender,
             'Position' => $this->position,
@@ -114,8 +148,38 @@ class CreateUser extends Component
         // $this->reset();
     }
 
+
+    public function fetchRegions()
+    {
+        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/provinces/')->json();
+    }
+
+    public function fetchCities()
+    {
+        if ($this->selectedProvince) {
+
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
+        } else {
+            $this->apiCity = [];
+        }
+    }
+
+    public function fetchBarangays()
+    {
+        if ($this->selectedCity) {
+
+            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json();
+        } else {
+            $this->apiBrgy = [];
+        }
+    }
+
+
+
+
     public function render()
     {
+        $this->fetchRegions();
         return view('livewire.user.create-user');
     }
 }

@@ -6,7 +6,7 @@ use Database\Seeders\PersonalInformationTable;
 use Livewire\Component;
 use App\Models\PersonalInformation;
 use App\Models\Employee;
-
+use Illuminate\Support\Facades\Auth;
 class UserTable extends Component
 {
 
@@ -14,8 +14,10 @@ class UserTable extends Component
     protected $listeners = ['refreshComponent' => '$refresh'];
     public function render()
     {
+        $current_user = Auth::user()->EmployeeId;
         return view('livewire.user.user-table', [
-            'users' => Employee::search($this->search)->paginate(10)
+            'users' => Employee::search($this->search)
+            ->where('EmployeeId' , '!=' ,$current_user)->paginate(10)
         ]);
     }
 

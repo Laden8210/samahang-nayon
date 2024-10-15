@@ -43,13 +43,21 @@ class PromotionTable extends Component
     public function addPromotion()
     {
 
-
         $this->validate([
             'promotionName' => 'required',
             'description' => 'required',
             'discount' => 'required',
-            'startingDate' => 'required',
-            'endDate' => 'required',
+            'startingDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startingDate',
+        ], [
+            'promotionName.required' => 'The promotion name is required.',
+            'description.required' => 'The description is required.',
+            'discount.required' => 'The discount is required.',
+            'startingDate.required' => 'The starting date is required.',
+            'startingDate.date' => 'The starting date must be a valid date.',
+            'endDate.required' => 'The end date is required.',
+            'endDate.date' => 'The end date must be a valid date.',
+            'endDate.after_or_equal' => 'The end date must be after or equal to the starting date.',
         ]);
 
         $promotion = new Promotion();
@@ -126,8 +134,17 @@ class PromotionTable extends Component
             'promotionName' => 'required',
             'description' => 'required',
             'discount' => 'required',
-            'startingDate' => 'required',
-            'endDate' => 'required',
+            'startingDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startingDate',
+        ], [
+            'promotionName.required' => 'The promotion name is required.',
+            'description.required' => 'The description is required.',
+            'discount.required' => 'The discount is required.',
+            'startingDate.required' => 'The starting date is required.',
+            'startingDate.date' => 'The starting date must be a valid date.',
+            'endDate.required' => 'The end date is required.',
+            'endDate.date' => 'The end date must be a valid date.',
+            'endDate.after_or_equal' => 'The end date must be after or equal to the starting date.',
         ]);
 
         // Update the selected promotion

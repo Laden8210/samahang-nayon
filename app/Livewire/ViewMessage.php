@@ -19,12 +19,12 @@ class ViewMessage extends Component
         return view('livewire.view-message', [
             "guests" => Guest::whereHas('messages')
                 ->with(['messages' => function ($query) {
-                    $query->orderBy('DateSent', 'desc')->orderBy('TimeSent', 'desc');
+                    $query->orderBy('DateSent', 'desc')->orderBy('TimeSent', 'desc'); // Sort by DateSent and TimeSent
                 }])->search($this->search)
                 ->get(),
         ]);
-
     }
+
 
     public function selectGuest($id)
     {

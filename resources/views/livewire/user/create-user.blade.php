@@ -82,6 +82,58 @@
 
                     </div>
 
+
+                    <div class="mx-2">
+                        <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                        <select wire:model="selectedProvince" wire:change="fetchCities"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                            <option value="">Select Province</option>
+                            @foreach ($apiProvince as $region)
+                                <option value="{{ $region['code'] }}">
+                                    {{ $region['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('selectedProvince')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+
+                    <div class="mx-2">
+                        <label
+                            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">City</label>
+                        <select wire:model="selectedCity" wire:change="fetchBarangays"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                            <option value="">Select City</option>
+                            @foreach ($apiCity as $city)
+                                <option value="{{ $city['code'] }}">
+                                    {{ $city['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('selectedCity')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="mx-2">
+                        <label
+                            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
+                        <select wire:model="selectedBrgy"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                            <option value="">Select Barangay</option>
+                            @foreach ($apiBrgy as $brgy)
+                                <option value="{{ $brgy['code'] }}">
+                                    {{ $brgy['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('selectedBrgy')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                     <div class=" mx-2">
 
                         <x-text-field1 name="street" placeholder="Enter Street" model="street" label="Street" />
@@ -96,44 +148,7 @@
                 </div>
 
 
-                <div class="grid grid-cols-3 p-2 w-full">
 
-                    <div class=" mx-2">
-
-                        <x-text-field1 name="brgy" placeholder="Enter Brgy" model="brgy" label="Brgy" />
-                        @error('brgy')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
-
-                    </div>
-
-                    <div class=" mx-2">
-
-                        <x-text-field1 name="city" placeholder="Enter City" model="city" label="City" />
-                        @error('city')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
-
-                    </div>
-
-                    <div class="mx-2">
-
-                        <x-text-field1 name="province" placeholder="Enter Province" model="province" label="Province" />
-                        @error('province')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
-
-                    </div>
-
-
-
-                </div>
 
 
                 <div class="grid grid-cols-3 p-2 w-full">

@@ -9,6 +9,8 @@
     <title>@yield('title', 'Your App Name')</title>
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.css') }}">
     @livewireStyles
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 </head>
 

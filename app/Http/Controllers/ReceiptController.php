@@ -122,15 +122,15 @@ class ReceiptController extends Controller
 
         $sheet->setCellValue('B19', $reservation->room->RoomType);
         $sheet->setCellValue('G19', $lenghtOfStay);
-        $sheet->setCellValue('K19', $reservation->room->RoomPrice);
-        $sheet->setCellValue('P19', $reservation->room->RoomPrice * $lenghtOfStay);
+        $sheet->setCellValue('K19', "₱".$reservation->room->RoomPrice);
+        $sheet->setCellValue('P19', "₱".$reservation->room->RoomPrice * $lenghtOfStay);
 
         foreach ($reservation->reservationAmenities as $reservationAmenity) {
 
             $sheet->setCellValue("B$amenityRow", $reservationAmenity->amenity->Name);
             $sheet->setCellValue("G$amenityRow", $reservationAmenity->Quantity);
-            $sheet->setCellValue("k$amenityRow", $reservationAmenity->amenity->Price);
-            $sheet->setCellValue("p$amenityRow", $reservationAmenity->TotalCost);
+            $sheet->setCellValue("k$amenityRow", "₱".$reservationAmenity->amenity->Price);
+            $sheet->setCellValue("p$amenityRow", "₱".$reservationAmenity->TotalCost);
 
             $amenityRow++;
         }
@@ -174,6 +174,8 @@ class ReceiptController extends Controller
     public function success($reference)
     {
         $payment = Payment::where('ReferenceNumber', $reference)->first();
+
+
         $payment->update(['Status' => 'Confirmed']);
         return view('receipt.success', compact('reference'));
     }
@@ -182,7 +184,8 @@ class ReceiptController extends Controller
     public function failed($reference)
     {
         $payment = Payment::where('ReferenceNumber', $reference)->first();
+        $payment->update(['Status' => 'Failed']);
 
-        return view('receipt.failed');
+        return view('receipt.failed', compact('reference'));
     }
 }

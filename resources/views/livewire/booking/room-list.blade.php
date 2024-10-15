@@ -33,6 +33,20 @@
                             @default
                              bg-sky-500
                         @endswitch
+
+
+                        @switch($room->RoomStatus)
+                            @case('Available')
+                                border border-gray-700
+                                @break
+                            @case('Not Available')
+                                border border-pink-500
+
+                            @default
+                                border border-red-500
+
+                        @endswitch
+
                         items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
                         {{ $room->RoomNumber }}
                     </a>
@@ -48,9 +62,18 @@
                             <div class="p-4">
                                 <div class="flex justify-between">
                                     <div class="font-bold text-lg">{{ $room->RoomType }}</div>
-                                    <div class="text-red-600">{{ $room->RoomStatus }}</div>
+                                    @if ($room->RoomStatus == 'Available')
+                                        <div class="text-white rounded-xl bg-green-600 text-sm px-2 py-1">Available</div>
+
+                                    @else
+
+                                        <div class="text-white  rounded-xl bg-red-600 text-sm px-2 py-1">Not Available</div>
+                                        @endif
+
                                 </div>
                                 <div class="text-sm text-gray-700 mt-1">{{ $room->RoomDescription }}</div>
+
+
                                 <div class="mt-2">
                                     <div class="flex justify-between">
                                         <div class="font-bold">Price:</div>

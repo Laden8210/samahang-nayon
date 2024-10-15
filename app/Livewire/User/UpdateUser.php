@@ -7,6 +7,7 @@ use App\Models\UserAccount;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use App\Rules\Age;
+use Illuminate\Support\Facades\Http;
 
 class UpdateUser extends Component
 {
@@ -26,8 +27,18 @@ class UpdateUser extends Component
     public $userId;
 
 
+    public $apiProvince = [];
+    public $apiCity = [];
+    public $apiBrgy = [];
+    public $selectedProvince = null;
+    public $selectedCity = null;
+
+    public $selectedBrgy = null;
+
+
     public function render()
     {
+        $this->fetchRegions();
         return view('livewire.user.update-user');
     }
 
@@ -76,25 +87,23 @@ class UpdateUser extends Component
                     'required',
                     'string',
                     'max:12',
-                    'regex:/^(?:\+63|0)9\d{9}$/'
-                ],
-                'contactNumber' => [
-                    'required',
-                    'string',
-                    'max:12',
                     'regex:/^(?:\+63|0)9\d{9}$/',
                 ],
-                'email' => 'required|email|unique:employees,email',
+                'email' => [
+                    'required',
+                    'email',
+                    Rule::unique('employees')->ignore($this->userId, 'EmployeeId'),
+                ],
                 'street' => 'required|string|max:255',
                 'brgy' => 'required|string|max:255',
                 'city' => 'required|string|max:255',
                 'province' => 'required|string|max:255',
-                'dob' => ['required', 'date',new Age],
+                'dob' => ['required', 'date', new Age],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
-            ],
-
+            ]
         );
+
         $user = Employee::where('EmployeeId', $this->userId)->firstOrFail();
 
         $user->update([
@@ -114,5 +123,31 @@ class UpdateUser extends Component
         session()->flash('message', 'User updated successfully!');
 
         $this->reset();
+    }
+
+
+    public function fetchRegions()
+    {
+        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/provinces/')->json();
+    }
+
+    public function fetchCities()
+    {
+        if ($this->selectedProvince) {
+
+            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
+        } else {
+            $this->apiCity = [];
+        }
+    }
+
+    public function fetchBarangays()
+    {
+        if ($this->selectedCity) {
+
+            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json();
+        } else {
+            $this->apiBrgy = [];
+        }
     }
 }

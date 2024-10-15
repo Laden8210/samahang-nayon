@@ -214,9 +214,9 @@
                         <tr class="border-b border-slate-100 text-center">
                             <td class="py-3">{{ $reservation->room->RoomType }}</td>
                             <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>{{ $reservation->room->RoomPrice }}</td>
+                            <td>    ₱{{ $reservation->room->RoomPrice }}</td>
 
-                            <td>{{ $reservation->TotalCost }}</td>
+                            <td>    ₱{{ $reservation->TotalCost }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -244,16 +244,16 @@
                         @foreach ($reservation->reservationAmenities as $amenity)
                             <tr class="border-b border-slate-100 text-center">
                                 <td class="px-2 py-3">
-                                    {{ $amenity->amenity->Name }}
+                                    {{ $amenity->amenity->Name ?? '' }}
                                 </td>
                                 <td class="px-2 py-3">
-                                    {{ $amenity->amenity->Price }}
+                                    ₱ {{ $amenity->amenity->Price ?? ''  }}
                                 </td>
                                 <td class="px-2 py-3">
-                                    {{ $amenity->Quantity }}
+                                    {{ $amenity->Quantity ?? '' }}
                                 </td class="px-2 py-3">
                                 <td>
-                                    {{ $amenity->TotalCost }}
+                                    ₱{{ $amenity->TotalCost ?? ''  }}
                                 </td>
 
                             </tr>
@@ -288,7 +288,7 @@
                                 <td class="px-2 py-3">{{ $payment->TimeCreated }}</td>
                                 <td class="px-2 py-3">{{ $payment->DateCreated }}</td>
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
-                                <td class="px-2 py-3">{{ $payment->AmountPaid }}</td>
+                                <td class="px-2 py-3">    ₱{{ $payment->AmountPaid }}</td>
                                 <td>
                                     @if ($payment->PaymentType === 'Gcash' && $payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"

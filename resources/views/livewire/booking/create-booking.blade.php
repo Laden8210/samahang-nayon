@@ -406,7 +406,7 @@
                         <div class="flex justify-between text-xs">
 
                             @if ($discount)
-                                <p>Discount({{ $discount->Discount }})</p>
+                                <p>Discount({{ $discount->Discount }}%)</p>
                                 <p>{{ $total * ($discount->Discount / 100) }}</p>
                             @endif
 
@@ -545,7 +545,7 @@
                     </label>
                     <select name="totalGuests" wire:model.live="totalGuests"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option value="">Total Adult</option>
+                        <option value="0">Total Adult</option>
                         @for ($i = 1; $i < 11; $i++)
                             <option value="{{ $i }}">{{ $i }}</option>
                         @endfor
@@ -559,7 +559,7 @@
                     </label>
                     <select name="totalChildren" wire:model.live="totalChildren"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                        <option value="">Total Children</option>
+                        <option value="0">Total Children</option>
                         @for ($i = 1; $i < 11; $i++)
                             <option value="{{ $i }}">{{ $i }}</option>
                         @endfor
@@ -571,12 +571,14 @@
             </div>
 
             <div class="space-y-4 mt-5">
-                <div class="space-y-4" wire:ignore>
+                <div class="space-y-4">
+
+
                     @php
                         $groupedRooms = collect();
 
-                        if ($rooms) {
-                            $groupedRooms = $rooms->groupBy(function ($room) {
+                        if ($availableRooms && is_iterable($availableRooms)) {
+                            $groupedRooms = collect($availableRooms)->groupBy(function ($room) {
                                 return floor($room->RoomNumber / 100) * 100;
                             });
                         }

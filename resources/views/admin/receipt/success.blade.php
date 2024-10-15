@@ -1,3 +1,3 @@
 <div>
-    <a href="myapp://hello/openapp?payment_id={{ $reference }}">Open Android App</a>
+    <a href="myapp://success/openapp?payment_id={{ $reference }}">Open Android App</a>
 </div>
