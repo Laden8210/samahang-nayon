@@ -109,30 +109,29 @@
                 </span>
             </div>
 
-            <div class="w-full flex p-2 justify-center">
-                <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-                    <thead class="text-xs uppercase bg-gray-100 ">
+            <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+                <table class="w-full h-full">
+                    <thead class="text-xs uppercase bg-gray-50">
                         <tr class="text-center">
-
-                            <th class="py-2">Report</th>
-                            <th class="py-2">Generate By</th>
-                            <th class="py-2">Date</th>
-                            <th class="py-2">Action</th>
+                            <th scope="col" class="px-2 py-3">Report</th>
+                            <th scope="col" class="px-2 py-3">Generate By</th>
+                            <th scope="col" class="px-2 py-3">Date</th>
+                            <th scope="col" class="px-2 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         @foreach ($reports as $report)
-                            <tr class="text-center">
-                                <td class="py-2">{{ $report->ReportName }}</td>
-                                <td class="py-2">
+                        <tr class="bg-white border-b text-xs text-center">
+                            <td  class="px-2 py-3">{{ $report->ReportName }}</td>
+                            <td  class="px-2 py-3">
                                     {{ $report->employee->FirstName . ' ' . $report->employee->LastName }}
                                 </td>
-                                <td class="py-2">
+                                <td  class="px-2 py-3">
                                     {{ $report->Date }}{{ $report->EndDate ? ' - ' . $report->EndDate : '' }}
                                 </td>
 
-                                <td class="py-2 flex justify-center gap-2">
+                                <td class="py-3 px-2 flex justify-center gap-2">
                                     <a class="bg-cyan-400 font-medium text-white px-2 py-1 rounded"
                                         href="{{ route('download-report', $report->ReportId) }}" download>
                                         Download

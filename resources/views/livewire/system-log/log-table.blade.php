@@ -11,26 +11,26 @@
         </span>
     </div>
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
+    <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+        <table  class="w-full h-full">
+            <thead class="text-xs uppercase bg-gray-50">
                 <tr class="text-center">
-                    <th class="py-2">No</th>
-                    <th class="py-2">TYPE</th>
-                    <th class="py-2">ACTIVITY</th>
-                    <th class="py-2">DATE</th>
-                    <th class="py-2">TIME</th>
+                    <th scope="col" class="px-2 py-3">No</th>
+                    <th scope="col" class="px-2 py-3">TYPE</th>
+                    <th scope="col" class="px-2 py-3">ACTIVITY</th>
+                    <th scope="col" class="px-2 py-3">DATE</th>
+                    <th scope="col" class="px-2 py-3">TIME</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($logs as $log)
-                    <tr class="text-center">
-                        <td class="py-2">{{ $log->id }}</td>
-                        <td class="py-2">{{ $log->action }}</td>
+                    <tr class="bg-white border-b text-xs text-center">
+                        <td class="px-2 py-3">{{ $log->id }}</td>
+                        <td class="px-2 py-3">{{ $log->action }}</td>
 
-                        <td class="py-2">{{ $log->log }}</td>
-                        <td class="py-2">{{ $log->created_at->format('M d, Y') }}</td>
-                        <td class="py-2">{{ $log->created_at->format('h:i A') }}</td>
+                        <td class="px-2 py-3">{{ $log->log }}</td>
+                        <td class="px-2 py-3">{{ $log->created_at->format('M d, Y') }}</td>
+                        <td class="px-2 py-3">{{ $log->created_at->format('h:i A') }}</td>
                     </tr>
                 @endforeach
             </tbody>

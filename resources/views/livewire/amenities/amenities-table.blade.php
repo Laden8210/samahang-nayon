@@ -45,25 +45,24 @@
             </span>
         </div>
 
-        <div class="w-full flex p-2 justify-center" wire:poll>
-            <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-                <thead class="text-xs uppercase bg-gray-100 ">
+
+        <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+            <table class="w-full h-full">
+                <thead class="text-xs uppercase bg-gray-50">
                     <tr class="text-center">
-
-
-                        <th class="py-2">Type</th>
-                        <th class="py-2">Price</th>
-                        <th class="py-2 w-40">Action</th>
+                        <th scope="col" class="px-2 py-3">Type</th>
+                        <th scope="col" class="px-2 py-3">Price</th>
+                        <th scope="col" class="px-2 py-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($amenities as $amenity)
-                        <tr class="text-center">
+                    <tr class="bg-white border-b text-xs text-center">
 
-                            <td class="py-3">{{ $amenity->Name }}</td>
-                            <td class="py-3">
+                            <td class="px-2 py-3">{{ $amenity->Name }}</td>
+                            <td class="px-2 py-3">
                                 ₱{{ $amenity->Price }}</td>
-                            <td class="py-3 flex justify-center">
+                            <td class="py-3 px-2 flex justify-center">
                                 <button x-data
                                     x-on:click="$dispatch('open-modal', {name: 'delete-modal'})"
                                     wire:click="setAmenitiesId({{ $amenity->AmenitiesId }})"

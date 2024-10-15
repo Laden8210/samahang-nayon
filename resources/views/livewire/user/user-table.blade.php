@@ -10,32 +10,32 @@
         </span>
     </div>
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
+    <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+        <table class="w-full h-full">
+            <thead class="text-xs uppercase bg-gray-50">
                 <tr class="text-center">
-                    <th class="py-2">No</th>
-                    <th class="py-2">Username</th>
-                    <th class="py-2">Full Name</th>
-                    <th class="py-2">Position</th>
-                    <th class="py-2">Email</th>
-                    <th class="py-2">Contact Number</th>
-                    <th class="py-2">Status</th>
-                    <th class="py-2">Action</th>
+                    <th scope="col" class="px-2 py-3">No</th>
+                    <th scope="col" class="px-2 py-3">Username</th>
+                    <th scope="col" class="px-2 py-3">Full Name</th>
+                    <th scope="col" class="px-2 py-3">Position</th>
+                    <th scope="col" class="px-2 py-3">Email</th>
+                    <th scope="col" class="px-2 py-3">Contact Number</th>
+                    <th scope="col" class="px-2 py-3">Status</th>
+                    <th scope="col" class="px-2 py-3">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
-                    <tr class="text-center h-10">
-                        <td class="py-3">{{ $user->EmployeeId }}</td>
-                        <td class="py-3">{{ $user->Username }}</td>
-                        <td class="py-3">
+                    <tr class="bg-white border-b text-xs text-center">
+                        <td class="px-2 py-3">{{ $user->EmployeeId }}</td>
+                        <td class="px-2 py-3">{{ $user->Username }}</td>
+                        <td class="px-2 py-3">
                             {{ $user->FirstName . (empty($user->MiddleName) ? ' ' : ' ' . $user->MiddleName[0] . '. ') . $user->LastName }}
                         </td>
-                        <td class="py-3">{{ $user->Position }}</td>
-                        <td class="py-3">{{ utf8_encode($user->email) }}</td>
-                        <td class="py-3">{{ $user->ContactNumber }}</td>
-                        <td class="py-3">
+                        <td class="px-2 py-3">{{ $user->Position }}</td>
+                        <td class="px-2 py-3">{{ utf8_encode($user->email) }}</td>
+                        <td class="px-2 py-3">{{ $user->ContactNumber }}</td>
+                        <td class="px-2 py-3">
                             @if ($user->Status == 'Active')
                                 <span
                                     class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">{{ $user->Status }}</span>
@@ -43,7 +43,7 @@
                                 <span
                                     class="px-2 py-1 bg-red-500 text-white rounded-full text-xs">{{ $user->Status }}</span>
                             @endif
-                        <td class="py-3">
+                        <td class="px-2 py-3">
                             <button x-data
                                 x-on:click="$dispatch('open-dropdown', { name: 'dropdown-{{ $user->EmployeeId }}' })"
                                 class="px-4 py-2 rounded-full text-cyan-500 hover:bg-cyan-100" type="button">

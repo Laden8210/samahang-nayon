@@ -10,28 +10,28 @@
         </span>
     </div>
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
+    <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+        <table class="w-full h-full">
+            <thead class="text-xs uppercase bg-gray-50">
                 <tr class="text-center">
-                    <th class="py-2">Booking ID</th>
-                    <th class="py-2">Full Name</th>
-                    <th class="py-2">Room</th>
-                    <th class="py-2">Check In</th>
-                    <th class="py-2">Check Out</th>
-                    <th class="py-2">Status</th>
-                    <th class="py-2">Action</th>
+                    <th  scope="col" class="px-2 py-3">Booking ID</th>
+                    <th  scope="col" class="px-2 py-3">Full Name</th>
+                    <th scope="col" class="px-2 py-3">Room</th>
+                    <th scope="col" class="px-2 py-3">Check In</th>
+                    <th scope="col" class="px-2 py-3">Check Out</th>
+                    <th scope="col" class="px-2 py-3">Status</th>
+                    <th scope="col" class="px-2 py-3">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($bookings as $booking)
-                    <tr class="text-center">
-                        <td class="py-3">{{ $booking->ReservationId }}</td>
-                        <td class="py-3">{{ $booking->guest->FirstName.' '. $booking->guest->MiddleName .' '. $booking->guest->LastName }}</td>
-                        <td class="py-3">{{ $booking->room->RoomType .' - #'. $booking->room->RoomNumber }}</td>
-                        <td class="py-3">{{ $booking->DateCheckIn }}</td>
-                        <td class="py-3">{{ $booking->DateCheckOut }}</td>
-                        <td class="py-3">
+                <tr class="bg-white border-b text-xs text-center">
+                        <td class="px-2 py-3">{{ $booking->ReservationId }}</td>
+                        <td class="px-2 py-3">{{ $booking->guest->FirstName.' '. $booking->guest->MiddleName .' '. $booking->guest->LastName }}</td>
+                        <td class="py-3 px-2">{{ $booking->room->RoomType .' - #'. $booking->room->RoomNumber }}</td>
+                        <td class="py-3 px=2">{{ $booking->DateCheckIn }}</td>
+                        <td class="py-3 px-2">{{ $booking->DateCheckOut }}</td>
+                        <td class="py-3 px-2">
                             @if ($booking->Status == 'Pending')
                                 <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
                             @endif
@@ -59,7 +59,7 @@
 
 
                         </td>
-                        <td class="py-3">
+                        <td class="py-3 px-2">
 
                             <a href="{{route('bookingDetails', $booking->ReservationId)}}"
                                 class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>

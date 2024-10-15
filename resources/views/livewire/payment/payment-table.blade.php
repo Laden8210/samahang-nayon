@@ -28,35 +28,36 @@
 
 
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
-                <tr class="text-center">
-                    <th class="py-2">Transaction Id{{ $filterPayment }}</th>
-                    <th class="py-2">Payee Name</th>
-                    <th class="py-2">Purpose</th>
-                    <th class="py-2">Date</th>
-                    <th class="py-2">Payment Method</th>
-                    <th class="py-2">Amount</th>
-                    <th class="py-2">Status</th>
-                    <th class="py-2">Action</th>
+
+<div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+    <table class="w-full h-full">
+        <thead class="text-xs uppercase bg-gray-50">
+            <tr class="text-center">
+                    <th  scope="col" class="px-2 py-3">Transaction Id{{ $filterPayment }}</th>
+                    <th  scope="col" class="px-2 py-3">Payee Name</th>
+                    <th  scope="col" class="px-2 py-3">Purpose</th>
+                    <th  scope="col" class="px-2 py-3">Date</th>
+                    <th  scope="col" class="px-2 py-3">Payment Method</th>
+                    <th  scope="col" class="px-2 py-3">Amount</th>
+                    <th  scope="col" class="px-2 py-3">Status</th>
+                    <th  scope="col" class="px-2 py-3">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($payments as $payment)
-                    <tr class="text-center">
-                        <td class="py-2">{{ $payment->ReferenceNumber }}</td>
+                <tr class="bg-white border-b text-xs text-center">
+                        <td class="px-2 py-3">{{ $payment->ReferenceNumber }}</td>
                         {{-- <td class="py-2">{{ $payment->guest->FirstName }}</td> --}}
-                        <td class="py-2">
+                        <td class="px-2 py-3">
                             {{ ($payment->guest->FirstName ?? '') . ' ' . ($payment->guest->LastName ?? '') }}
                         </td>
 
-                        <td class="py-2">{{ $payment->Purpose }}</td>
-                        <td class="py-2">{{ $payment->DateCreated }}</td>
-                        <td class="py-2">{{ $payment->PaymentType }}</td>
-                        <td class="py-2">{{ $payment->AmountPaid }}</td>
-                        <td class="py-2">{{ $payment->Status }}</td>
-                        <td class="py-2">
+                        <td class="px-2 py-3">{{ $payment->Purpose }}</td>
+                        <td class="px-2 py-3">{{ $payment->DateCreated }}</td>
+                        <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
+                        <td cclass="px-2 py-2">{{ $payment->AmountPaid }}</td>
+                        <td class="px-2 py-3">{{ $payment->Status }}</td>
+                        <td class="px-2 py-3">
                             <div class="flex justify-center">
 
                                 {{-- <a href="{{ route('receipt', ['view' => $payment->ReferenceNumber]) }}" target="_blank"

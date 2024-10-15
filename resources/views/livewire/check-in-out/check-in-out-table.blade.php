@@ -10,31 +10,31 @@
         </span>
     </div>
 
-    <div class="w-full flex p-2 justify-center">
-        <table class="w-full text-sm text-left rtl:text-right overflow-hidden">
-            <thead class="text-xs uppercase bg-gray-100 ">
+    <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
+        <table class="w-full h-full">
+            <thead class="text-xs uppercase bg-gray-50">
                 <tr class="text-center">
-                    <th class="py-2">ID</th>
-                    <th class="py-2">Name</th>
-                    <th class="py-2">Room Number</th>
-                    <th class="py-2">Date</th>
-                    <th class="py-2">Time</th>
-                    <th class="py-2">Status</th>
+                    <th scope="col" class="px-2 py-3">ID</th>
+                    <th scope="col" class="px-2 py-3">Name</th>
+                    <th scope="col" class="px-2 py-3">Room Number</th>
+                    <th scope="col" class="px-2 py-3">Date</th>
+                    <th scope="col" class="px-2 py-3">Time</th>
+                    <th scope="col" class="px-2 py-3">Status</th>
 
-                    <th class="py-2">Action</th>
+                    <th scope="col" class="px-2 py-3">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($checkInOuts as $checkInOut)
 
-                <tr class="text-center">
-                    <td class="py-2">{{ $checkInOut->id }}</td>
-                    <td class="py-2">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
-                    <td class="py-2">{{ $checkInOut->reservation->room->RoomNumber ?? '' }}</td>
-                    <td class="py-2">{{ $checkInOut->DateCreated }}</td>
-                    <td class="py-2">{{ $checkInOut->TimeCreated }}</td>
-                    <td class="py-2">{{ $checkInOut->Type }}</td>
-                    <td class="py-2">
+                <tr class="bg-white border-b text-xs text-center">
+                    <td  class="px-2 py-3">{{ $checkInOut->id }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->reservation->room->RoomNumber ?? '' }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->DateCreated }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->TimeCreated }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->Type }}</td>
+                    <td  class="px-2 py-3">
                         <a href="{{route('bookingDetails', $checkInOut->reservation->ReservationId ?? '')}}"
                             class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
 
