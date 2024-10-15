@@ -53,3 +53,6 @@ Route::post('user/update', [GuestAPIController::class, 'updateUser']);
 Route::post('user/updateNumber', [GuestAPIController::class, 'updatePhone']);
 Route::post('user/updateEmail', [GuestAPIController::class, 'updateEmail']);
 Route::post('user/updatePassword', [GuestAPIController::class, 'updatePassword']);
+
+
+Route::post('getPaymentInformation', [GuestAPIController::class, 'getPaymentInformation']);

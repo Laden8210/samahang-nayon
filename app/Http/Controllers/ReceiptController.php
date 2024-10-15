@@ -173,10 +173,11 @@ class ReceiptController extends Controller
 
     public function success($reference)
     {
-        // $payment = Payment::where('ReferenceNumber', $reference)->first();
-
-        return view('receipt.success');
+        $payment = Payment::where('ReferenceNumber', $reference)->first();
+        $payment->update(['Status' => 'Confirmed']);
+        return view('receipt.success', compact('reference'));
     }
+
 
     public function failed($reference)
     {

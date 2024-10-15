@@ -74,12 +74,12 @@ class CreateUser extends Component
 
         );
 
-        $birthdate = new \DateTime($this->dob);
-        $month = $birthdate->format('m');
-        $day = $birthdate->format('d');
-        $year = $birthdate->format('Y');
+            $birthdate = new \DateTime($this->dob);
+            $month = $birthdate->format('m');
+            $day = $birthdate->format('d');
+            $year = $birthdate->format('Y');
 
-        $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
+            $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
 
 
 

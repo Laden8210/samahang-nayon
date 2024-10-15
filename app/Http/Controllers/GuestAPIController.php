@@ -19,7 +19,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use App\Models\SystemLog;
 use App\Models\SubGuest;
-
+use App\Models\Payment;
 class GuestAPIController extends Controller
 {
     private $apiKey;
@@ -78,7 +78,7 @@ class GuestAPIController extends Controller
 
         // Check middlename if it exists
         $middlename = trim($request->input('middlename'));
-        if (!is_null($middlename)) {
+        if ($middlename != '') {
             if (!is_string($middlename)) {
                 return response()->json(['error' => 'Middle name must be a string.'], 200);
             } elseif (strlen($middlename) > 255) {
@@ -370,7 +370,7 @@ class GuestAPIController extends Controller
             'TotalAdult' => $validatedData['total_adult'],
             'TotalChildren' => $validatedData['total_children'],
             'OriginalCost' => $room->RoomPrice * $lengthOfStay,
-            'Discount' => $validatedData['discountType'] != 'None' ? 10 : ($promotion->Discount ?? 0),
+            'Discount' => $validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0),
             'Source' => 'Online',
             'DiscountType' => $validatedData['discountType'] ?? null,
             'IdNumber' => $validatedData['id_number'] ?? null
@@ -435,7 +435,7 @@ class GuestAPIController extends Controller
                 'AmountPaid' => $partialPaymentAmount ?? 0,
                 'DateCreated' => date('Y-m-d'),
                 'TimeCreated' => date('H:i:s'),
-                'Status' => 'Confirmed',
+                'Status' => 'Pending',
                 'PaymentType' => 'Gcash',
                 'ReferenceNumber' => $this->generateReferenceNumber(),
                 'Purpose' => "Room Reservation",
@@ -446,8 +446,9 @@ class GuestAPIController extends Controller
             $data = [
                 'data' => [
                     'attributes' => [
-                        'cancel_url' => 'https://nasaph8210.online/cancel'.$reservation->payments->first()->ReferenceNumber,
-                        'success_url' => 'https://nasaph8210.online/success/'.$reservation->payments->first()->ReferenceNumber,
+                        'cancel_url' => url('/cancel/' . $reservation->payments->first()->ReferenceNumber),
+                        'success_url' => url('/success/' . $reservation->payments->first()->ReferenceNumber),
+
 
                         'billing' => [
                             'name' => $guest->FirstName . ' ' . $guest->LastName,
@@ -505,7 +506,7 @@ class GuestAPIController extends Controller
                 'AmountPaid' => $totalCost + $totalPayment ?? 0,
                 'DateCreated' => date('Y-m-d'),
                 'TimeCreated' => date('H:i:s'),
-                'Status' => 'Confirmed',
+                'Status' => 'Pending',
                 'PaymentType' => 'Gcash',
                 'ReferenceNumber' => $this->generateReferenceNumber(),
                 'Purpose' => "Room Reservation",
@@ -515,8 +516,9 @@ class GuestAPIController extends Controller
             $data = [
                 'data' => [
                     'attributes' => [
-                        'cancel_url' => 'https://nasaph8210.online/cancel'.$reservation->payments->first()->ReferenceNumber,
-                        'success_url' => 'https://nasaph8210.online/success/'.$reservation->payments->first()->ReferenceNumber,
+
+                        'cancel_url' => url('/cancel/' . $reservation->payments->first()->ReferenceNumber),
+                        'success_url' => url('/success/' . $reservation->payments->first()->ReferenceNumber),
 
                         'billing' => [
                             'name' => $guest->FirstName . ' ' . $guest->LastName,
@@ -615,6 +617,7 @@ class GuestAPIController extends Controller
                 return $query->where('Status', $status);
             })
             ->with(['room', 'reservationAmenities', 'payments'])
+            ->orderBy('DateCheckIn', 'desc')
             ->get();
 
         return response()->json($reservations);
@@ -865,7 +868,8 @@ class GuestAPIController extends Controller
         return response()->json(['message' => 'Guest updated successfully', 'guest' => $guest], 200);
     }
 
-    public function updatePhone(Request $request){
+    public function updatePhone(Request $request)
+    {
 
 
         $guest = Auth::guard('api')->user();
@@ -888,10 +892,9 @@ class GuestAPIController extends Controller
         $nGuest->ContactNumber = $validatedData['contactNumber'];
 
         $nGuest->save();
-
-
     }
-    public function updateEmail(Request $request){
+    public function updateEmail(Request $request)
+    {
 
 
         $guest = Auth::guard('api')->user();
@@ -915,9 +918,9 @@ class GuestAPIController extends Controller
         $nGuest->EmailAddress = $validatedData['email'];
 
         $nGuest->save();
-
     }
-    public function updatePassword(Request $request){
+    public function updatePassword(Request $request)
+    {
 
         $guest = Auth::guard('api')->user();
         if (!$guest) {
@@ -945,7 +948,28 @@ class GuestAPIController extends Controller
         $nGuest->save();
 
         return response()->json(['message' => 'Password updated successfully'], 200);
+    }
 
+
+    public function getPaymentInformation(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+
+        $request->validate([
+            'reference_number' => 'required|string'
+        ]);
+
+        if (!$guest) {
+            return response()->json(['error' => 'Unauthorized'], 200);
+        }
+
+
+        $payment = Payment::where('ReferenceNumber', $request->reference_number)->first();
+
+        if (!$payment) {
+            return response()->json(['error' => 'Payment not found'], 200);
+        }
+
+        return response()->json($payment);
     }
 }
-
