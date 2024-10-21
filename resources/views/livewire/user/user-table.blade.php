@@ -130,19 +130,7 @@
                 </p>
             </div>
             <div class="flex items-center">
-                @if ($users->onFirstPage())
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-l cursor-not-allowed">Previous</span>
-                @else
-                    <a href="{{ $users->previousPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600">Previous</a>
-                @endif
-
-                @if ($users->hasMorePages())
-                    <a href="{{ $users->nextPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600">Next</a>
-                @else
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-r cursor-not-allowed">Next</span>
-                @endif
+                {{$users->links('vendor.livewire.tailwind')}}
             </div>
         </div>
 
