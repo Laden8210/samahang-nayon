@@ -18,6 +18,12 @@ class UserTable extends Component
 
     use WithPagination;
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+
     public function render()
     {
         $current_user = Auth::user()->EmployeeId;
