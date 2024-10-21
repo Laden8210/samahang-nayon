@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use PHPUnit\Event\Telemetry\System;
+use Illuminate\Support\Facades\Crypt;
 
 class LoginController extends Controller
 {
@@ -46,9 +47,10 @@ class LoginController extends Controller
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records',
             ])->withInput($request->only('email'));
-
-
         }
+
+
+
 
 
         if (!Hash::check($request->password, $employee->password)) {
@@ -71,6 +73,27 @@ class LoginController extends Controller
             return back()->withErrors([
                 'email' => 'Your account is inactive. Please contact the administrator.',
             ])->withInput($request->only('email'));
+        }
+
+
+        if ($employee->is_verified == 0) {
+            SystemLog::create([
+                'log' => 'Login failed from IP: ' . FacadesRequest::ip() . ' for email: ' . $request->email . ' - Reason: Account not verified',
+                'action' => 'Login Failed',
+                'date_created' => now()->toDateString(),
+            ]);
+            return back()->withErrors([
+                'email' => 'Your account is not verified. Please check your email for verification link.',
+            ])->withInput($request->only('email'));
+        }
+
+        if ($employee->verification_token != '') {
+            return redirect()->route('verify', ['token' => $employee->verification_token]);
+        }
+
+        if ($employee->is_password_change_required == 1) {
+            $encryptedId = Crypt::encrypt($employee->EmployeeId);
+            return redirect()->route('change-password', ['id' => $encryptedId]);
         }
 
 
@@ -113,5 +136,62 @@ class LoginController extends Controller
         session()->invalidate();
 
         return redirect('/');
+    }
+
+    public function verifyUser(Request $request)
+    {
+        $token = $request->token;
+
+
+        $employee = Employee::where('verification_token', $token)->first();
+
+        if ($employee) {
+            $employee->is_verified = 1;
+            $employee->verification_token = '';
+            $employee->save();
+
+            return redirect()->route('index')->with('message', 'Account verified successfully. You can now login.');
+        } else {
+            return redirect()->route('index')->with('message', 'Invalid verification token.');
+        }
+    }
+
+
+    public function changePassword($id)
+    {
+        $employeeId = Crypt::decrypt($id);
+        $employee = Employee::find($employeeId);
+
+        return view('change-password.index', compact('employee'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required',
+            'password' => [
+                'required',
+                'min:8',
+                'regex:/[a-zA-Z]/',           // At least one letter
+                'regex:/[0-9]/',              // At least one number
+                'regex:/[@$!%*?&_.]/',     // At least one special character
+            ],
+            'confirm_password' => 'required|same:password',
+        ]);
+
+        $employeeId = Crypt::decrypt($request->token);
+
+        $employee = Employee::find($employeeId);
+
+
+        $employee->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        $employee->is_password_change_required = 0;
+        $employee->save();
+
+        return redirect()->route('index')->with('message', 'Password updated successfully. You can now login.');
     }
 }

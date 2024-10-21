@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Booking;
 
+use App\Mail\GuestBooking;
 use App\Mail\SamahangNayonMailer;
 use App\Models\Amenities;
 use App\Models\DiscountedRoom;
@@ -237,9 +238,6 @@ class CreateBooking extends Component
     public function saveBooking()
     {
 
-
-
-
         $province = "";
         $city = "";
         $brgy = "";
@@ -306,6 +304,8 @@ class CreateBooking extends Component
                 $guest->TimeCreated = date('H:i:s');
 
                 $guest->save();
+
+                Mail::to($this->email)->send(new GuestBooking($guest));
             } else {
                 session()->flash('message', 'Please select or enter the guest information.');
                 return;

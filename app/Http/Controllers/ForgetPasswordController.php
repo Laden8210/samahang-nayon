@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RequestOtp;
 
 class ForgetPasswordController extends Controller
 {
@@ -30,9 +32,17 @@ class ForgetPasswordController extends Controller
 
 
         $request->validate([
-            'password' => 'required|min:8',
+            'token' => 'required',
+            'password' => [
+                'required',
+                'min:8',
+                'regex:/[a-zA-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&_.]/',
+            ],
             'confirm_password' => 'required|same:password',
         ]);
+
 
         if (!session('reset-password')) {
             return redirect()->route('forget-password')->with('error', 'Please request OTP first.');
@@ -75,14 +85,28 @@ class ForgetPasswordController extends Controller
             return redirect()->back()->with('error', 'Phone number or email not found.');
         }
 
+        if ($employee->email == $phoneEmail) {
+            try {
+
+                Mail::to($employee->email)->send(new RequestOtp($otp, $employee));
+
+                session([
+                    'otp' => $otp,
+                    'employeeId' => $employee->EmployeeId,
+                ]);
+                return redirect()->route('enter-otp')->with('success', 'OTP sent successfully.');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Failed to send OTP. Please try again.');
+            }
+        }
 
 
+        if ($employee->ContactNumber == $phoneEmail) {
+            $response = Http::post('https://nasa-ph.com/api/send-sms', [
+                'phone_number' => $phoneEmail,
+              'message' => "Your OTP code is <strong>$otp</strong>. Use this code to reset your password. Please do not share this code with anyone. If you didn't request this, please ignore this message.",
 
-        $response = Http::post('https://nasa-ph.com/api/send-sms', [
-            'phone_number' => $phoneEmail,
-            'message' => "Your OTP code is: $otp. Please use this code to reset your password.",
-        ]);
-
+            ]);
 
 
         if ($response->successful()) {
@@ -95,6 +119,13 @@ class ForgetPasswordController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to send OTP. Please try again.');
         }
+        }
+
+
+
+
+
+
     }
 
 

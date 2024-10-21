@@ -35,10 +35,24 @@
 
 
             <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+
+
+
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <h1 class="text-2xl font-bold mb-2">Welcome back</h1>
                     <p class="text-gray-400 mb-5">Login to your account</p>
+                    @if ($errors->has('email'))
+                        <div class="bg-red-200 p-2 text-red-500 text-sm mb-2 rounded">
+                            {{ $errors->first('email') }}
+                        </div>
+                    @endif
+
+                    @if (session('message'))
+                        <div class="bg-green-200 px-2 py-2 rounded text-green-500 mb-2">
+                            {{ session('message') }}
+                        </div>
+                    @endif
                     <div class="relative mb-5">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-envelope text-gray-400"></i>
@@ -52,11 +66,11 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-lock text-gray-400"></i>
                         </span>
-                        <input type="password"
-                            id="password"
+                        <input type="password" id="password"
                             class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 pl-10 rounded-lg w-full focus:outline-none"
                             placeholder="Enter your password" name="password">
-                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" id="toggle-password">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                            id="toggle-password">
                             <i class="fas fa-eye text-gray-400" id="eye-icon"></i>
                         </span>
                     </div>
@@ -71,11 +85,8 @@
 
                     <button type="submit"
                         class="bg-cyan-400 text-white px-4 py-2 rounded-lg w-full hover:bg-cyan-500 hover:text-gray-100">Continue</button>
-                    @if ($errors->has('email'))
-                        <div class="text-red-500 text-sm mt-4">
-                            {{ $errors->first('email') }}
-                        </div>
-                    @endif
+
+
                 </form>
 
             </div>
@@ -101,4 +112,5 @@
         eyeIcon.classList.toggle('fa-eye-slash');
     });
 </script>
+
 </html>

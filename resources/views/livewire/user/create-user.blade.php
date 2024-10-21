@@ -84,7 +84,8 @@
 
 
                     <div class="mx-2">
-                        <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                        <label
+                            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
                         <select wire:model="selectedProvince" wire:change="fetchCities"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                             <option value="">Select Province</option>
@@ -101,8 +102,7 @@
 
 
                     <div class="mx-2">
-                        <label
-                            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">City</label>
+                        <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">City</label>
                         <select wire:model="selectedCity" wire:change="fetchBarangays"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                             <option value="">Select City</option>
@@ -118,8 +118,7 @@
                     </div>
 
                     <div class="mx-2">
-                        <label
-                            class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
+                        <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Brgy</label>
                         <select wire:model="selectedBrgy"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                             <option value="">Select Barangay</option>
@@ -210,6 +209,10 @@
 
     </form>
 
+    {{-- @if ($isLoaderShown)
+        <x-loader />
+
+    @endif --}}
 
 
 

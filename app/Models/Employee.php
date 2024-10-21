@@ -48,7 +48,9 @@ class Employee extends Authenticatable
         'Username',
         'password',
         'DateCreated',
-        'TimeCreated'
+        'TimeCreated',
+        'is_verified',
+        'verification_token',
     ];
 
     protected $hidden = [

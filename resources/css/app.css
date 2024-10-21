@@ -1,3 +1,35 @@
+
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans+800');
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans:400,800');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body {
+
+  font-family: 'Nunito Sans', sans-serif;
+
+}
+svg {
+  height: 200px;
+  stroke-width:4;
+}
+.pig {
+  stroke-dasharray: 319 319;
+  stroke-dashoffset: 0px;
+}
+.calculator {
+  stroke-dasharray: 0 252;
+  stroke-dashoffset: 0px;
+}
+.wallet {
+  stroke-dasharray: 0 240;
+  stroke-dashoffset: 0px;
+}
+.loading {
+  margin-bottom: 30px;
+  text-align: center;
+  width: 200px;
+}

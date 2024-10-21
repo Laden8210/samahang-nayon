@@ -17,10 +17,16 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\XenditController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportController;
-
+use App\Mail\VerifyEmployee;
+use App\Mail\GuestBooking;
+use Illuminate\Support\Facades\Mail;
 Route::get('', [LoginController::class, 'index'])->name('index');
 // Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
+
+Route::get('change-password/{id}', [LoginController::class, 'changePassword'])->name('change-password');
+
+Route::post('updatePassword', [LoginController::class, 'updatePassword'])->name('updatePassword');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
@@ -93,3 +99,16 @@ Route::get('printReceipt/{id}', [ReceiptController::class, 'printReceipt'])->nam
 
 Route::get('success/{reference}', [ReceiptController::class, 'success'])->name('success');
 Route::get('failed/{reference}', [ReceiptController::class, 'failed'])->name('failed');
+
+
+Route::get('test-email', function () {
+    Mail::to('domingo.laden@gmail.com')->send(new VerifyEmployee());
+});
+
+
+Route::get('test-guest-email', function(){
+    Mail::to('domingo.laden@gmail.com')->send(new GuestBooking());
+});
+
+
+Route::get('/verify-user', [LoginController::class, 'verifyUser'])->name('verify.user');

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Rules\Age;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerifyEmployee;
 class CreateUser extends Component
 {
 
@@ -35,9 +37,12 @@ class CreateUser extends Component
 
     public $selectedBrgy = null;
 
+    public $isLoaderShown = false;
+
 
     public function createUser()
     {
+
         $this->validate(
             [
                 'firstname' => [
@@ -80,6 +85,8 @@ class CreateUser extends Component
             ]
         );
 
+        $this->isLoaderShown = true;
+
             $birthdate = new \DateTime($this->dob);
             $month = $birthdate->format('m');
             $day = $birthdate->format('d');
@@ -117,7 +124,7 @@ class CreateUser extends Component
         }
 
 
-        Employee::create([
+        $employee = Employee::create([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
             'LastName' => $this->lastname,
@@ -136,16 +143,17 @@ class CreateUser extends Component
             'password' => bcrypt($defaultPassword),
             'DateCreated' => now()->format('Y-m-d'),
             'TimeCreated' => now()->format('H:i:s'),
+            'is_verified' => 0,
+            'verification_token' => Str::random(32),
         ]);
 
-        $response = Http::post('https://nasa-ph.com/api/send-sms', [
-            'phone_number' => $this->contactNumber,
-            'message' => "Your account has been created. Your username is your email and your password is $defaultPassword. Please change your password after logging in.",
-        ]);
+        Mail::to($this->email)->send(new VerifyEmployee($employee, $defaultPassword));
 
         session()->flash('message', 'User created successfully!');
 
         // $this->reset();
+
+        $this->isLoaderShown = false;
     }
 
 

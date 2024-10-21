@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.css') }}">
     @livewireStyles
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="
+    https://cdn.jsdelivr.net/npm/animate-js@0.3.2/src/index.min.js
+    "></script>
 
 </head>
 
