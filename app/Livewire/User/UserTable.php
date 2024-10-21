@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Models\PersonalInformation;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
 class UserTable extends Component
 {
 
