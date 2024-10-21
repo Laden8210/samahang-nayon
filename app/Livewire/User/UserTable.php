@@ -23,7 +23,7 @@ class UserTable extends Component
         $current_user = Auth::user()->EmployeeId;
         return view('livewire.user.user-table', [
             'users' => Employee::search($this->search)
-            ->where('EmployeeId' , '!=' ,$current_user)->paginate(2)
+            ->where('EmployeeId' , '!=' ,$current_user)->paginate(10)
         ]);
     }
 
