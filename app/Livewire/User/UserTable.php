@@ -11,13 +11,18 @@ class UserTable extends Component
 {
 
     public $search = '';
+
+    public $user;
     protected $listeners = ['refreshComponent' => '$refresh'];
+
+    use WithPagination;
+
     public function render()
     {
         $current_user = Auth::user()->EmployeeId;
         return view('livewire.user.user-table', [
             'users' => Employee::search($this->search)
-            ->where('EmployeeId' , '!=' ,$current_user)->paginate(10)
+            ->where('EmployeeId' , '!=' ,$current_user)->paginate(2)
         ]);
     }
 
@@ -36,10 +41,17 @@ class UserTable extends Component
         session()->flash('message', 'Successfully '.$user->Status.' successfully!');
 
     }
+
+    public function selectUser($id)
+    {
+        $this->user = Employee::where('EmployeeId', $id)->firstOrFail();
+
+    }
+
     public function delete($id)
     {
-        $user = Employee::where('EmployeeId', $id)->firstOrFail();
-        $user->delete();
+
+        $this->user->delete();
         session()->flash('message', 'Successfully deleted!');
     }
 

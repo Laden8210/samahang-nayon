@@ -12,7 +12,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Reservation;
 use PhpOffice\PhpSpreadsheet\Writer\Html;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Guest;
+use Illuminate\Support\Facades\Http;
 class ReceiptController extends Controller
 {
     public function index(Request $request)
@@ -174,18 +175,54 @@ class ReceiptController extends Controller
     public function success($reference)
     {
         $payment = Payment::where('ReferenceNumber', $reference)->first();
+        $guest = Guest::find($payment->GuestId); // Assuming you can fetch the guest's details based on GuestId
 
+        // Prepare success message
+        $message = "Dear {$guest->FirstName},\n\n" .
+            "Your payment has been confirmed successfully!\n" .
+            "Payment Reference: {$reference}\n" .
+            "Amount Paid: ₱{$payment->AmountPaid}\n" .
+            "Payment Type: {$payment->PaymentType}\n" .
+            "Date: " . now()->toDateString() . "\n" .
+            "Status: Confirmed\n\n" .
+            "Thank you for your payment! We look forward to serving you.";
 
+        // Send SMS notification
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $guest->ContactNumber,
+            'message' => $message
+        ]);
+
+        // Update payment status
         $payment->update(['Status' => 'Confirmed']);
+
         return view('receipt.success', compact('reference'));
     }
-
 
     public function failed($reference)
     {
         $payment = Payment::where('ReferenceNumber', $reference)->first();
         $payment->update(['Status' => 'Failed']);
 
+        $guest = Guest::find($payment->GuestId); // Fetch the guest details for the failure notification
+
+        // Prepare failure message
+        $message = "Dear {$guest->FirstName},\n\n" .
+            "We regret to inform you that your payment has failed.\n" .
+            "Payment Reference: {$reference}\n" .
+            "Amount: ₱{$payment->AmountPaid}\n" .
+            "Payment Type: {$payment->PaymentType}\n" .
+            "Date: " . now()->toDateString() . "\n" .
+            "Status: Failed\n\n" .
+            "Please try again or contact support for assistance.";
+
+        // Send SMS notification for failed payment
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $guest->ContactNumber,
+            'message' => $message
+        ]);
+
         return view('receipt.failed', compact('reference'));
     }
+
 }

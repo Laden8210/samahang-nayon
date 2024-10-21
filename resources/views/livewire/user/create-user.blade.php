@@ -193,7 +193,8 @@
                         <a href="{{ route('user') }}" class="bg-red-400 font-medium text-white px-2 py-1 rounded">
                             Cancel
                         </a>
-                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">
+                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded"
+                        x-data  x-on:click="$dispatch('open-loader', {name: 'delete-modal'})">
                             Create
                         </button>
                     </div>
@@ -209,10 +210,10 @@
 
     </form>
 
-    {{-- @if ($isLoaderShown)
+    <div wire:loading>
         <x-loader />
+    </div>
 
-    @endif --}}
 
 
 

@@ -13,6 +13,7 @@ use App\Rules\Age;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmployee;
+
 class CreateUser extends Component
 {
 
@@ -40,8 +41,10 @@ class CreateUser extends Component
     public $isLoaderShown = false;
 
 
+
     public function createUser()
     {
+
 
         $this->validate(
             [
@@ -85,15 +88,14 @@ class CreateUser extends Component
             ]
         );
 
-        $this->isLoaderShown = true;
 
-            $birthdate = new \DateTime($this->dob);
-            $month = $birthdate->format('m');
-            $day = $birthdate->format('d');
-            $year = $birthdate->format('Y');
 
-            $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
+        $birthdate = new \DateTime($this->dob);
+        $month = $birthdate->format('m');
+        $day = $birthdate->format('d');
+        $year = $birthdate->format('Y');
 
+        $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
 
 
 
@@ -124,6 +126,8 @@ class CreateUser extends Component
         }
 
 
+
+
         $employee = Employee::create([
             'FirstName' => $this->firstname,
             'MiddleName' => $this->middlename,
@@ -150,10 +154,9 @@ class CreateUser extends Component
         Mail::to($this->email)->send(new VerifyEmployee($employee, $defaultPassword));
 
         session()->flash('message', 'User created successfully!');
-
+        $this->isLoaderShown = false;
         // $this->reset();
 
-        $this->isLoaderShown = false;
     }
 
 
