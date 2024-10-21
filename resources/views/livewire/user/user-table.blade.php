@@ -130,7 +130,7 @@
                 </p>
             </div>
             <div class="flex items-center">
-                {{$users->links()}}
+                {{$users->links('vendor.livewire.bootstrap')}}
             </div>
         </div>
 
