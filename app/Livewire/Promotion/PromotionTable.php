@@ -39,10 +39,8 @@ class PromotionTable extends Component
             ]
         );
     }
-
     public function addPromotion()
     {
-
         $this->validate([
             'promotionName' => 'required',
             'description' => 'required',
@@ -60,9 +58,19 @@ class PromotionTable extends Component
             'endDate.after_or_equal' => 'The end date must be after or equal to the starting date.',
         ]);
 
+        // Check for overlapping promotions
+        $overlappingPromotion = Promotion::where(function ($query) {
+            $query->whereBetween('StartDate', [$this->startingDate, $this->endDate])
+                  ->orWhereBetween('EndDate', [$this->startingDate, $this->endDate]);
+        })->first();
+
+        if ($overlappingPromotion) {
+            session()->flash('message', 'There is already a promotion that overlaps with the selected dates.');
+            return;
+        }
+
         $promotion = new Promotion();
         $promotion->Promotion = $this->promotionName;
-
         $promotion->Description = $this->description;
         $promotion->Discount = $this->discount;
         $promotion->StartDate = $this->startingDate;
@@ -75,9 +83,9 @@ class PromotionTable extends Component
         foreach ($rooms as $room) {
             $promotion->discountedRooms()->create([
                 'RoomId' => $room->RoomId,
-
             ]);
         }
+
         session()->flash('message', 'Promotion added successfully.');
     }
 

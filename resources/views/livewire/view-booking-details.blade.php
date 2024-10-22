@@ -292,13 +292,17 @@
                                 <td class="px-2 py-3">{{ $payment->ReferenceNumber }}</td>
                                 <td class="px-2 py-3">{{ $payment->Status }}</td>
                                 @php
-                                // Format the date and time using Carbon
-                                $formattedDate = \Carbon\Carbon::parse($payment->DateCreated)->setTimezone('Asia/Manila')->format('F j, Y');
-                                $formattedTime = \Carbon\Carbon::parse($payment->TimeCreated)->setTimezone('Asia/Manila')->format('g:i A');
-                            @endphp
+                                    // Format the date and time using Carbon
+                                    $formattedDate = \Carbon\Carbon::parse($payment->DateCreated)
+                                        ->setTimezone('Asia/Manila')
+                                        ->format('F j, Y');
+                                    $formattedTime = \Carbon\Carbon::parse($payment->TimeCreated)
+                                        ->setTimezone('Asia/Manila')
+                                        ->format('g:i A');
+                                @endphp
 
-                            <td class="px-2 py-3">{{ $formattedTime }}</td>
-                            <td class="px-2 py-3">{{ $formattedDate }}</td>
+                                <td class="px-2 py-3">{{ $formattedTime }}</td>
+                                <td class="px-2 py-3">{{ $formattedDate }}</td>
 
 
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
