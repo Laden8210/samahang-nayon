@@ -7,13 +7,13 @@
         <h1 class="text-2xl font-bold p-2">Room</h1>
         <div class="p-2">
             <a href="{{ route('addRoom') }}"
-                class="bg-cyan-400 font-medium text-white px-2 py-1 rounded "> Add Room
+                class="bg-green-700 font-medium text-white px-2 py-2 rounded "> Add Room
             </a>
 
         </div>
     </div>
 
-    @livewire('room.room-table')
+    @livewire('room.room-table', ['lazy' => true])
 
 
     <x-room-modal/>

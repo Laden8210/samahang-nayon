@@ -15,7 +15,7 @@
             <thead class="text-xs uppercase bg-gray-50">
                 <tr class="text-center">
                     <th scope="col" class="px-2 py-3">No</th>
-                    <th scope="col" class="px-2 py-3">Username</th>
+
                     <th scope="col" class="px-2 py-3">Full Name</th>
                     <th scope="col" class="px-2 py-3">Position</th>
                     <th scope="col" class="px-2 py-3">Email</th>
@@ -28,7 +28,7 @@
                 @foreach ($users as $user)
                     <tr class="bg-white border-b text-xs text-center">
                         <td class="px-2 py-3">{{ $user->EmployeeId }}</td>
-                        <td class="px-2 py-3">{{ $user->Username }}</td>
+
                         <td class="px-2 py-3">
                             {{ $user->FirstName . (empty($user->MiddleName) ? ' ' : ' ' . $user->MiddleName[0] . '. ') . $user->LastName }}
                         </td>

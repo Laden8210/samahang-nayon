@@ -1,23 +1,40 @@
 <div class="bg-gray-50 rounded">
     <h5 class="mx-2 font-bold px-2 pt-2 mb-2">Room</h5>
-    <div class="relative mb-4 w-1/3 mx-3">
 
-        <input type="text" wire:model.live.debounce.300ms = "search"
-            class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
-            placeholder="Search . . . ">
-        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
-            <i class="fas fa-search text-gray-400"></i>
-        </span>
+    <div class="flex justify-between items-center">
+
+
+        <div class="relative mb-4 w-1/3 mx-3">
+
+            <input type="text" wire:model.live.debounce.300ms = "search"
+                class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
+                placeholder="Search . . . ">
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <i class="fas fa-search text-gray-400"></i>
+            </span>
+        </div>
+
+        <div>
+            <button class="p-2 bg-green-700 text-white rounded" x-data
+                x-on:click="$dispatch('open-modal', {name: 'room-number'})">View Room Layout</button>
+        </div>
+
     </div>
+
+
+    <x-room.room-number-management name="room-number" title="Room Number Management">
+
+    </x-room.room-number-management>
+
 
     <div class="flex p-2 justify-center">
 
-        <div class="grid grid-cols-2 gap-x-5 gap-y-4 overflow-auto  p-2">
+        <div class="grid grid-cols-3 gap-x-5 gap-y-4 overflow-auto  p-2">
             @foreach ($rooms as $room)
                 <div
                     class=" w-full min-w-full max-w-full
                     shadow rounded-lg
-                 bg-slate-50 grid grid-cols-4  p-1 max-h-40 min-h-40
+                 bg-white grid grid-cols-4  p-1 max-h-40 min-h-40
                  ">
                     <div class="col-span-1 rounded-lg overflow-hidden">
                         @php
@@ -46,7 +63,8 @@
 
                                 <div>
                                     <a href="{{ route('updateRoom', Crypt::encrypt($room->RoomId)) }}"
-                                        class=" text-xs block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                                        class=" text-xs block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i
+                                            class="fa fa-edit" aria-hidden="true"></i></a>
                                 </div>
                                 <div>
                                     <button data-modal-target="popup-modal-{{ $room->RoomId }}"
@@ -74,9 +92,7 @@
                                 <div>
                                     <span class="font-bold">Capacity:</span> {{ $room->Capacity }}
                                 </div>
-                                <div>
-                                    <span class="font-bold">Room Number:</span> {{ $room->RoomNumber }}</span>
-                                </div>
+
 
                             </div>
                         </div>
@@ -121,32 +137,5 @@
 
     </div>
 
-    <div class="py-4 px-3">
-        <div class="flex justify-between items-center">
-            <div class="flex-1">
-                <p class="text-sm text-gray-700 dark:text-gray-400">
-                    Showing {{ $rooms->firstItem() }} to {{ $rooms->lastItem() }} of {{ $rooms->total() }} rooms
-                </p>
-            </div>
-            <div class="flex items-center">
-                @if ($rooms->onFirstPage())
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-l cursor-not-allowed"><i
-                            class="fas fa-long-arrow-alt-left"></i></span>
-                @else
-                    <a href="{{ $rooms->previousPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-l hover:bg-cyan-600"><i
-                            class="fas fa-long-arrow-alt-left"></i></a>
-                @endif
-
-                @if ($rooms->hasMorePages())
-                    <a href="{{ $rooms->nextPageUrl() }}"
-                        class="px-2 py-1 bg-cyan-500 text-white rounded-r hover:bg-cyan-600"><i
-                            class="fas fa-long-arrow-alt-right"></i></a>
-                @else
-                    <span class="px-2 py-1 text-gray-500 bg-gray-200 rounded-r cursor-not-allowed"><i
-                            class="fas fa-long-arrow-alt-right"></i></span>
-                @endif
-            </div>
-        </div>
-    </div>
+    <
 </div>

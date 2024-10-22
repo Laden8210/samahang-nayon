@@ -212,8 +212,8 @@
 
     <div wire:loading>
         <x-loader />
-    </div>
 
+    </div>
 
 
 

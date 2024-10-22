@@ -24,14 +24,15 @@
                 <div class="flex justify-normal p-2 w-full">
 
                     <div class="w-1/2 mx-2">
-                        <x-combobox name="roomType" model="roomType" placeholder="Room Type" :options="[
-                            'Single bed',
-                            'Two single beds',
-                            'Two double beds',
-                            'Matrimonial bed',
-                            'Family bed',
-                            'King size bed',
-                        ]" />
+
+
+                        <x-text-field1 name="roomType" placeholder="Room Name" model="roomType"
+                            label="Enter the room name" type="text" />
+                        @error('rate')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}
@@ -64,18 +65,7 @@
                         @enderror
                     </div>
 
-                    <div class="w-1/2 mx-2">
 
-                        <x-text-field1 name="room_number" placeholder="Room Number" model="roomNumber"
-                            label="Enter the room number" type="number" />
-
-                        @error('roomNumber')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
-
-                    </div>
                 </div>
 
                 <div class="mx-4 h-1/2">
@@ -97,9 +87,9 @@
                 </div>
                 <div class="mt-1">
                     <div class="flex justify-around">
-                        <div class="rounded border-1 border-slate-600 h-40 w-full bg-slate-100 m-2">
+                        <div class="rounded border-1 border-slate-600 h-40 w-full m-2">
                             <label for="uploadFile"
-                                class="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-full flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]">
+                                class="w-full bg-white text-gray-500 font-semibold text-base rounded  h-full flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-11 mb-2 fill-gray-500"
                                     viewBox="0 0 32 32">
                                     <path
@@ -148,4 +138,8 @@
 
         </div>
     </form>
+
+    <div wire:loading>
+        <x-loader />
+    </div>
 </div>

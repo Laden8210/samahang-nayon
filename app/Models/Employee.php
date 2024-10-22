@@ -23,8 +23,7 @@ class Employee extends Authenticatable
               ->orWhere('Status', 'like', '%' . $value . '%')
               ->orWhere('ContactNumber', 'like', '%' . $value . '%')
               ->orWhere('Gender', 'like', '%' . $value . '%')
-              ->orWhere('email', 'like', '%' . $value . '%')
-              ->orWhere('Username', 'like', '%' . $value . '%');
+              ->orWhere('email', 'like', '%' . $value . '%');
         });
     }
 
@@ -45,7 +44,7 @@ class Employee extends Authenticatable
         'Province',
         'email',
         'UserAccountId',
-        'Username',
+
         'password',
         'DateCreated',
         'TimeCreated',

@@ -14,19 +14,15 @@ class Room extends Model
 
     protected $fillable = [
         'Description',
-        'RoomNumber',
         'RoomType',
         'RoomPrice',
-        'Status',
         'Capacity'
     ];
 
     public function scopeSearch($query, $value){
         return $query->where('Description', 'like', '%'.$value.'%')
-        ->orWhere('RoomNumber', 'like', '%'.$value.'%')
         ->orWhere('RoomType', 'like', '%'.$value.'%')
         ->orWhere('RoomPrice', 'like', '%'.$value.'%')
-        ->orWhere('Status', 'like', '%'.$value.'%')
         ->orWhere('Capacity', 'like', '%'.$value.'%');
     }
 
@@ -43,5 +39,10 @@ class Room extends Model
     public function discountedRooms()
     {
         return $this->hasMany(DiscountedRoom::class, 'RoomId');
+    }
+
+    public function roomNumber()
+    {
+        return $this->hasMany(RoomNumber::class, 'RoomId');
     }
 }
