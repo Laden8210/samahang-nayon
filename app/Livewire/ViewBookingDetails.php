@@ -42,7 +42,10 @@ class ViewBookingDetails extends Component
             $remainingBalance += $amenity->TotalCost;
         }
         foreach ($this->reservation->payments as $payment) {
-            $remainingBalance -= $payment->AmountPaid;
+            if ($payment->Status == 'Confirmed'){
+                $remainingBalance -= $payment->AmountPaid;
+            }
+
         }
 
         $this->payment = $remainingBalance;

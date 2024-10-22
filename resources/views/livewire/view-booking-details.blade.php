@@ -21,7 +21,8 @@
                 @endif
 
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-modal-payment'})"
-                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Check Balance</button>
+                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Check
+                    Balance</button>
 
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-modal-amenities'})"
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
@@ -33,8 +34,9 @@
                     Additional guest</button>
 
 
-                <a href="{{route('printReceipt',$reservation->ReservationId )}}" target="_blank"
-                class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Print Receipt</a>
+                <a href="{{ route('printReceipt', $reservation->ReservationId) }}" target="_blank"
+                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Print
+                    Receipt</a>
 
                 {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
                         class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Generate Receipt</a>
@@ -118,7 +120,7 @@
                 <div>{{ $reservation->DateCreated }}</div>
                 <div class="font-bold text-xs">Guest</div>
                 <div>
-                    {{ $reservation->guest->FirstName ?? '' . ' '  . $reservation->guest->LastName ?? '' }}
+                    {{ $reservation->guest->FirstName ?? ('' . ' ' . $reservation->guest->LastName ?? '') }}
                 </div>
                 <div class="font-bold  text-xs">Contact Number</div>
                 <div>
@@ -184,6 +186,10 @@
                     @php
                         $totalPayment = 0;
                         foreach ($reservation->payments as $payment) {
+                            if ($payment->Status === 'Pending') {
+                                continue;
+                            }
+
                             $totalPayment += $payment->AmountPaid;
                         }
                         echo $totalPayment;
@@ -198,7 +204,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-            <div class=" p-2 min-h-40 max-h-96" >
+            <div class=" p-2 min-h-40 max-h-96">
                 <h1 class="text-xl font-bold">Room Details</h1>
                 <table class="w-full overflow-auto mt-2">
                     <thead class="">
@@ -214,14 +220,14 @@
                         <tr class="border-b border-slate-100 text-center">
                             <td class="py-3">{{ $reservation->roomNumber->room->RoomType }}</td>
                             <td>{{ $reservation->roomNumber->room_number }}</td>
-                            <td>    ₱{{ $reservation->roomNumber->room->RoomPrice }}</td>
+                            <td> ₱{{ $reservation->roomNumber->room->RoomPrice }}</td>
 
-                            <td>    ₱{{ $reservation->TotalCost }}</td>
+                            <td> ₱{{ $reservation->TotalCost }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class=" p-2 min-h-40" >
+            <div class=" p-2 min-h-40">
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Amenties Details</h1>
 
@@ -247,13 +253,13 @@
                                     {{ $amenity->amenity->Name ?? '' }}
                                 </td>
                                 <td class="px-2 py-3">
-                                    ₱ {{ $amenity->amenity->Price ?? ''  }}
+                                    ₱ {{ $amenity->amenity->Price ?? '' }}
                                 </td>
                                 <td class="px-2 py-3">
                                     {{ $amenity->Quantity ?? '' }}
                                 </td class="px-2 py-3">
                                 <td>
-                                    ₱{{ $amenity->TotalCost ?? ''  }}
+                                    ₱{{ $amenity->TotalCost ?? '' }}
                                 </td>
 
                             </tr>
@@ -263,7 +269,7 @@
                 </table>
             </div>
 
-            <div class="p-2 min-h-40 col-span-2" >
+            <div class="p-2 min-h-40 col-span-2">
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Transaction Details</h1>
 
@@ -285,10 +291,18 @@
                             <tr class="border-b border-slate-100 text-center">
                                 <td class="px-2 py-3">{{ $payment->ReferenceNumber }}</td>
                                 <td class="px-2 py-3">{{ $payment->Status }}</td>
-                                <td class="px-2 py-3">{{ $payment->TimeCreated }}</td>
-                                <td class="px-2 py-3">{{ $payment->DateCreated }}</td>
+                                @php
+                                // Format the date and time using Carbon
+                                $formattedDate = \Carbon\Carbon::parse($payment->DateCreated)->setTimezone('Asia/Manila')->format('F j, Y');
+                                $formattedTime = \Carbon\Carbon::parse($payment->TimeCreated)->setTimezone('Asia/Manila')->format('g:i A');
+                            @endphp
+
+                            <td class="px-2 py-3">{{ $formattedTime }}</td>
+                            <td class="px-2 py-3">{{ $formattedDate }}</td>
+
+
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
-                                <td class="px-2 py-3">    ₱{{ $payment->AmountPaid }}</td>
+                                <td class="px-2 py-3"> ₱{{ $payment->AmountPaid }}</td>
                                 <td>
                                     @if ($payment->PaymentType === 'Gcash' && $payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
@@ -306,7 +320,7 @@
             </div>
         </div>
 
-        <div class="p-2 min-h-40 col-span-2" >
+        <div class="p-2 min-h-40 col-span-2">
             <div class="flex justify-between">
                 <h1 class="text-xl font-bold">Additional Guest</h1>
 
@@ -401,7 +415,7 @@
 
                     <div class="flex justify-end col-span-2 gap-2">
                         <button class="px-2 py-2 bg-red-600 rounded shadow text-white" type="button"
-                        x-on:click="$dispatch('close-modal')">Cancel</button>
+                            x-on:click="$dispatch('close-modal')">Cancel</button>
                         <button class="px-2 py-2 bg-green-600 rounded shadow text-white" type="submit">Add Guest</button>
                     </div>
                 </div>
@@ -416,7 +430,7 @@
 
 
     <div wire:loading>
-        <x-loader/>
+        <x-loader />
     </div>
 
 </div>

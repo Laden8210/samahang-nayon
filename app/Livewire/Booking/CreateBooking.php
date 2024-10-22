@@ -413,7 +413,7 @@ class CreateBooking extends Component
                 'AmountPaid' => $this->paymentAmount ?? 0,
                 'DateCreated' => date('Y-m-d'),
                 'TimeCreated' => date('H:i:s'),
-                'Status' => 'Confirmed`',
+                'Status' => 'Pending',
                 'PaymentType' => $this->paymentType,
                 'ReferenceNumber' => $this->generateReferenceNumber(),
                 'Purpose' => $purpose,
