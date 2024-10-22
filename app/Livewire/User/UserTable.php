@@ -65,4 +65,8 @@ class UserTable extends Component
         $this->deleteUserModal = false;
     }
 
+    public function cancelDelete()
+    {
+        $this->deleteUserModal = false;
+    }
 }
