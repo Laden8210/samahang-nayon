@@ -42,20 +42,19 @@ class UpdateRoom extends Component
         $this->validate(
             [
                 'rate' => 'required',
-
-                'roomType' => 'required',
+                'roomType' => 'required|unique:rooms,RoomType,' . $this->roomId . ',RoomId', // Specify the primary key column
                 'capacity' => 'required',
                 'description' => 'required',
             ],
             [
                 'rate.required' => 'The room rate field is required.',
-
                 'roomType.required' => 'The room type field is required.',
+                'roomType.unique' => 'The room type must be unique.',
                 'capacity.required' => 'The capacity field is required.',
                 'description.required' => 'The description field is required.',
-
             ]
         );
+
 
         $room = Room::find($this->roomId);
         $room->RoomPrice = $this->rate;

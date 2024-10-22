@@ -31,7 +31,7 @@ class CreateRoom extends Component
             [
                 'rate' => 'required',
 
-                'roomType' => 'required',
+                'roomType' => 'required|unique:rooms,RoomType',
                 'capacity' => 'required',
                 'description' => 'required',
             ],
@@ -39,6 +39,7 @@ class CreateRoom extends Component
                 'rate.required' => 'The room rate field is required.',
 
                 'roomType.required' => 'The room type field is required.',
+                'roomType.unique' => 'The room type must be unique.',
                 'capacity.required' => 'The capacity field is required.',
                 'description.required' => 'The description field is required.',
 

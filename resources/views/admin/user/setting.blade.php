@@ -28,9 +28,7 @@
                 <div class="bg-gray-100 p-4 rounded-md">
                     <p><strong>Email:</strong> {{ $user->email }}</p>
                 </div>
-                <div class="bg-gray-100 p-4 rounded-md">
-                    <p><strong>Username:</strong> {{ $user->Username }}</p>
-                </div>
+
                 <div class="bg-gray-100 p-4 rounded-md">
                     <p><strong>Position:</strong> {{ $user->Position }}</p>
                 </div>

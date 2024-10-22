@@ -28,11 +28,7 @@
 
                         <x-text-field1 name="roomType" placeholder="Room Name" model="roomType"
                             label="Enter the room name" type="text" />
-                        @error('rate')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
+
                         @error('roomType')
                             <p class="text-red-500 text-xs italic mt-1"><i
                                     class="fas fa-exclamation-circle"></i></i>{{ $message }}

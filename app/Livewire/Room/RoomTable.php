@@ -11,8 +11,10 @@ class RoomTable extends Component
     public $search = '';
     protected $listeners = ['refreshComponent' => '$refresh'];
 
+    public $deleteRoomModal = false;
     use WithPagination;
 
+    public $selectedRoom;
 
     public function render()
     {
@@ -32,6 +34,35 @@ class RoomTable extends Component
         Room::destroy($id);
         session()->flash('message', 'Room deleted.');
         $this->render();
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->deleteRoomModal = true;
+        $this->selectedRoom = Room::findOrFail($id);
+
+    }
+
+    public function cancelDelete()
+    {
+        $this->deleteRoomModal = false;
+    }
+
+    public function deleteRoom()
+    {
+        $room = $this->selectedRoom->load('roomNumber');
+
+
+        foreach ($room->roomNumber as $roomNumber) {
+            $roomNumber->delete();
+        }
+
+        $room->delete();
+
+        $this->deleteRoomModal = false;
+
+
+        session()->flash('message', 'Room deleted.');
     }
 
 }

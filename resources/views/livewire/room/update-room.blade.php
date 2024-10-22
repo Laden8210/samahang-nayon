@@ -24,20 +24,15 @@
                 <div class="flex justify-normal p-2 w-full">
 
                     <div class="w-1/2 mx-2">
-                        <x-combobox name="roomType" model="roomType" placeholder="Room Type"
-                        :options="[
-                            'Single bed',
-                        'Two single beds',
-                        'Two double beds',
-                        'Matrimonial bed',
-                        'Family bed',
-                        'King size bed',]" />
+                        <x-text-field1 name="roomType" placeholder="Room Name" model="roomType"
+                        label="Enter the room name" type="text" />
 
-                        @error('roomType')
-                            <p class="text-red-500 text-xs italic mt-1"><i
-                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                            </p>
-                        @enderror
+                    @error('roomType')
+                        <p class="text-red-500 text-xs italic mt-1"><i
+                                class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                        </p>
+                    @enderror
+
                     </div>
 
                     <div class="w-1/2 mx-2">

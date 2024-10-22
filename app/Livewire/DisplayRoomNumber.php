@@ -24,7 +24,7 @@ class DisplayRoomNumber extends Component
             'livewire.display-room-number',
             [
                 'rooms' => $rooms,
-                'roomNumbers' => RoomNumber::all()
+                'roomNumbers' =>  RoomNumber::withoutTrashed()->get()
             ]
         );
     }

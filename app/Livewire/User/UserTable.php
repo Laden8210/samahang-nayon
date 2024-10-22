@@ -16,6 +16,7 @@ class UserTable extends Component
     public $user;
     protected $listeners = ['refreshComponent' => '$refresh'];
 
+    public $deleteUserModal = false;
     use WithPagination;
 
     public function updatingSearch()
@@ -52,14 +53,16 @@ class UserTable extends Component
     public function selectUser($id)
     {
         $this->user = Employee::where('EmployeeId', $id)->firstOrFail();
+        $this->deleteUserModal = true;
 
     }
 
-    public function delete($id)
+    public function deleteUser()
     {
 
         $this->user->delete();
         session()->flash('message', 'Successfully deleted!');
+        $this->deleteUserModal = false;
     }
 
 }
