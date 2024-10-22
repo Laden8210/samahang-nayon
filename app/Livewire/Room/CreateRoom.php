@@ -60,9 +60,6 @@ class CreateRoom extends Component
             ]);
         }
 
-
-
-
         session()->flash('message', 'Room created successfully.');
 
         $this->rate = '';

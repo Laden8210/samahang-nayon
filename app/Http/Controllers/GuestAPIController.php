@@ -299,6 +299,7 @@ class GuestAPIController extends Controller
 
         $validatedData = $request->validate([
             'room_id' => 'required|integer',
+            'room_number_id' => 'required|integer',
             'check_in' => 'required|date',
             'check_out' => 'required|date',
             'amenities' => 'nullable|array',
@@ -323,7 +324,7 @@ class GuestAPIController extends Controller
 
         // TODO: validate if room is available
 
-        if (Reservation::where('RoomId', $validatedData['room_id'])
+        if (Reservation::where('room_number_id', $validatedData['room_number_id'])
             ->where('DateCheckIn', '<=', $validatedData['check_out'])
             ->where('DateCheckOut', '>=', $validatedData['check_in'])
             ->where('Status', '!=', 'Cancelled')
@@ -361,7 +362,7 @@ class GuestAPIController extends Controller
 
         $reservation = Reservation::create([
             'GuestId' => $guest->GuestId,
-            'RoomId' => $validatedData['room_id'],
+            'room_number_id' => $validatedData['room_number_id'],
             'DateCheckIn' => $validatedData['check_in'],
             'DateCheckOut' => $validatedData['check_out'],
             'Status' => $validatedData['payment_option'] == 'partial' ? 'Reserved' : 'Booked',
@@ -552,11 +553,11 @@ class GuestAPIController extends Controller
                         'line_items' => [
                             [
                                 'currency' => 'PHP',
-                                'amount' => (int)($reservation->room->RoomPrice * 100) -
-                                    (($reservation->room->RoomPrice * 100) * (($promotion->Discount ?? 0) / 100)),
+                                'amount' => (int)($reservation->roomNumber->room->RoomPrice * 100) -
+                                    (($reservation->roomNumber->room->RoomPrice * 100) * (($promotion->Discount ?? 0) / 100)),
 
                                 'description' => 'Room Reservation',
-                                'name' => $reservation->Room->RoomType,
+                                'name' => $reservation->roomNumber->room->RoomType,
                                 'quantity' => $lengthOfStay
                             ],
                             ...$reservation->reservationAmenities->map(function ($amenity) {

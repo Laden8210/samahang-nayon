@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\DiscountedRoom;
 use App\Models\Promotion;
 use App\Models\Reservation;
+use App\Models\RoomNumber;
 
 class RoomAPIController extends Controller
 {
@@ -24,12 +25,8 @@ class RoomAPIController extends Controller
         $children = $request->children;
         $totalGuests = $adults + $children;
 
-
-        // Get all rooms that are not reserved or checked out
-
         $bookedRooms = Reservation::whereIn('Status', ['Checked In', 'Reserved', 'Booked'])
             ->where(function ($query) use ($checkIn, $checkOut) {
-
                 $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
                     ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
                     ->orWhere(function ($query) use ($checkIn, $checkOut) {
@@ -37,105 +34,53 @@ class RoomAPIController extends Controller
                             ->where('DateCheckOut', '>=', $checkOut);
                     });
             })
-            ->select('RoomId')
-            ->distinct()
-            ->pluck('RoomId');
+            ->pluck('room_number_id'); // Only get room_number_id
 
+        // Get available rooms that are not booked
+        $availableRooms = RoomNumber::with('room')->whereHas('room', function ($query) use ($totalGuests) {
+            $query->where('Capacity', '>=', $totalGuests);
+        })->get();
 
-        $rooms = Room::where('Capacity', '>=', $totalGuests)
-            ->get()
-            ->values();
-
-        $availableRooms = $rooms->reject(function ($room) use ($bookedRooms) {
-            return $bookedRooms->contains($room->RoomId); // Compare with booked room IDs
-        })->values();
-
-
-        if ($availableRooms->isEmpty()) {
-            return response()->json(['error' => 'No available rooms'], 200);
-        }
-
-        $discounted = Promotion::where('StartDate', '<=', $checkOut)
-            ->where('EndDate', '>=', $checkIn)
-            ->with('discountedRooms')
+        $promotion = Promotion::where('StartDate', '<=', $checkIn)
+            ->where('EndDate', '>=', $checkOut)
             ->first();
 
-
-            if ($discounted && $discounted->discountedRooms->isNotEmpty()) {
-                foreach ($availableRooms as $room) {
-                    // Check if the room is in the list of discounted rooms
-                    $discountedRoom = $discounted->discountedRooms->firstWhere('RoomId', $room->RoomId);
-
-                    if ($discountedRoom) {
-                        // Apply the discount to the room
-                        $room->Discount = $discounted->Discount; // Use discount from the promotion
-                        $room->PromotionDescription = $discounted->Description;
-                        $room->StartDate = $discounted->StartDate;
-                        $room->EndDate = $discounted->EndDate;
+        // Apply discount if promotion is active
+        if ($promotion && $promotion->discountedRooms) {
+            foreach ($availableRooms as $roomNumber) {
+                foreach ($promotion->discountedRooms as $discountedRoom) {
+                    if ($discountedRoom->RoomId == $roomNumber->RoomId) {
+                        $roomNumber->discount = $promotion->Discount;
+                        break; // No need to check further once discount is found
                     }
                 }
             }
-
-
-
-
-
-
-
-        // $rooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
-        //     ->leftJoin('discountedrooms', 'rooms.RoomId', '=', 'discountedrooms.RoomId')
-        //     ->leftJoin('promotions', 'discountedrooms.PromotionId', '=', 'promotions.PromotionId')
-        //     ->where(function ($query) use ($checkIn, $checkOut) {
-        //         $query->whereNull('reservations.RoomId')
-        //             ->orWhere('reservations.Status', 'Checked Out')
-        //             ->orWhere(function ($query) use ($checkIn, $checkOut) {
-
-        //                 $query->where('reservations.DateCheckOut', '<', $checkIn)
-        //                       ->orWhere('reservations.DateCheckIn', '>', $checkOut);
-        //             });
-        //     })
-        //     ->select('rooms.*', 'promotions.Description as PromotionDescription', 'promotions.Discount', 'promotions.StartDate', 'promotions.EndDate')
-        //     ->distinct()
-        //     ->get()
-        //     ->values();
-
-
-        // if ($totalGuests > 0) {
-        //     $rooms = $rooms->filter(function ($room) use ($totalGuests) {
-        //         return $room->Capacity >= $totalGuests;
-        //     })->values();
-        // }
-
-        // if ($rooms->isEmpty()) {
-        //     return response()->json(['error' => 'No available rooms'], 200);
-        // }
-
-        // $bookedRooms = Room::leftJoin('reservations', 'rooms.RoomId', '=', 'reservations.RoomId')
-        //     ->where('reservations.Status', 'Checked In')
-        //     ->where(function ($query) use ($checkIn, $checkOut) {
-        //         // Booked if dates overlap with check-in/check-out
-        //         $query->whereBetween('reservations.DateCheckIn', [$checkIn, $checkOut])
-        //             ->orWhereBetween('reservations.DateCheckOut', [$checkIn, $checkOut])
-        //             ->orWhere(function ($query) use ($checkIn, $checkOut) {
-        //                 $query->where('reservations.DateCheckIn', '<=', $checkIn)
-        //                       ->where('reservations.DateCheckOut', '>=', $checkOut);
-        //             });
-        //     })
-        //     ->select('rooms.RoomId')
-        //     ->distinct()
-        //     ->pluck('RoomId'); // Get only RoomIds
-
-
-        $availableRooms = $rooms->reject(function ($room) use ($bookedRooms) {
-            return $bookedRooms->contains($room->RoomId);
-        })->values();
-
-
-        if ($availableRooms->isEmpty()) {
-            return response()->json(['error' => 'No available rooms'], 200);
         }
 
-        return response()->json($availableRooms);
+        foreach ($availableRooms as $roomNumber) {
+            $roomNumber->isBooked = in_array($roomNumber->room_number_id, $bookedRooms->toArray());
+        }
+
+        // Transform available rooms into a flat structure and filter out booked rooms
+        $flatRooms = $availableRooms->filter(function ($roomNumber) {
+            return !$roomNumber->isBooked; // Keep only rooms that are not booked
+        })->map(function ($roomNumber) {
+            return [
+                'room_number_id' => $roomNumber->room_number_id,
+                'room_number' => $roomNumber->room_number,
+                'RoomId' => $roomNumber->room->RoomId,
+                'deleted_at' => $roomNumber->deleted_at,
+                'created_at' => $roomNumber->created_at,
+                'updated_at' => $roomNumber->updated_at,
+                'discount' => $roomNumber->discount ?? null,
+                'RoomType' => $roomNumber->room->RoomType,
+                'Capacity' => $roomNumber->room->Capacity,
+                'RoomPrice' => $roomNumber->room->RoomPrice,
+                'Description' => $roomNumber->room->Description,
+            ];
+        });
+
+        return response()->json($flatRooms);
     }
 
 
