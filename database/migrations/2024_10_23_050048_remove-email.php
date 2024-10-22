@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('room_number', function (Blueprint $table) {
-        //     $table->softDeletes();
-        // });
+        Schema::table('subguest', function (Blueprint $table) {
+            $table->dropColumn('EmailAddress');
+        });
     }
 
     /**

@@ -1,91 +1,108 @@
-<div class="space-y-4">
-    @php
-        $groupedRooms = $rooms->groupBy(function ($room) {
-            return floor($room->RoomNumber / 100) * 100;
-        });
-    @endphp
+<div class="space-y-4 mt-1">
+    <div class="grid grid-cols-10 gap-2">
+        @for ($i = 0; $i < 3; $i++)
+            @for ($x = 0; $x < 10; $x++)
+                @php
+                    $roomNumber = ($i + 1) * 100 + $x + 1;
+                    $room = null;
 
-    @foreach ($groupedRooms as $group => $room)
-        <div class="grid grid-cols-12 gap-2 m-2">
-            @foreach ($room as $room)
-                <div class="relative group">
-                    <a href="{{ route('createBooking', $room->RoomId) }}"
-                        class="h-24
-                        @switch($room->RoomType)
-                            @case('Single bed')
-                                 bg-sky-500
-                                @break
-                            @case('Two single beds')
-                               bg-violet-500
-                                @break
-                            @case('Two double beds')
-                               bg-violet-500
-                                @break
-                            @case('Matrimonial')
-                                bg-blue-800
-                                @break
-                            @case('Family')
-                                bg-orange-500
-                                @break
-                            @case('King size')
-                                bg-red-200
-                                @break
-                            @default
-                             bg-sky-500
-                        @endswitch
+                    // Find the room matching the current room number
+                    if ($roomNumbers) {
+                        foreach ($roomNumbers as $r) {
+                            if ($r->room_number == $roomNumber) {
+                                $room = $r;
+                                break;
+                            }
+                        }
+                    }
+                @endphp
 
+                <div class="bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow duration-200">
+                    <a
+                    @if ($room && $room->isBooked == 'false')
+                        href="{{ route('createBooking', $room->RoomId) }}"
+                    @endif
 
-                        @switch($room->RoomStatus)
-                            @case('Available')
-                                border border-gray-700
-                                @break
-                            @case('Not Available')
-                                border border-pink-500
+                    class="px-1 py-1 flex flex-col items-center justify-center h-72">
 
-                            @default
-                                border border-red-500
-
-                        @endswitch
-
-                        items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
-                        {{ $room->RoomNumber }}
-                    </a>
-                    <div class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
-                        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                            <div class="h-52 bg-gray-200 flex items-center justify-center">
-                                @if ($room->roomPictures->isNotEmpty())
-                                    <img src="data:image/png;base64,{{  base64_encode($room->roomPictures->first()->PictureFile )}}" alt="{{ $room->RoomType }}" class="object-cover h-full w-full">
+                        @if ($room)
+                            <!-- Room Image -->
+                            <div class="w-full h-32 bg-gray-200 rounded-lg mb-3 overflow-hidden">
+                                @if ($room->room->roomPictures->isNotEmpty())
+                                    <img src="data:image/png;base64,{{ base64_encode($room->room->roomPictures->first()->PictureFile) }}"
+                                        alt="{{ $room->room->RoomType }}" class="object-cover w-full h-full">
                                 @else
-                                    <div class="flex items-center justify-center h-full text-gray-500">No Image Available</div>
+                                    <img src="https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg"
+                                        alt="No Image Available" class="object-cover w-full h-full">
                                 @endif
                             </div>
-                            <div class="p-4">
-                                <div class="flex justify-between">
-                                    <div class="font-bold text-lg">{{ $room->RoomType }}</div>
-                                    @if ($room->RoomStatus == 'Available')
-                                        <div class="text-white rounded-xl bg-green-600 text-sm px-2 py-1">Available</div>
 
+                            <!-- Room Details -->
+                            <div class="grid grid-cols-2 gap-y-1 w-full text-gray-800 text-xs">
+
+                                <p class="text-center col-span-2 font-bold">{{ $room->room->RoomType }}</p>
+
+                                <p class="text-left font-semibold">Room:</p>
+                                <p class="text-right">{{ $roomNumber }}</p>
+
+                                <p class="text-left font-semibold">Price:</p>
+                                <p class="text-right">
+                                    @if ($room->discount)
+                                        <del>₱{{ number_format($room->room->RoomPrice, 2) }}</del>
                                     @else
+                                        ₱{{ number_format($room->room->RoomPrice, 2) }}
+                                    @endif
+                                </p>
 
-                                        <div class="text-white  rounded-xl bg-red-600 text-sm px-2 py-1">Not Available</div>
-                                        @endif
+                                @if ($room->discount)
+                                    <p class="text-left font-semibold">New Price:</p>
+                                    <p class="text-right text-red-600 font-bold">
+                                        ₱{{ number_format($room->room->RoomPrice - ($room->room->RoomPrice * ($room->discount / 100)), 2) }}
+                                    </p>
+                                @endif
+                                <p class="text-left font-semibold">Capacity:</p>
+                                <p class="text-right">{{ $room->room->Capacity }} people</p>
 
-                                </div>
-                                <div class="text-sm text-gray-700 mt-1">{{ $room->RoomDescription }}</div>
+                                <!-- Room Status -->
 
-
-                                <div class="mt-2">
-                                    <div class="flex justify-between">
-                                        <div class="font-bold">Price:</div>
-                                        <div class="text-red-600">{{ $room->RoomPrice }}</div>
-                                    </div>
-                                    <div class="text-sm text-gray-600">Room Capacity: {{ $room->Capacity }}</div>
-                                </div>
+                                <p class="text-right col-span-2 mt-2">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-white text-xs font-semibold
+                                        {{ $room->isBooked == 'true' ? 'bg-green-500' : 'bg-red-500' }}">
+                                        {{ $room->isBooked == 'true' ? 'Available' : 'Not Available' }}
+                                    </span>
+                                </p>
                             </div>
-                        </div>
-                    </div>
+                        @else
+                            <!-- Default Room Card when room is not available -->
+                            <div class="w-full h-32 bg-gray-200 rounded-lg mb-3 overflow-hidden">
+                                <img src="https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg"
+                                    alt="No Image Available" class="object-cover w-full h-full">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-y-1  w-full text-gray-800 text-xs">
+                                <p class="text-center col-span-2 font-bold">N/A</p>
+                                <p class="text-left font-semibold">Room:</p>
+                                <p class="text-right">{{ $roomNumber }}</p>
+
+                                <p class="text-left font-semibold">Price:</p>
+                                <p class="text-right">N/A</p>
+
+                                <p class="text-left font-semibold">Capacity:</p>
+                                <p class="text-right">N/A</p>
+
+                                <!-- Room Status -->
+
+                                <p class="text-right col-span-2 mt-2">
+                                    <span class="px-3 py-1 rounded-full text-white text-xs font-semibold bg-red-500">
+                                        Not Available
+                                    </span>
+                                </p>
+                            </div>
+                        @endif
+                        </a>
                 </div>
-            @endforeach
-        </div>
-    @endforeach
+            @endfor
+        @endfor
+    </div>
 </div>

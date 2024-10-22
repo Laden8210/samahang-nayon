@@ -28,7 +28,7 @@
                 <tr class="bg-white border-b text-xs text-center">
                         <td class="px-2 py-3">{{ $booking->ReservationId }}</td>
                         <td class="px-2 py-3">{{ $booking->guest->FirstName.' '. $booking->guest->MiddleName .' '. $booking->guest->LastName }}</td>
-                        <td class="py-3 px-2">{{ $booking->room->RoomType .' - #'. $booking->room->RoomNumber }}</td>
+                        <td class="py-3 px-2">{{ $booking->roomNumber->room->RoomType .' - #'. $booking->roomNumber->room_number }}</td>
                         <td class="py-3 px=2">{{ $booking->DateCheckIn }}</td>
                         <td class="py-3 px-2">{{ $booking->DateCheckOut }}</td>
                         <td class="py-3 px-2">

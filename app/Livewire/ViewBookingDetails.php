@@ -23,7 +23,7 @@ class ViewBookingDetails extends Component
     public $subguestsLastname;
     public $subguestsDob;
     public $subguestsGender;
-    public $subguestsEmail;
+
     public $subguestsContactnumber;
 
 
@@ -71,7 +71,7 @@ class ViewBookingDetails extends Component
             'subguestsLastname' => 'required',
             'subguestsDob' => 'required',
             'subguestsGender' => 'required',
-            'subguestsEmail' => 'required|email',
+
             'subguestsContactnumber' => 'required',
         ]);
 
@@ -81,12 +81,12 @@ class ViewBookingDetails extends Component
             'LastName' => $this->subguestsLastname,
             'Birthdate' => $this->subguestsDob,
             'Gender' => $this->subguestsGender,
-            'EmailAddress' => $this->subguestsEmail,
+
             'ContactNumber' => $this->subguestsContactnumber,
         ]);
 
         session()->flash('subguest-message', 'Subguest added successfully.');
-        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender',  'subguestsContactnumber']);
     }
     public function addPayment()
     {

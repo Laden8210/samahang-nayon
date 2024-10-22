@@ -30,7 +30,7 @@
 
                 <button x-data x-on:click="$dispatch('open-modal', {name: 'add-guest'})"
                     class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Add
-                    Subguest</button>
+                    Additional guest</button>
 
 
                 <a href="{{route('printReceipt',$reservation->ReservationId )}}" target="_blank"
@@ -153,7 +153,7 @@
                     {{ $reservation->DiscountType ?? 'No Discount' }}
                 </div>
 
-                <div class="font-bold text-xs">Id Number</div>
+                <div class="font-bold text-xs">ID Number</div>
                 <div>
                     {{ $reservation->IdNumber }}
                 </div>
@@ -198,7 +198,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-            <div class=" p-2 min-h-40 max-h-96" wire:poll>
+            <div class=" p-2 min-h-40 max-h-96" >
                 <h1 class="text-xl font-bold">Room Details</h1>
                 <table class="w-full overflow-auto mt-2">
                     <thead class="">
@@ -212,16 +212,16 @@
                     </thead>
                     <tbody>
                         <tr class="border-b border-slate-100 text-center">
-                            <td class="py-3">{{ $reservation->room->RoomType }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
-                            <td>    ₱{{ $reservation->room->RoomPrice }}</td>
+                            <td class="py-3">{{ $reservation->roomNumber->room->RoomType }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
+                            <td>    ₱{{ $reservation->roomNumber->room->RoomPrice }}</td>
 
                             <td>    ₱{{ $reservation->TotalCost }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class=" p-2 min-h-40" wire:poll>
+            <div class=" p-2 min-h-40" >
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Amenties Details</h1>
 
@@ -263,7 +263,7 @@
                 </table>
             </div>
 
-            <div class="p-2 min-h-40 col-span-2" wire:poll>
+            <div class="p-2 min-h-40 col-span-2" >
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold">Transaction Details</h1>
 
@@ -306,9 +306,9 @@
             </div>
         </div>
 
-        <div class="p-2 min-h-40 col-span-2" wire:poll>
+        <div class="p-2 min-h-40 col-span-2" >
             <div class="flex justify-between">
-                <h1 class="text-xl font-bold">Sub Guest</h1>
+                <h1 class="text-xl font-bold">Additional Guest</h1>
 
             </div>
             <table class="w-full">
@@ -318,7 +318,6 @@
                         <th class="px-2 py-3">Birthdate</th>
                         <th class="px-2 py-3">Gender</th>
                         <th class="px-2 py-3">Contact Number</th>
-                        <th class="px-2 py-3">Email</th>
 
                     </tr>
                 </thead>
@@ -331,7 +330,7 @@
                             <td class="px-2 py-3">{{ $guest->Birthdate }}</td>
                             <td class="px-2 py-3">{{ $guest->Gender }}</td>
                             <td class="px-2 py-3">{{ $guest->ContactNumber }}</td>
-                            <td class="px-2 py-3">{{ $guest->EmailAddress }}</td>
+
                         </tr>
                     @endforeach
 
@@ -398,13 +397,7 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <x-text-field1 field1 name="email" placeholder="Email" model="subguestsEmail" type="email"
-                            label="Email" />
-                        @error('subguestsEmail')
-                            <span class="text-red-600 text-xs">{{ $message }}</span>
-                        @enderror
-                    </div>
+
 
                     <div class="flex justify-end col-span-2 gap-2">
                         <button class="px-2 py-2 bg-red-600 rounded shadow text-white" type="button"
@@ -421,5 +414,9 @@
         <x-success-message-modal message="{{ session('subguest-message') }}" />
     @endif
 
+
+    <div wire:loading>
+        <x-loader/>
+    </div>
 
 </div>

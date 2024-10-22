@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\RoomNumber;
 
 return new class extends Migration
 {
@@ -11,9 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('room_number', function (Blueprint $table) {
-        //     $table->softDeletes();
-        // });
+        Schema::table('reservations', function (Blueprint $table) {
+            $table->dropColumn('RoomId');
+
+            $table->foreignIdFor(RoomNumber::class, 'room_number_id');
+
+        });
     }
 
     /**

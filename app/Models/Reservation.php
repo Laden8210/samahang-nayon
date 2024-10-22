@@ -15,7 +15,7 @@ class Reservation extends Model
 
     protected $fillable = [
         'GuestId',
-        'RoomId',
+        'room_number_id',
         'DateCreated',
         'TimeCreated',
         'DateCheckIn',
@@ -41,11 +41,7 @@ class Reservation extends Model
                 ->orWhere('ContactNumber', 'like', '%'.$value.'%')
                 ;
         })
-        ->orWhereHas('room', function($query) use ($value){
-            $query->where('RoomNumber', 'like', '%'.$value.'%')
-                ->orWhere('RoomType', 'like', '%'.$value.'%')
-                ->orWhere('RoomPrice', 'like', '%'.$value.'%');
-        })->orWhere('DateCheckIn', 'like', '%'.$value.'%')
+        ->orWhere('DateCheckIn', 'like', '%'.$value.'%')
         ->orWhere('DateCheckOut', 'like', '%'.$value.'%')
         ->orWhere('TotalCost', 'like', '%'.$value.'%')
         ->orWhere('Status', 'like', '%'.$value.'%')
@@ -59,10 +55,11 @@ class Reservation extends Model
         return $this->belongsTo(Guest::class, 'GuestId');
     }
 
-    public function room()
+    public function roomNumber()
     {
-        return $this->belongsTo(Room::class, 'RoomId');
+        return $this->belongsTo(RoomNumber::class, 'room_number_id');
     }
+
 
     public function reservationAmenities()
     {

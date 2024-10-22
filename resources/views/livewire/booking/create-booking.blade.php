@@ -208,7 +208,7 @@
                                     <th scope="col" class="px-6 py-3">Birthdate</th>
                                     <th scope="col" class="px-6 py-3">Gender</th>
                                     <th scope="col" class="px-6 py-3">Contact Number</th>
-                                    <th scope="col" class="px-6 py-3">Email</th>
+
                                     <th>Action</th>
                                 </tr>
 
@@ -396,8 +396,8 @@
                             @if (!$selectedRoom)
                                 <p>No Room Selected</p>
                             @else
-                                <p>{{ $selectedRoom->RoomType }}</p>
-                                <p>{{ $selectedRoom->RoomPrice }}</p>
+                                <p>{{ $selectedRoom->RoomType.' - ₱'.$selectedRoom->RoomPrice  }}</p>
+                                <p>₱{{ $selectedRoom->RoomPrice * $lengthOfStay }}</p>
                             @endif
 
                         </div>
@@ -407,27 +407,25 @@
 
                             @if ($discount)
                                 <p>Discount({{ $discount->Discount }}%)</p>
-                                <p>{{ $total * ($discount->Discount / 100) }}</p>
-                            @endif
+                                <p>₱
+                                    {{
 
-                        </div>
+                                        (($selectedRoom->RoomPrice * $lengthOfStay) * ($discount->Discount / 100))
+                                    }}
+                                </p>
 
+                            @else
+                                @if ($discountType == 'Senior Citizen' || $discountType == 'PWD')
+                                    <p>{{ $discountType }} Discount(10%)</p>
 
+                                    @if ($selectedRoom)
+                                        <p>₱{{ (($selectedRoom->RoomPrice  * $lengthOfStay )* (10 / 100)) }}</p>
+                                    @endif
 
-                        <div class="flex justify-between text-xs">
-
-                            @if ($discountType == 'Senior' || $discountType == 'PWD')
-                                <p>{{ $discountType }} Discount(10%)</p>
-
-                                @if ($selectedRoom)
-                                    <p>{{ $selectedRoom->RoomPrice * (10 / 100) }}</p>
                                 @endif
-
                             @endif
 
                         </div>
-
-
 
 
 
@@ -437,6 +435,10 @@
                                     <p>{{ $amenity['name'] . ' x ' . $amenity['quantity'] }}</p>
                                     <p>{{ $amenity['price'] * $amenity['quantity'] }}</p>
                                 </div>
+
+                                @php
+                                    $total += $amenity['price'] * $amenity['quantity'];
+                                @endphp
                             @endforeach
 
                         </div>
@@ -446,7 +448,7 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
-                            <p>{{ $discountedRoomRate ?? 0 }}</p>
+                            <p>{{ ($discountedRoomRate ?? 0) + ($totalAmenitiesCost ?? 0) }}</p>
                         </div>
                         <div>
                             <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount" type="number"
@@ -571,96 +573,92 @@
             </div>
 
             <div class="space-y-4 mt-5">
-                <div class="space-y-4">
+                <div class="grid grid-cols-10 gap-4">
+                    @if ($roomNumbers)
+                        @foreach ($roomNumbers as $room)
+                            @if (!$room->isBooked)
+                                <!-- Display only available rooms -->
+                                <button wire:click="selectRoom({{ $room->room_number_id }})"
+                                    class="relative p-2 w-full max-w-xs h-32 bg-white rounded-lg shadow flex flex-col justify-center items-center group">
+                                    <div class="text-center">
+                                        <p class="font-bold">Room {{ $room->room_number }}</p>
+                                        <p class="text-xs rounded-full bg-green-600 text-white px-2 py-1">
+                                            {{ $room->room->RoomType }}</p>
+                                    </div>
 
-
-                    @php
-                        $groupedRooms = collect();
-
-                        if ($availableRooms && is_iterable($availableRooms)) {
-                            $groupedRooms = collect($availableRooms)->groupBy(function ($room) {
-                                return floor($room->RoomNumber / 100) * 100;
-                            });
-                        }
-
-                    @endphp
-
-
-                    @if ($groupedRooms->isNotEmpty())
-                        @foreach ($groupedRooms as $group => $room)
-                            <div class="grid grid-cols-12 gap-2 m-2">
-                                @foreach ($room as $room)
-                                    <div class="relative group">
-                                        <button wire:click="selectRoom({{ $room->RoomId }})"
-                                            class="h-24 w-full
-                                        @switch($room->RoomType)
-                                            @case('Single bed')
-                                                bg-cyan-200
-                                                @break
-                                            @case('Two single beds')
-                                                bg-violet-200
-                                                @break
-                                            @case('Two double beds')
-                                                bg-blue-200
-                                                @break
-                                            @case('Matrimonial')
-                                                bg-green-200
-                                                @break
-                                            @case('Family')
-                                                bg-orange-200
-                                                @break
-                                            @case('King size')
-                                                bg-red-200
-                                                @break
-                                            @default
-                                                bg-gray-200
-                                        @endswitch
-                                        items-center flex justify-center border-2 rounded shadow-lg translate hover:scale-105 duration-100 hover:shadow-xl">
-                                            {{ $room->RoomNumber }}
-                                        </button>
-                                        <div
-                                            class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
-                                            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                                                <div class="h-52 bg-gray-200 flex items-center justify-center">
-                                                    @if ($room->roomPictures->isNotEmpty())
-                                                        <img src="data:image/png;base64,{{ base64_encode($room->roomPictures->first()->PictureFile) }}"
-                                                            alt="{{ $room->RoomType }}"
-                                                            class="object-cover h-full w-full">
-                                                    @else
-                                                        <div class="flex items-center justify-center h-full text-gray-500">
-                                                            No
-                                                            Image Available</div>
-                                                    @endif
+                                    <div
+                                        class="absolute top-1/2 left-full transform -translate-y-1/2 translate-x-2 w-96 mb-2 hidden group-hover:block z-50">
+                                        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                            <div class="h-52 bg-gray-200 flex items-center justify-center">
+                                                @if ($room->room->roomPictures->isNotEmpty())
+                                                    <img src="data:image/png;base64,{{ base64_encode($room->room->roomPictures->first()->PictureFile) }}"
+                                                        alt="{{ $room->room->RoomType }}"
+                                                        class="object-cover h-full w-full">
+                                                @else
+                                                    <div class="flex items-center justify-center h-full text-gray-500">
+                                                        No Image Available
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="p-4">
+                                                <div class="flex justify-between">
+                                                    <div class="font-bold text-lg">{{ $room->room->RoomType }}</div>
+                                                    <div class="text-red-600">{{ $room->room->RoomStatus }}</div>
                                                 </div>
-                                                <div class="p-4">
-                                                    <div class="flex justify-between">
-                                                        <div class="font-bold text-lg">{{ $room->RoomType }}</div>
-                                                        <div class="text-red-600">{{ $room->RoomStatus }}</div>
-                                                    </div>
-                                                    <div class="text-sm text-gray-700 mt-1">{{ $room->RoomDescription }}
-                                                    </div>
-                                                    <div class="mt-2">
-                                                        <div class="flex justify-between">
-                                                            <div class="font-bold">Price:</div>
-                                                            <div class="text-red-600">{{ $room->RoomPrice }}</div>
+                                                <div class="text-sm text-gray-700 mt-1">{{ $room->room->RoomDescription }}
+                                                </div>
+                                                <div class="mt-2">
+                                                    <div class="flex justify-between items-center">
+                                                        <div class="font-bold">Price:</div>
+                                                        <div>
+                                                            @if ($room->discount)
+                                                                <del
+                                                                    class="text-gray-500">₱{{ number_format($room->room->RoomPrice, 2) }}</del>
+                                                            @else
+                                                                <span
+                                                                    class="text-red-600 font-bold">₱{{ number_format($room->room->RoomPrice, 2) }}</span>
+                                                            @endif
                                                         </div>
-                                                        <div class="text-sm text-gray-600">Room Capacity:
-                                                            {{ $room->Capacity }}</div>
+                                                    </div>
+
+                                                    @if ($room->discount)
+                                                        <div class="flex justify-between items-center mt-2">
+                                                            <div class="font-bold">Discounted Price:</div>
+                                                            <div class="text-red-600 font-bold">
+                                                                ₱{{ number_format($room->room->RoomPrice - $room->room->RoomPrice * ($room->discount / 100), 2) }}
+                                                            </div>
+                                                        </div>
+                                                    @endif
+
+                                                    <div class="flex justify-between">
+                                                        <div class="font-bold">Capacity:</div>
+                                                        <div class="text-red-600">{{ $room->room->Capacity }}</div>
+                                                    </div>
+
+                                                    <div class="flex justify-between">
+                                                        <div class="font-bold">Status</div>
+                                                        <div>
+                                                            <p
+                                                                class="text-xs rounded-full bg-green-600 text-white px-2 py-1">
+                                                                Available</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
+                                </button>
+                            @endif
                         @endforeach
                     @endif
+
                 </div>
-
-
             </div>
+
         @endslot
     </x-select-room-modal>
+
+
 
 
     <x-modal title="Add Guest" name="add-guest">
@@ -714,14 +712,6 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <x-text-field1 field1 name="email" placeholder="Email" model="subguestsEmail" type="email"
-                            label="Email" />
-                        @error('subguestsEmail')
-                            <span class="text-red-600 text-xs">{{ $message }}</span>
-                        @enderror
-                    </div>
-
                     <div class="flex justify-end col-span-2 gap-2">
                         <button class="px-2 py-2 bg-red-600 rounded shadow text-white" type="button"
                             x-on:click="$dispatch('close-modal')">Cancel</button>
@@ -737,4 +727,10 @@
         <x-success-message-modal message="{{ session('subguest-message') }}" />
     @endif
 
+
+    <div wire:loading>
+        <x-loader/>
+    </div>
 </div>
+
+

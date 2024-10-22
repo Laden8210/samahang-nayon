@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use App\Models\RoomNumber;
 
 class CreateBooking extends Component
 {
@@ -46,11 +47,13 @@ class CreateBooking extends Component
 
     public $total;
 
+    public $totalAmenitiesCost;
+
     public $discountedRoomRate;
     public $paymentAmount;
     public $paymentType;
 
-    public $availableRooms;
+    public $roomNumbers;
 
     public $discount;
 
@@ -64,7 +67,7 @@ class CreateBooking extends Component
     public $subguestsLastname;
     public $subguestsDob;
     public $subguestsGender;
-    public $subguestsEmail;
+
     public $subguestsContactnumber;
 
     public $discountType;
@@ -80,12 +83,14 @@ class CreateBooking extends Component
 
     public $selectedBrgy = null;
 
+    public $selectedRoomNumberId;
+
     public $idNumber;
     public function mount()
     {
         $this->checkIn = Carbon::today()->format('Y-m-d');
         $this->checkOut = Carbon::today()->addDay()->format('Y-m-d');
-        $this->availableRooms = $this->getAvailableRooms();
+        $this->roomNumbers = $this->getAvailableRooms();
         $this->totalGuests = 1;
         $this->totalChildren = 0;
         $this->fetchRegions();
@@ -128,9 +133,8 @@ class CreateBooking extends Component
     public function updated($propertyName)
     {
 
-
         if (in_array($propertyName, ['checkOut', 'totalChildren', 'totalGuests'])) {
-            $this->availableRooms = $this->getAvailableRooms();
+            $this->roomNumbers = $this->getAvailableRooms();
 
         }
 
@@ -147,7 +151,7 @@ class CreateBooking extends Component
             'subguestsLastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
             'subguestsDob' => 'required|date',
             'subguestsGender' => 'required',
-            'subguestsEmail' => 'required|email',
+
             'subguestsContactnumber' => 'required|numeric',
         ]);
 
@@ -158,11 +162,10 @@ class CreateBooking extends Component
             'lastname' => $this->subguestsLastname,
             'dob' => $this->subguestsDob,
             'gender' => $this->subguestsGender,
-            'email' => $this->subguestsEmail,
             'contactnumber' => $this->subguestsContactnumber,
         ];
         session()->flash('subguest-message', 'Subguest added successfully.');
-        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsEmail', 'subguestsContactnumber']);
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender',  'subguestsContactnumber']);
     }
 
     public function removeSubGuest($index)
@@ -171,64 +174,54 @@ class CreateBooking extends Component
         $this->subguests = array_values($this->subguests);
         session()->flash('subguest-message', 'Subguest removed successfully.');
     }
-
     public function getAvailableRooms()
     {
         $checkIn = Carbon::parse($this->checkIn);
         $checkOut = Carbon::parse($this->checkOut);
 
-        // Calculate total number of guests
         $totalChildren = is_null($this->totalChildren) ? 0 : (int)$this->totalChildren;
         $totalGuests = is_null($this->totalGuests) ? 0 : (int)$this->totalGuests;
         $total = $totalChildren + $totalGuests;
 
-        // Get available rooms by excluding those that are booked during the desired check-in/check-out period
+        // Get booked rooms during the selected period
         $bookedRooms = Reservation::whereIn('Status', ['Checked In', 'Reserved', 'Booked'])
             ->where(function ($query) use ($checkIn, $checkOut) {
-
                 $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
-                    ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
-                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                        $query->where('DateCheckIn', '<=', $checkIn)
-                            ->where('DateCheckOut', '>=', $checkOut);
-                    });
+                      ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
+                      ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                          $query->where('DateCheckIn', '<=', $checkIn)
+                                ->where('DateCheckOut', '>=', $checkOut);
+                      });
             })
-            ->select('RoomId')
-            ->distinct()
-            ->pluck('RoomId');
+            ->pluck('room_number_id'); // Only get room_number_id
 
+        // Get available rooms that are not booked
+        $availableRooms = RoomNumber::whereHas('room', function ($query) use ($total) {
+            $query->where('Capacity', '>=', $total);
+        })->get();
 
-        $rooms = Room::where('Capacity', '>=', $total)
-            ->get()
-            ->values();
-
-        $availableRooms = $rooms->reject(function ($room) use ($bookedRooms) {
-            return $bookedRooms->contains($room->RoomId); // Compare with booked room IDs
-        })->values();
-
-
-
-
-        $discounted = Promotion::where('StartDate', '<=', $checkOut)
-            ->where('EndDate', '>=', $checkIn)
-            ->with('discountedRooms')
+        $promotion = Promotion::where('StartDate', '<=', $checkIn)
+            ->where('EndDate', '>=', $checkOut)
             ->first();
 
-
-        if ($discounted && $discounted->discountedRooms->isNotEmpty()) {
-            foreach ($availableRooms as $room) {
-                // Check if the room is in the list of discounted rooms
-                $discountedRoom = $discounted->discountedRooms->firstWhere('RoomId', $room->RoomId);
-
-                if ($discountedRoom) {
-                    // Apply the discount to the room
-                    $room->Discount = $discounted->Discount; // Use discount from the promotion
-                    $room->PromotionDescription = $discounted->Description;
-                    $room->StartDate = $discounted->StartDate;
-                    $room->EndDate = $discounted->EndDate;
+        // Apply discount if promotion is active
+        if ($promotion && $promotion->discountedRooms) {
+            foreach ($availableRooms as $roomNumber) {
+                foreach ($promotion->discountedRooms as $discountedRoom) {
+                    if ($discountedRoom->RoomId == $roomNumber->RoomId) {
+                        $roomNumber->discount = $promotion->Discount;
+                        break; // No need to check further once discount is found
+                    }
                 }
             }
         }
+
+        // Mark rooms as booked or available
+        foreach ($availableRooms as $roomNumber) {
+            $roomNumber->isBooked = in_array($roomNumber->room_number_id, $bookedRooms->toArray());
+        }
+
+
 
         return collect($availableRooms);
     }
@@ -317,6 +310,15 @@ class CreateBooking extends Component
             return;
         }
 
+        if (!$this->paymentType) {
+            session()->flash('message', 'Please select the payment method');
+
+            return;
+        }
+
+
+
+
 
         $room = Room::find($this->selectedRoomId);
 
@@ -327,11 +329,11 @@ class CreateBooking extends Component
         }
 
         $reservation = new Reservation();
-        $reservation->RoomId = $room->RoomId;
+        $reservation->room_number_id = $this->selectedRoomNumberId;
         $reservation->GuestId = $guest->GuestId;
         $reservation->DateCheckIn = $this->checkIn;
         $reservation->DateCheckOut = $this->checkOut;
-        $reservation->TotalCost =  $this->discountedRoomRate - $totalAmenities;
+        $reservation->TotalCost =  $this->discountedRoomRate;
         $reservation->Status = 'Booked';
         $reservation->Discount = ($room->RoomPrice * $this->lengthOfStay) - $this->discountedRoomRate;
 
@@ -342,37 +344,34 @@ class CreateBooking extends Component
         $reservation->DiscountType = $this->discountType;
 
 
+        if($this->paymentAmount == 0){
+            session()->flash('message', 'Please enter the payment amount');
+            return;
+        }
+
+
+        if($this->paymentAmount < $this->discountedRoomRate){
+            session()->flash('message', 'Payment amount is less than the total amount');
+            return;
+        }
 
         $purpose = "";
+        if ($this->discountType == 'Senior Citizen' || $this->discountType == 'PWD') {
+            $purpose = ($this->discountType == 'Senior Citizen') ? "Senior Citizen Discount" : "PWD Discount";
 
-        if ($this->discountType == 'Senior Citizen') {
-            $purpose = "Senior Citizen Discount";
-
-            if ($this->idNumber == null) {
+            if (empty($this->idNumber)) {
                 session()->flash('message', 'Please enter the ID Number');
                 return;
             }
 
-            if (strlen($this->idNumber) != 12) {
-                session()->flash('message', 'Invalid ID Number');
-                return;
-            }
-
-
-            $reservation->IdNumber = $this->idNumber;
-        } else if ($this->discountType == 'PWD') {
-            $purpose = "PWD Discount";
-            if ($this->idNumber == null) {
-                session()->flash('message', 'Please enter the ID Number');
-                return;
-            }
-
-            if (strlen($this->idNumber) != 12) {
-                session()->flash('message', 'Invalid ID Number');
+            // Check if ID Number matches the format 13-5416-000-001
+            if (!preg_match('/^\d{2}-\d{4}-\d{3}-\d{3}$/', $this->idNumber)) {
+                session()->flash('message', 'Invalid ID Number format. Please use 13-5416-000-001');
                 return;
             }
 
             $reservation->IdNumber = $this->idNumber;
+
         } else if ($this->discountType == 'None') {
             $purpose = "No Discount";
         }
@@ -406,10 +405,7 @@ class CreateBooking extends Component
             })
         );
 
-        if (!$this->paymentType) {
-            session()->flash('message', 'Please select the payment method');
-            return;
-        }
+
 
         if ($this->paymentAmount != 0) {
             $reservation->payments()->create([
@@ -514,7 +510,6 @@ class CreateBooking extends Component
             $this->total = $this->computeTotal();
 
             $this->dispatch('close-modal');
-            $this->total = $this->computeTotal();
         }
     }
 
@@ -524,7 +519,12 @@ class CreateBooking extends Component
         $checkOut = Carbon::parse($this->checkOut);
         $this->lengthOfStay = $checkIn->diffInDays($checkOut);
 
-        $this->total = $this->computeTotal();
+        $room = Room::find($this->selectedRoomId);
+        $total = 0;
+        if ($room) {
+            $total = $room->RoomPrice * $this->lengthOfStay;
+        }
+
 
 
         $promotions = Promotion::where('StartDate', '<=', $checkIn)
@@ -543,20 +543,20 @@ class CreateBooking extends Component
 
             if ($this->discount) {
 
-                $this->discountedRoomRate = $this->total -  ($this->total * ($this->discount->Discount / 100));
+                $this->discountedRoomRate = $total -  ($total * ($this->discount->Discount / 100));
             } else {
 
                 if ($this->discountType != 'None') {
-                    $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
+                    $this->discountedRoomRate = $total -  ($this->total * (10 / 100));
                 } else {
-                    $this->discountedRoomRate = $this->total;
+                    $this->discountedRoomRate = $total;
                 }
             }
         } else {
             if ($this->discountType != 'None') {
-                $this->discountedRoomRate = $this->total -  ($this->total * (10 / 100));
+                $this->discountedRoomRate = $total -  ($total * (10 / 100));
             } else {
-                $this->discountedRoomRate = $this->total;
+                $this->discountedRoomRate = $total;
             }
         }
     }
@@ -564,10 +564,12 @@ class CreateBooking extends Component
 
     public function selectRoom($roomId)
     {
-        // Find the room
-        $room = Room::find($roomId);
+        $rNumber = RoomNumber::find($roomId);
+
+        $this->selectedRoomNumberId = $rNumber->room_number_id;
+        $room = Room::find($rNumber->RoomId);
         $this->selectedRoom = $room;
-        $this->selectedRoomId = $roomId;
+        $this->selectedRoomId = $room->RoomId;
 
         $this->dispatch('close-modal');
 
@@ -614,9 +616,9 @@ class CreateBooking extends Component
         }
 
         foreach ($this->selectedAmenities as $amenity) {
-            $this->total += $amenity['price'] * $amenity['quantity'];
+            $this->totalAmenitiesCost += $amenity['price'] * $amenity['quantity'];
         }
-        return $this->total;
+        return $this->total + $this->totalAmenitiesCost;
     }
 
     public function generateReferenceNumber()

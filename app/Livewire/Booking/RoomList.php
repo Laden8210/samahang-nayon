@@ -5,33 +5,51 @@ namespace App\Livewire\Booking;
 use App\Models\Reservation;
 use Livewire\Component;
 use App\Models\Room;
+use App\Models\RoomNumber;
+use App\Models\Promotion;
+use Carbon\Carbon;
 
 class RoomList extends Component
 {
     public function render()
     {
-        $rooms = Room::orderBy('RoomNumber', 'asc')->get();
+        // Fetch all room numbers
+        $roomNumbers = RoomNumber::all();
 
-        // Get all rooms that are currently reserved
-        $reservedRoomIds = Reservation::where('DateCheckIn', '<=', date('Y-m-d'))
-            ->where('DateCheckOut', '>=', date('Y-m-d'))
-            ->pluck('RoomId') // Only get the RoomId of reserved rooms
-            ->toArray(); // Convert the collection to an array
+        // Get the current date using Carbon
+        $currentDate = Carbon::today();
 
-        foreach ($rooms as $room) {
-            // If the room is in the list of reserved rooms, mark it as 'Not Available'
-            if (in_array($room->RoomId, $reservedRoomIds)) {
-                $room->RoomStatus = 'Not Available';
-            } else {
-                $room->RoomStatus = 'Available';
+        // Find the current promotion that is active
+        $promotion = Promotion::where('StartDate', '<=', $currentDate)
+                                ->where('EndDate', '>=', $currentDate)
+                                ->first();
+
+
+        if ($promotion && $promotion->discountedRooms) {
+            foreach ($roomNumbers as $roomNumber) {
+                foreach ($promotion->discountedRooms as $discountedRoom) {
+                    if ($discountedRoom->RoomId == $roomNumber->RoomId) {
+                        $roomNumber->discount = $promotion->Discount;
+                    }
+                }
             }
         }
 
 
+        $reservation = Reservation::where('DateCheckIn', '<=', $currentDate)
+                                    ->where('DateCheckOut', '>=', $currentDate)
+                                    ->get();
 
+        foreach ($roomNumbers as $roomNumber) {
+            $roomNumber->isBooked = false;
+            foreach ($reservation as $res) {
+                if ($res->room_number_id == $roomNumber->room_number_id) {
+                    $roomNumber->isBooked = true;
+                }
+            }
+        }
         return view('livewire.booking.room-list', [
-            'rooms' => $rooms
+            'roomNumbers' => $roomNumbers
         ]);
     }
-
 }

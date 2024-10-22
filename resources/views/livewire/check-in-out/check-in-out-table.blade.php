@@ -28,9 +28,9 @@
                 @foreach ($checkInOuts as $checkInOut)
 
                 <tr class="bg-white border-b text-xs text-center">
-                    <td  class="px-2 py-3">{{ $checkInOut->id }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->CheckInOutId }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
-                    <td  class="px-2 py-3">{{ $checkInOut->reservation->room->RoomNumber ?? '' }}</td>
+                    <td  class="px-2 py-3">{{ $checkInOut->reservation->roomNumber->room_number ?? '' }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->DateCreated }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->TimeCreated }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->Type }}</td>
