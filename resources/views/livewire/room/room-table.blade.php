@@ -54,21 +54,21 @@
                     </div>
 
                     <div class="col-span-3 p-2">
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
                             <div>
                                 <h1 class="text-base font-bold">{{ $room->RoomType }}</h1>
 
                             </div>
-                            <div class="flex justify-end">
+                            <div class="flex justify-end gap-2 text-white ">
 
                                 <div>
                                     <a href="{{ route('updateRoom', Crypt::encrypt($room->RoomId)) }}"
-                                        class=" text-xs block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><i
+                                        class=" text-xs block px-2 py-2 hover:bg-green-500 bg-green-600 rounded"><i
                                             class="fa fa-edit" aria-hidden="true"></i></a>
                                 </div>
                                 <div>
                                     <button wire:click.prevent="confirmDelete({{ $room->RoomId }})"
-                                        class="w-full block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-xs"
+                                        class="w-full block px-2 py-2 hover:bg-red-500 bg-red-600  text-xs rounded"
                                         type="button">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>

@@ -38,45 +38,28 @@
                         <td class="px-2 py-3">
                             @if ($user->Status == 'Active')
                                 <span
-                                    class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">{{ $user->Status }}</span>
+                                    class="px-2 py-1 bg-green-500  text-white rounded-full text-xs">{{ $user->Status }}</span>
                             @else
                                 <span
                                     class="px-2 py-1 bg-red-500 text-white rounded-full text-xs">{{ $user->Status }}</span>
                             @endif
-                        <td class="px-2 py-3">
-                            <button x-data
-                                x-on:click="$dispatch('open-dropdown', { name: 'dropdown-{{ $user->EmployeeId }}' })"
-                                class="px-4 py-2 rounded-full text-cyan-500 hover:bg-cyan-100" type="button">
-                                <i class="fas fa-ellipsis-h"></i>
+                        <td class="px-2 py-3 flex justify-center gap-2">
+
+                            <a href="{{ route('updateUser', $user->EmployeeId) }}"
+                                class="block p-2 bg-blue-600 hover:bg-blue-500 text-white rounded"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                            <button wire:click="changeStatus({{ $user->EmployeeId }})"
+                                class="block p-2 bg-green-600  hover:bg-green-500 text-white rounded">
+
+                                @if ($user->Status == 'Active')
+                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                @else
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                @endif
                             </button>
+                            <button wire:click.prevent="selectUser({{ $user->EmployeeId }})"
+                                class="block p-2 bg-red-600  hover:bg-red-500 text-white rounded"><i class="fa fa-trash" aria-hidden="true"></i></button>
 
-                            <x-dropdown name="dropdown-{{ $user->EmployeeId }}">
-                                @slot('body')
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                        <li>
-                                            <a href="{{ route('updateUser', $user->EmployeeId) }}"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Update</a>
-                                        </li>
-                                        <li>
-                                            <button wire:click="changeStatus({{ $user->EmployeeId }})"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white text-center w-full">
 
-                                                @if ($user->Status == 'Active')
-                                                    Deactivate
-                                                @else
-                                                    Activate
-                                                @endif
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button
-                                                wire:click.prevent="selectUser({{ $user->EmployeeId }})"
-                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white w-full">Delete</button>
-                                        </li>
-
-                                    </ul>
-                                @endslot
-                            </x-dropdown>
                         </td>
                 @endforeach
             </tbody>
