@@ -93,8 +93,8 @@
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
-                            <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                             </td>
@@ -133,8 +133,8 @@
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
-                            <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                             </td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
@@ -172,8 +172,8 @@
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
-                            <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                             </td>
 
@@ -234,8 +234,8 @@
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                                 </td>
-                                <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                                <td>{{ $reservation->room->RoomNumber }}</td>
+                                <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                                <td>{{ $reservation->roomNumber->room_number }}</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                                 </td>
 
@@ -289,8 +289,8 @@
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
-                            <td>{{ ucfirst($reservation->room->RoomType) }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
                             </td>
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
@@ -353,8 +353,9 @@
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                                 </td>
-                                <td>{{ $reservation->room->RoomNumber }}</td>
-                                <td>{{ $reservation->room->RoomType }}</td>
+                                <td>{{ $reservation->roomNumber->room_number }}</td>
+                                <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
@@ -395,8 +396,10 @@
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                                 </td>
-                                <td>{{ $reservation->room->RoomType }}</td>
-                                <td>{{ $reservation->room->RoomNumber }}</td>
+
+                                <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                                <td>{{ $reservation->roomNumber->room_number }}</td>
+
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
@@ -431,8 +434,8 @@
                                 <td>{{ $reservation->ReservationId }}</td>
                                 <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                                 </td>
-                                <td>{{ $reservation->room->RoomType }}</td>
-                                <td>{{ $reservation->room->RoomNumber }}</td>
+                                <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                                <td>{{ $reservation->roomNumber->room_number }}</td>
                                 <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
@@ -469,8 +472,8 @@
                             <td>{{ $reservation->ReservationId }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
-                            <td>{{ $reservation->room->RoomType }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+                            <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
 
                             <td>{{ \Carbon\Carbon::parse($reservation->DateCreated)->timezone('Asia/Manila')->format('F j, Y') }}
                             </td>
@@ -521,7 +524,8 @@
                     @foreach ($reservations as $reservation)
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
-                            <td>{{ $reservation->room->RoomNumber }}</td>
+
+                            <td>{{ $reservation->roomNumber->room_number }}</td>
                             <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
                             </td>
                             <td>{{ number_format($reservation->TotalCost, 2) }}</td>

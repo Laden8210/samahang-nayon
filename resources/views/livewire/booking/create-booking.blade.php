@@ -433,7 +433,7 @@
                             @foreach ($selectedAmenities as $amenity)
                                 <div class="flex justify-between">
                                     <p>{{ $amenity['name'] . ' x ' . $amenity['quantity'] }}</p>
-                                    <p>{{ $amenity['price'] * $amenity['quantity'] }}</p>
+                                    <p>₱{{ $amenity['price'] * $amenity['quantity'] }}</p>
                                 </div>
 
                                 @php
@@ -448,7 +448,7 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
-                            <p>{{ ($discountedRoomRate ?? 0) + ($totalAmenitiesCost ?? 0) }}</p>
+                            <p>₱{{ ($discountedRoomRate ?? 0) + ($totalAmenitiesCost ?? 0) }}</p>
                         </div>
                         <div>
                             <x-text-field1 -field1 name="paymentAmount" placeholder="Enter Amount" type="number"
