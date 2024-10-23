@@ -68,7 +68,7 @@
                                 <p class="text-right col-span-2 mt-2">
                                     <span
                                         class="px-3 py-1 rounded-full text-white text-xs font-semibold
-                                        {{ $room->isBooked == 'false' ? 'bg-red-500' :bg-green-500'}}">
+                                        {{ $room->isBooked == 'false' ? 'bg-red-500' : 'bg-green-500'}}">
                                         {{ $room->isBooked == 'false' ?  'Not Available' :'Available'  }}
                                     </span>
                                 </p>
