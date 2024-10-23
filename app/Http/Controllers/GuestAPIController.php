@@ -668,7 +668,7 @@ class GuestAPIController extends Controller
         $checkIn = Carbon::parse($reservation->DateCheckIn);
 
         // Allow cancellation only if there are more than 3 days until check-in
-        if ($checkIn->diffInDays(now()) <= 3) {
+        if ($checkIn->diffInDays(now()) >= 3) {
             return response()->json(['error' => 'Cannot cancel reservation with 3 days or less before check-in'], 200);
         }
 
