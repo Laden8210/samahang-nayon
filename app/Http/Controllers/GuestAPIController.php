@@ -637,37 +637,11 @@ class GuestAPIController extends Controller
                 }
                 return $query->where('Status', $status);
             })
-            ->with(['roomNumber', 'reservationAmenities']) // Excluded payments from the eager loading
+            ->with(['roomNumber', 'reservationAmenities', 'payments'])
             ->orderBy('DateCheckIn', 'desc')
             ->get();
 
-        // Flatten the reservations without payment details
-        $flattenedReservations = $reservations->map(function ($reservation) {
-            return [
-                'ReservationId' => $reservation->ReservationId,
-                'GuestId' => $reservation->GuestId,
-                'DateCreated' => $reservation->DateCreated,
-                'TimeCreated' => $reservation->TimeCreated,
-                'DateCheckIn' => $reservation->DateCheckIn,
-                'DateCheckOut' => $reservation->DateCheckOut,
-                'TotalCost' => $reservation->TotalCost,
-                'Status' => $reservation->Status,
-                'TotalAdult' => $reservation->TotalAdult,
-                'TotalChildren' => $reservation->TotalChildren,
-                'OriginalCost' => $reservation->OriginalCost,
-                'Discount' => $reservation->Discount,
-                'Source' => $reservation->Source,
-                'DateCancelled' => $reservation->DateCancelled,
-                'DiscountType' => $reservation->DiscountType,
-                'IdNumber' => $reservation->IdNumber,
-                'penalty' => $reservation->penalty,
-                'room_number_id' => $reservation->room_number_id,
-                'room_number' => $reservation->roomNumber->room_number, // Extracted from nested object
-
-            ];
-        });
-
-        return response()->json($flattenedReservations);
+        return response()->json($reservations);
     }
 
 
