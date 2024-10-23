@@ -239,4 +239,11 @@ class ViewBookingDetails extends Component
     {
         return 'REF-' . date('YmdHis');
     }
+
+    public function removeAmenity($id)
+    {
+        $amenity = $this->reservation->reservationAmenities->find($id);
+        $amenity->delete();
+        session()->flash('message', 'Amenity Removed');
+    }
 }

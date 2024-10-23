@@ -240,6 +240,7 @@
                             <th class="px-2 py-3">Price</th>
                             <th class="px-2 py-3">Total</th>
                             <th class="px-2 py-3">Total Amount</th>
+                            <th class="px-2 py-3">Action</th>
 
                         </tr>
                     </thead>
@@ -259,6 +260,13 @@
                                 </td class="px-2 py-3">
                                 <td>
                                     ₱{{ $amenity->TotalCost ?? '' }}
+                                </td>
+
+                                <td>
+                                    <button class="bg-red-600 px-2 py-1 rounded text-white hover:bg-red-900"
+                                        type="button"
+                                        wire:click="removeAmenity({{ $amenity->ReservationAmenitiesId }})"><i class="fa fa-trash" aria-hidden="true"></i></button>
+
                                 </td>
 
                             </tr>
