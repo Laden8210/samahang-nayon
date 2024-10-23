@@ -69,10 +69,8 @@ class RoomAPIController extends Controller
                 'room_number_id' => (string) $roomNumber->room_number_id, // Cast to string
                 'room_number' => $roomNumber->room_number,
                 'RoomId' => (string) $roomNumber->room->RoomId,
-                'deleted_at' => $roomNumber->deleted_at,
-                'created_at' => $roomNumber->created_at,
-                'updated_at' => $roomNumber->updated_at,
-                'discount' => $roomNumber->discount ?? null,
+
+                'discount' => (string)$roomNumber->discount ?? null,
                 'RoomType' => $roomNumber->room->RoomType,
                 'Capacity' =>(string)  $roomNumber->room->Capacity,
                 'RoomPrice' => $roomNumber->room->RoomPrice,
