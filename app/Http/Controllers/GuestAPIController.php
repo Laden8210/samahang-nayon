@@ -637,7 +637,7 @@ class GuestAPIController extends Controller
                 }
                 return $query->where('Status', $status);
             })
-            ->with(['roomNumber', 'reservationAmenities', 'payments'])
+            ->with(['roomNumber', 'roomNumber.room','reservationAmenities', 'payments'])
             ->orderBy('DateCheckIn', 'desc')
             ->get();
 
