@@ -341,7 +341,13 @@ class CreateBooking extends Component
         $reservation->TotalAdult = $this->totalGuests;
         $reservation->TotalChildren = $this->totalChildren ?? 0;
         $reservation->Source = 'Walk In';
-        $reservation->DiscountType = $this->discountType;
+
+        if($this->discount){
+            $reservation->DiscountType = "Event Promotion";
+        }else{
+            $reservation->DiscountType =   $this->discountType;
+        }
+
 
 
         if($this->paymentAmount == 0){
