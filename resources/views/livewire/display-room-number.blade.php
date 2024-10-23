@@ -24,11 +24,11 @@
                         <p class="text-xs rounded-full bg-green-600 text-white px-2 py-1">{{$room->room->RoomType}}</p>
                     </div>
 
-                    <!-- Delete button, positioned to overlay the text -->
+                    {{-- <!-- Delete button, positioned to overlay the text -->
                     <button type="button"
                         class="absolute inset-0 flex justify-center items-center bg-cyan-500  text-white p-2 rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                         Update Room
-                    </button>
+                    </button> --}}
                 @else
                     <div class="text-center">
                         <p class="font-bold">Room {{ $roomNumber }}</p>
