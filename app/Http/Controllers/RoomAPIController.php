@@ -66,12 +66,12 @@ class RoomAPIController extends Controller
             return !$roomNumber->isBooked; // Keep only rooms that are not booked
         })->map(function ($roomNumber) {
             return [
-                'room_number_id' => (string) $roomNumber->room_number_id, // Cast to string
+                'room_number_id' =>  $roomNumber->room_number_id, // Cast to string
                 'room_number' => $roomNumber->room_number,
-                'RoomId' => (string) $roomNumber->room->RoomId,
-                'discount' => (string) $roomNumber->discount ?? null,
+                'RoomId' =>  $roomNumber->room->RoomId,
+                'discount' => $roomNumber->discount ?? null,
                 'RoomType' => $roomNumber->room->RoomType,
-                'Capacity' => (string) $roomNumber->room->Capacity,
+                'Capacity' =>  $roomNumber->room->Capacity,
                 'RoomPrice' => $roomNumber->room->RoomPrice,
                 'Description' => $roomNumber->room->Description,
             ];
