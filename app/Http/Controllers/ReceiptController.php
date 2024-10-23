@@ -121,10 +121,10 @@ class ReceiptController extends Controller
 
         $lenghtOfStay = Carbon::parse($reservation->DateCheckIn)->diffInDays(Carbon::parse($reservation->DateCheckOut));
 
-        $sheet->setCellValue('B19', $reservation->room->RoomType);
+        $sheet->setCellValue('B19', $reservation->roomNumber->room->RoomType);
         $sheet->setCellValue('G19', $lenghtOfStay);
-        $sheet->setCellValue('K19', "₱".$reservation->room->RoomPrice);
-        $sheet->setCellValue('P19', "₱".$reservation->room->RoomPrice * $lenghtOfStay);
+        $sheet->setCellValue('K19', "₱".$reservation->roomNumber->room->RoomPrice);
+        $sheet->setCellValue('P19', "₱".$reservation->roomNumber->room->RoomPrice * $lenghtOfStay);
 
         foreach ($reservation->reservationAmenities as $reservationAmenity) {
 
@@ -181,7 +181,7 @@ class ReceiptController extends Controller
         $message = "Dear {$guest->FirstName},\n\n" .
             "Your payment has been confirmed successfully!\n" .
             "Payment Reference: {$reference}\n" .
-            "Amount Paid: ₱{$payment->AmountPaid}\n" .
+            "Amount Paid: {$payment->AmountPaid}\n" .
             "Payment Type: {$payment->PaymentType}\n" .
             "Date: " . now()->toDateString() . "\n" .
             "Status: Confirmed\n\n" .
@@ -210,7 +210,7 @@ class ReceiptController extends Controller
         $message = "Dear {$guest->FirstName},\n\n" .
             "We regret to inform you that your payment has failed.\n" .
             "Payment Reference: {$reference}\n" .
-            "Amount: ₱{$payment->AmountPaid}\n" .
+            "Amount: {$payment->AmountPaid}\n" .
             "Payment Type: {$payment->PaymentType}\n" .
             "Date: " . now()->toDateString() . "\n" .
             "Status: Failed\n\n" .
