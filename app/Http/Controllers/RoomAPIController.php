@@ -66,7 +66,7 @@ class RoomAPIController extends Controller
             return !$roomNumber->isBooked; // Keep only rooms that are not booked
         })->map(function ($roomNumber) {
             return [
-                'room_number_id' => $roomNumber->room_number_id, // Correctly enclosed
+                'room_number_id' => (string) $roomNumber->room_number_id, // Cast to string
                 'room_number' => $roomNumber->room_number,
                 'RoomId' => $roomNumber->room->RoomId,
                 'deleted_at' => $roomNumber->deleted_at,
@@ -79,6 +79,7 @@ class RoomAPIController extends Controller
                 'Description' => $roomNumber->room->Description,
             ];
         });
+
 
         return response()->json($flatRooms);
     }
