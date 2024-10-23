@@ -637,7 +637,7 @@ class GuestAPIController extends Controller
                 }
                 return $query->where('Status', $status);
             })
-            ->with(['roomNumber', 'roomNumber.room','reservationAmenities', 'payments'])
+            ->with(['roomNumber', 'roomNumber.room', 'reservationAmenities', 'payments'])
             ->orderBy('DateCheckIn', 'desc')
             ->get();
 
@@ -667,11 +667,10 @@ class GuestAPIController extends Controller
 
         $checkIn = Carbon::parse($reservation->DateCheckIn);
 
-        // Check the number of days until check-in
-        if ($checkIn->diffInDays(now()) < 3) {
-            return response()->json(['error' => 'Cannot cancel reservation less than 3 days before check-in'], 200);
+        // Allow cancellation only if there are more than 3 days until check-in
+        if ($checkIn->diffInDays(now()) <= 3) {
+            return response()->json(['error' => 'Cannot cancel reservation with 3 days or less before check-in'], 200);
         }
-
 
         if (!$reservation) {
             return response()->json(['error' => 'Reservation not found'], 404);
