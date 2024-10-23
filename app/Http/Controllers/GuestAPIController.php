@@ -698,6 +698,13 @@ class GuestAPIController extends Controller
             'date_created' => date('Y-m-d')
         ]);
 
+        $message = "Your reservation has been cancelled successfully. We hope to see you again soon!";
+
+
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $guest->ContactNumber,
+            'message' => $message
+        ]);
 
         return response()->json(['message' => 'Reservation cancelled successfully'], 200);
     }
@@ -728,7 +735,7 @@ class GuestAPIController extends Controller
             'reservation_id' => 'required|integer|exists:reservations,ReservationId', // Update to check for ReservationId
         ]);
 
-        $reservation = Reservation::with(['payments', 'room', 'reservationAmenities.amenity', 'subGuests']) // Correct 'payment' to 'payments'
+        $reservation = Reservation::with(['payments', 'roomNumber', 'reservationAmenities.amenity', 'subGuests']) // Correct 'payment' to 'payments'
             ->where('ReservationId', $request->reservation_id) // Use where() instead of find()
             ->first();
 
