@@ -356,7 +356,8 @@ class CreateBooking extends Component
         }
 
         $purpose = "";
-        if ($this->discountType == 'Senior Citizen' || $this->discountType == 'PWD') {
+
+      if ($this->discountType == 'Senior Citizen' || $this->discountType == 'PWD') {
             $purpose = ($this->discountType == 'Senior Citizen') ? "Senior Citizen Discount" : "PWD Discount";
 
             if (empty($this->idNumber)) {
@@ -544,6 +545,7 @@ class CreateBooking extends Component
             if ($this->discount) {
 
                 $this->discountedRoomRate = $total -  ($total * ($this->discount->Discount / 100));
+                $this->discountType = "Promotion";
             } else {
 
                 if ($this->discountType != 'None') {
