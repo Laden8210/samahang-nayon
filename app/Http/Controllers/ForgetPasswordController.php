@@ -29,8 +29,6 @@ class ForgetPasswordController extends Controller
 
     public function confirmChangePassword(Request $request)
     {
-
-
         $request->validate([
             'token' => 'required',
             'password' => [
