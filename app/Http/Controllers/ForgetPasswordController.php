@@ -30,7 +30,6 @@ class ForgetPasswordController extends Controller
     public function confirmChangePassword(Request $request)
     {
         $request->validate([
-            'token' => 'required',
             'password' => [
                 'required',
                 'min:8',
@@ -41,6 +40,8 @@ class ForgetPasswordController extends Controller
             'confirm_password' => 'required|same:password',
         ]);
 
+
+        $token = $request->token;
 
         if (!session('reset-password')) {
             return redirect()->route('forget-password')->with('error', 'Please request OTP first.');
