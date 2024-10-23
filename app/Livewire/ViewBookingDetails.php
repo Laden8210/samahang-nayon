@@ -8,6 +8,9 @@ use App\Models\Reservation;
 use Xendit\Refund\Refund;
 use App\Models\Payment;
 use Carbon\Carbon;
+use App\Models\Guest;
+use Illuminate\Support\Facades\Http;
+
 class ViewBookingDetails extends Component
 {
     public $ReservationId;
@@ -42,10 +45,9 @@ class ViewBookingDetails extends Component
             $remainingBalance += $amenity->TotalCost;
         }
         foreach ($this->reservation->payments as $payment) {
-            if ($payment->Status == 'Confirmed'){
+            if ($payment->Status == 'Confirmed') {
                 $remainingBalance -= $payment->AmountPaid;
             }
-
         }
 
         $this->payment = $remainingBalance;
@@ -55,13 +57,12 @@ class ViewBookingDetails extends Component
 
         $checkoutTime = Carbon::parse($this->reservation->DateCheckOut)->setTime(14, 0);
 
-        if($this->reservation->Status == 'Checked In'){
+        if ($this->reservation->Status == 'Checked In') {
             if (now()->greaterThan($checkoutTime)) {
                 $hoursLate = $checkoutTime->diffInHours(now());
                 $this->reservation->TotalCost += $hoursLate * $penaltyRatePerHour;
             }
         }
-
     }
 
 
@@ -132,6 +133,23 @@ class ViewBookingDetails extends Component
     {
         $payment = Payment::find($ref);
         $payment->Status = 'Confirmed';
+        $guest = Guest::find($payment->GuestId);
+
+        $message = "Dear {$guest->FirstName},\n\n" .
+            "Your payment has been confirmed successfully!\n" .
+            "Payment Reference: {$ref}\n" .
+            "Amount Paid: {$payment->AmountPaid}\n" .
+            "Payment Type: {$payment->PaymentType}\n" .
+            "Date: " . now()->toDateString() . "\n" .
+            "Status: Confirmed\n\n" .
+            "Thank you for your payment! We look forward to serving you.";
+
+        // Send SMS notification
+        $response = Http::post('https://nasa-ph.com/api/send-sms', [
+            'phone_number' => $guest->ContactNumber,
+            'message' => $message
+        ]);
+
 
         $payment->save();
         session()->flash('message', 'Payment Confirm');

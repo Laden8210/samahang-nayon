@@ -207,8 +207,8 @@
             <div class=" p-2 min-h-40 max-h-96">
                 <h1 class="text-xl font-bold">Room Details</h1>
                 <table class="w-full overflow-auto mt-2">
-                    <thead class="">
-                        <tr class="bg-slate-100">
+                    <thead class="text-xs uppercase bg-gray-50">
+                        <tr class="text-center">
                             <th class="px-2 py-3">Room Type</th>
                             <th class="px-2 py-3">Room Number</th>
                             <th class="px-2 py-3">Room Rate</th>
@@ -234,9 +234,8 @@
                 </div>
 
                 <table class="w-full overflow-auto mt-2">
-                    <thead class="bg-slate-100">
-
-                        <tr>
+                    <thead class="text-xs uppercase bg-gray-50">
+                        <tr class="text-center">
                             <th class="px-2 py-3">Amenities</th>
                             <th class="px-2 py-3">Price</th>
                             <th class="px-2 py-3">Total</th>
@@ -275,8 +274,8 @@
 
                 </div>
                 <table class="w-full">
-                    <thead class="bg-slate-100">
-                        <tr>
+                    <thead class="text-xs uppercase bg-gray-50">
+                        <tr class="text-center">
                             <th class="px-2 py-3">Reference Number</th>
                             <th class="px-2 py-3">Payment Status</th>
                             <th class="px-2 py-3">Time</th>
@@ -330,8 +329,8 @@
 
             </div>
             <table class="w-full">
-                <thead class="bg-slate-100">
-                    <tr>
+                <thead class="text-xs uppercase bg-gray-50">
+                    <tr class="text-center">
                         <th class="px-2 py-3">Full Name</th>
                         <th class="px-2 py-3">Birthdate</th>
                         <th class="px-2 py-3">Gender</th>
