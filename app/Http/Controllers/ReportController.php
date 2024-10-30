@@ -39,8 +39,8 @@ class ReportController extends Controller
                 // Fetch reservations where both DateCheckIn and DateCheckOut are within the date range
                 $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
                 ->where(function ($query) use ($report) {
-                    $query->where('DateCheckIn', '<=', $report->EndDate)
-                          ->where('DateCheckOut', '>=', $report->Date);
+                    $query->where('DateCheckIn', '<=', $report->Date)
+                          ->where('DateCheckOut', '>=', $report->EndDate);
                 })
                 ->get();
 
