@@ -398,8 +398,6 @@ class GuestAPIController extends Controller
 
 
 
-
-
         $totalPayment = 0;
 
         $totalAmenityCost = 0;
@@ -423,7 +421,6 @@ class GuestAPIController extends Controller
                 'LastName' => $sub_guest['last_name'],
                 'MiddleName' => $sub_guest['middle_name'], // Corrected key
                 'ContactNumber' => $sub_guest['contact_number'], // Corrected key
-                'EmailAddress' => $sub_guest['email'], // Corrected key
                 'Birthdate' => $sub_guest['birthdate'], // Corrected key
                 'Gender' => $sub_guest['gender']
             ]);

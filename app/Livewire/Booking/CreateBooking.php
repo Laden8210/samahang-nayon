@@ -396,7 +396,6 @@ class CreateBooking extends Component
                 'LastName' => $subguest['lastname'],
                 'Birthdate' => $subguest['dob'],
                 'Gender' => $subguest['gender'],
-                'EmailAddress' => $subguest['email'],
                 'ContactNumber' => $subguest['contactnumber'],
             ]);
         }
