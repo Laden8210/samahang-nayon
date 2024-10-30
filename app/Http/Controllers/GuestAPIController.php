@@ -259,7 +259,8 @@ class GuestAPIController extends Controller
             'password' => 'required|string',
         ]);
 
-        $guest = Guest::where('EmailAddress', $validatedData['emailaddress'])->first();
+        $guest = Guest::where('EmailAddress', $validatedData['emailaddress'])
+        ->orWhere('ContactNumber',  $validatedData['emailaddress'])->first();
 
         if (!$guest) {
             return response()->json(['error' => 'Guest not found'], 200);
