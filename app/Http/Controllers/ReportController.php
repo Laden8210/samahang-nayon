@@ -29,43 +29,37 @@ class ReportController extends Controller
                 ->where('GuestId', $report->GuestId)
                 ->where(function ($query) use ($report) {
                     $query->whereBetween('DateCheckIn', [$report->Date, $report->EndDate])
-                          ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
+                        ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
                 })
                 ->get();
-
-
-        }else if($report->type === 'Arrival and Departure Report'){
+        } else if ($report->type === 'Arrival and Departure Report') {
             if ($report->EndDate) {
                 // Fetch reservations where both DateCheckIn and DateCheckOut are within the date range
                 $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
-                ->where(function ($query) use ($report) {
-                    $query->where('DateCheckIn', '<=', $report->Date)
-                          ->orWhere('DateCheckOut', '>=', $report->EndDate);
-                })
-                ->get();
-
+                    ->where(function ($query) use ($report) {
+                        $query->whereBetween('DateCheckIn', [$report->Date, $report->EndDate])
+                            ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
+                    })
+                    ->get();
             } else {
                 // Only use the start date if EndDate is null, fetching reservations created on that date
                 $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
                     ->whereDate('DateCheckIn', '=', $report->Date)
                     ->get();
             }
-
-
-        }else {
+        } else {
             $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
-            ->when($report->EndDate, function ($query) use ($report) {
-                // Use the date range if EndDate is present
-                return $query->whereBetween('DateCreated', [$report->Date, $report->EndDate]);
-            }, function ($query) use ($report) {
-                // Otherwise, only use the start date
-                return $query->whereDate('DateCreated', '=', $report->Date);
-            })
-            ->get();
-
+                ->when($report->EndDate, function ($query) use ($report) {
+                    // Use the date range if EndDate is present
+                    return $query->whereBetween('DateCreated', [$report->Date, $report->EndDate]);
+                }, function ($query) use ($report) {
+                    // Otherwise, only use the start date
+                    return $query->whereDate('DateCreated', '=', $report->Date);
+                })
+                ->get();
         }
 
         $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report'));
-        return $pdf->stream($report->type.'.pdf');
+        return $pdf->stream($report->type . '.pdf');
     }
 }
