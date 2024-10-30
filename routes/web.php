@@ -11,6 +11,7 @@ use App\Http\Controllers\ForgetPasswordController;
 use PHPUnit\Event\Telemetry\System;
 use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\AmenitiesController;
+use App\Http\Controllers\DownloadAppController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\ReceiptController;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Mail;
 Route::get('', [LoginController::class, 'index'])->name('index');
 // Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
+
+Route::get('download-app', [DownloadAppController::class, 'index'])->name('download-app');
 
 Route::get('change-password/{id}', [LoginController::class, 'changePassword'])->name('change-password');
 
