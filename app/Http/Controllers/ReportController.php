@@ -40,7 +40,7 @@ class ReportController extends Controller
                 $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
                 ->where(function ($query) use ($report) {
                     $query->where('DateCheckIn', '<=', $report->Date)
-                          ->where('DateCheckOut', '>=', $report->EndDate);
+                          ->orWhere('DateCheckOut', '>=', $report->EndDate);
                 })
                 ->get();
 
