@@ -255,7 +255,7 @@ class GuestAPIController extends Controller
     public function login(Request $request)
     {
         $validatedData = $request->validate([
-            'emailaddress' => 'required|string|email|max:255',
+            'emailaddress' => 'required|string|max:255',
             'password' => 'required|string',
         ]);
 
