@@ -22,7 +22,7 @@ use App\Mail\VerifyEmployee;
 use App\Mail\GuestBooking;
 use Illuminate\Support\Facades\Mail;
 Route::get('', [LoginController::class, 'index'])->name('index');
-// Route::get('login', [LoginController::class, 'index'])->name('login');
+Route::get('login', [LoginController::class, 'index']);
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::get('download-app', [DownloadAppController::class, 'index'])->name('download-app');
@@ -32,7 +32,13 @@ Route::get('change-password/{id}', [LoginController::class, 'changePassword'])->
 Route::post('updatePassword', [LoginController::class, 'updatePassword'])->name('updatePassword');
 
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('admin/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('settings', [UserController::class, 'settings'])->name('settings');
+});
+
 Route::middleware('auth', 'position:System Administrator')->group(function () {
 
 
@@ -66,25 +72,25 @@ Route::get('password-changed', [ForgetPasswordController::class, 'passwordChange
 
 Route::middleware('auth', 'position:Receptionist')->group(function () {
 
+    Route::get('receptionist/amenities', [AmenitiesController::class, 'index'])->name('amenities');
+    Route::get('receptionist/promotions', [PromotionController::class, 'index'])->name('promotions');
+    Route::get('receptionist/booking', [BookingController::class, 'index'])->name('booking');
+    Route::get('receptionist/booking/create', [BookingController::class, 'create'])->name('createBooking');
+    Route::get('receptionist/booking/booking-details/{ReservationId}', [BookingController::class, 'bookingDetails'])->name('bookingDetails');
+    Route::get('receptionist/room', [RoomController::class, 'receptionistIndex'])->name('receptionistRoom');
+
+    Route::get('receptionist/message', [MessageController::class, 'index'])->name('message');
+
+    Route::get('receptionist/payment', [PaymentController::class, 'index'])->name('payment');
+
+    Route::get('receptionist/payment/receipt', [ReceiptController::class, 'index'])->name('receipt');
+
+    Route::get('receptionist/report', [ReportController::class, 'index'])->name('report');
+
+    Route::get('receptionist/check-in-out', [BookingController::class, 'checkInOut'])->name('check-in-out');
 
 });
 
-Route::get('receptionist/amenities', [AmenitiesController::class, 'index'])->name('amenities');
-Route::get('receptionist/promotions', [PromotionController::class, 'index'])->name('promotions');
-Route::get('receptionist/booking', [BookingController::class, 'index'])->name('booking');
-Route::get('receptionist/booking/create', [BookingController::class, 'create'])->name('createBooking');
-Route::get('receptionist/booking/booking-details/{ReservationId}', [BookingController::class, 'bookingDetails'])->name('bookingDetails');
-Route::get('receptionist/room', [RoomController::class, 'receptionistIndex'])->name('receptionistRoom');
-
-Route::get('receptionist/message', [MessageController::class, 'index'])->name('message');
-
-Route::get('receptionist/payment', [PaymentController::class, 'index'])->name('payment');
-
-Route::get('receptionist/payment/receipt', [ReceiptController::class, 'index'])->name('receipt');
-
-Route::get('receptionist/report', [ReportController::class, 'index'])->name('report');
-
-Route::get('receptionist/check-in-out', [BookingController::class, 'checkInOut'])->name('check-in-out');
 
 
 Route::get('send-mail', [XenditController::class, 'index'])->name('send-mail');
@@ -95,7 +101,7 @@ Route::get('online-payment/{reservationId}', [XenditController::class, 'createPa
 Route::get('manager/promotions', [PromotionController::class, 'index'])->name('promotion');
 Route::get('download/report/{id}', [ReportController::class, 'downloadReport'])->name('download-report');
 
-Route::get('settings', [UserController::class, 'settings'])->name('settings');
+
 
 Route::get('printReceipt/{id}', [ReceiptController::class, 'printReceipt'])->name('printReceipt');
 
@@ -104,14 +110,6 @@ Route::get('success/{reference}', [ReceiptController::class, 'success'])->name('
 Route::get('failed/{reference}', [ReceiptController::class, 'failed'])->name('failed');
 
 
-Route::get('test-email', function () {
-    Mail::to('domingo.laden@gmail.com')->send(new VerifyEmployee());
-});
-
-
-Route::get('test-guest-email', function(){
-    Mail::to('domingo.laden@gmail.com')->send(new GuestBooking());
-});
 
 
 Route::get('/verify-user', [LoginController::class, 'verifyUser'])->name('verify.user');

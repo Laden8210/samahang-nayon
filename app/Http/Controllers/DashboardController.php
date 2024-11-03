@@ -20,7 +20,8 @@ class DashboardController extends Controller
 
         $totalRooms = Room::count();
         $occupiedRooms = Reservation::where('DateCheckIn', $today)
-            ->where('Status', 'Checked In')->count();
+        ->whereIn('Status', ['Checked In', 'Booked', 'Reserved'])
+        ->count();
 
 
         $availableRooms = $totalRooms - $occupiedRooms;
@@ -42,7 +43,24 @@ class DashboardController extends Controller
             ->whereDate('DateCreated', $today)
             ->count();
 
-        $user = Guest::count();
+        $user = CheckInOut::with('reservation', 'reservation.subGuests', 'guest')
+            ->whereDate('DateCreated', $today)
+            ->where('Type', 'Checked In')
+            ->get();
+
+            $totalGuests = $user->sum(function ($checkInOut) {
+
+                $count = 1;
+
+
+                if ($checkInOut->reservation && $checkInOut->reservation->subGuests) {
+                    $count += $checkInOut->reservation->subGuests->count();
+                }
+
+                return $count;
+            });
+
+
 
         $labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -70,7 +88,7 @@ class DashboardController extends Controller
             'availableRooms' => $availableRooms,
             'totalBooking' => $totalBooking,
             'totalReservation' => $totalReservation,
-            'user' => $user,
+            'user' => $totalGuests,
             'totalCheckIn' => $totalCheckIn,
             'totalCheckOut' => $totalCheckOut,
             'labels' => $labels,

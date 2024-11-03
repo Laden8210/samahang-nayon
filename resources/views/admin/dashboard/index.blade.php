@@ -28,12 +28,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Example data passed from Laravel to JavaScript
         const data = {
-            labels: {!! json_encode($labels) !!},  // Data labels from the controller (e.g., months)
+            labels: {!! json_encode($labels) !!},
             datasets: [{
-                label: 'Room Occupancy',
-                data: {!! json_encode($roomOccupancyData) !!},  // Data points for the chart
+                label: 'Room Occupancy', // This is your dataset label
+                data: {!! json_encode($roomOccupancyData) !!},
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(255, 159, 64, 0.2)',
@@ -60,24 +59,40 @@
             type: 'bar',  // Chart type (e.g., 'bar', 'line', 'pie', etc.)
             data: data,
             options: {
-                maintainAspectRatio: false, // Ensure the chart uses all available space
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
+                        max: 30, // Set the maximum value to 30
                         ticks: {
-                            color: '#333',  // Make label color clearer
+                            color: '#333',
+                            callback: function(value) {
+                                return Math.floor(value); // Ensure labels are whole numbers
+                            },
+                            stepSize: 5 // Set step size to 5 to avoid repetition
+                        },
+                        title: {
+                            display: true,
+                            text: 'Occupancy Count', // Y-axis label
+                            color: '#333',
                         }
                     },
                     x: {
                         ticks: {
-                            color: '#333',  // Make label color clearer
+                            color: '#333',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Months', // X-axis label
+                            color: '#333',
                         }
                     }
                 },
                 plugins: {
                     legend: {
+                        display: true, // Ensure the legend is displayed
                         labels: {
-                            color: '#333',  // Make the legend text clearer
+                            color: '#333',
                         }
                     }
                 }
@@ -90,5 +105,6 @@
             config
         );
     </script>
+
 
 @endsection

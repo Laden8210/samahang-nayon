@@ -91,7 +91,7 @@
         </div>
         <div class="footer">
             <p>Samahang Nayon Hotel</p>
-            <p><a href="https://www.nasaph8210.online">Visit our website</a></p>
+            <p><a href="https://www.nasaph8210.online/download-app">Visit our website</a></p>
         </div>
     </div>
 </body>

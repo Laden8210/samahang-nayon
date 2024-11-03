@@ -88,7 +88,7 @@ class LoginController extends Controller
         }
 
         if ($employee->verification_token != '') {
-            return redirect()->route('verify', ['token' => $employee->verification_token]);
+            return redirect()->route('verify-user', ['token' => $employee->verification_token]);
         }
 
         if ($employee->is_password_change_required == 1) {
@@ -122,7 +122,7 @@ class LoginController extends Controller
                 'action' => 'Login',
                 'date_created' => date('Y-m-d'),
             ]);
-            return redirect()->intended('admin/');
+            return redirect()->intended('admin');
         }
 
 
