@@ -38,8 +38,13 @@ class ForgetPasswordController extends Controller
                 'regex:/[@$!%*?&_.]/',
             ],
             'confirm_password' => 'required|same:password',
+        ], [
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 8 characters.',
+            'password.regex' => 'The password must include at least one letter, one number, and one special character.',
+            'confirm_password.required' => 'The confirm password field is required.',
+            'confirm_password.same' => 'The confirm password must match the password.',
         ]);
-
 
         $token = $request->token;
 

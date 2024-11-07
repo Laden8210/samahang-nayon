@@ -108,7 +108,7 @@ class ViewBookingDetails extends Component
             $remainingBalance -= $payment->AmountPaid;
         }
 
-        if ($this->payment > $remainingBalance) {
+        if ($this->payment >= $remainingBalance) {
             session()->flash('message', 'Payment Exceeds Remaining Balance');
             $this->payment = '';
             return;
@@ -219,8 +219,6 @@ class ViewBookingDetails extends Component
 
     public function checkOut()
     {
-
-
 
         $this->reservation->Status = 'Checked Out';
         $this->reservation->save();

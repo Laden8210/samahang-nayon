@@ -20,7 +20,7 @@ class AmenitiesTable extends Component
     public function render()
     {
         return view('livewire.amenities.amenities-table', [
-            'amenities' => Amenities::search($this->search)->paginate(10)
+            'amenities' => Amenities::search($this->search)->get()
         ]);
     }
 
@@ -39,42 +39,47 @@ class AmenitiesTable extends Component
     public function createAmenities()
     {
         $this->validate([
-            'name' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'name' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255', 'unique:amenities,Name'],
             'price' => 'required|numeric'
         ]);
-
 
         $amenities = Amenities::create([
             'Name' => $this->name,
             'Price' => $this->price
         ]);
-        if($amenities){
+
+        if ($amenities) {
             $this->dispatch('close-modal');
             session()->flash('message', 'Amenities Created successfully.');
             $this->name = '';
             $this->price = '';
         }
-
     }
+
 
     public function update()
     {
-
         $this->validate([
-            'updateName' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
+            'updateName' => [
+                'required',
+                'regex:/^[a-zA-Z\s]+$/',
+                'max:255',
+                'unique:amenities,Name,' . $this->selectedAmenities->AmenitiesId
+            ],
             'updatePrice' => 'required|numeric'
         ]);
-
 
         $this->selectedAmenities->update([
             'Name' => $this->updateName,
             'Price' => $this->updatePrice
         ]);
+
         $this->updateName = '';
         $this->updatePrice = '';
         $this->dispatch('close-modal');
-        session()->flash('message', 'Amenities updated successfully.');
+        session()->flash('message', 'Amenity updated successfully.');
     }
+
 
     public function setAmenitiesId($amenities)
     {

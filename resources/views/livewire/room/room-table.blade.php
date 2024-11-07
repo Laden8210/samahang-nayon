@@ -1,5 +1,5 @@
-<div class="bg-gray-50 rounded">
-    <h5 class="mx-2 font-bold px-2 pt-2 mb-2">Room</h5>
+<div class="p-2 rounded">
+
 
     <div class="flex justify-between items-center">
 
@@ -7,7 +7,7 @@
         <div class="relative mb-4 w-1/3 mx-3">
 
             <input type="text" wire:model.live.debounce.300ms = "search"
-                class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
+                class=" text-gray-900 placeholder-gray-400 px-3 py-2  rounded-lg w-full outline-none focus:outline-none"
                 placeholder="Search . . . ">
             <span class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <i class="fas fa-search text-gray-400"></i>
@@ -29,12 +29,13 @@
 
     <div class="flex p-2 justify-center">
 
-        <div class="grid grid-cols-3 gap-x-5 gap-y-4 overflow-auto  p-2">
+        <div class="grid grid-cols-3 gap-x-5 gap-y-4 overflow-hidden  p-2">
             @foreach ($rooms as $room)
                 <div
                     class=" w-full min-w-full max-w-full
                     shadow rounded-lg
                  bg-white grid grid-cols-4  p-1 max-h-40 min-h-40
+                 overflow-hidden
                  ">
                     <div class="col-span-1 rounded-lg overflow-hidden">
                         @php
@@ -48,8 +49,6 @@
                             <img class="h-full bg-slate-200"
                                 src="data:image/png;base64,{{ base64_encode($topImage->PictureFile) }}" alt="">
                         @endif
-
-
 
                     </div>
 
@@ -95,6 +94,7 @@
 
                             </div>
                         </div>
+
                     </div>
                 </div>
             @endforeach
@@ -131,7 +131,7 @@
                                 class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                                 Yes, I'm sure
                             </button>
-                            <button    wire:click.prevent="cancelDelete" type="button"
+                            <button wire:click.prevent="cancelDelete" type="button"
                                 class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                                 No, cancel
                             </button>

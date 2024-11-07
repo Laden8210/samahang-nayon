@@ -117,7 +117,8 @@
                 <div class="font-bold text-xs">Reservation Number:</div>
                 <div>{{ $reservation->ReservationId }}</div>
                 <div class="font-bold  text-xs">Date</div>
-                <div>{{ $reservation->DateCreated }}</div>
+                <div>{{ \Carbon\Carbon::parse($reservation->DateCreated)->format('F d, Y') }}</div>
+
                 <div class="font-bold text-xs">Guest</div>
                 <div>
                     {{ $reservation->guest->FirstName ?? ('' . ' ' . $reservation->guest->LastName ?? '') }}
@@ -141,9 +142,10 @@
                 <div class="font-bold  text-xs">Status:</div>
                 <div>{{ $reservation->Status }}</div>
                 <div class="font-bold text-xs">Check In Date:</div>
-                <div>{{ $reservation->DateCheckIn }}</div>
-                <div class="font-bold  text-xs">Check Out Date:</div>
-                <div>{{ $reservation->DateCheckOut }}</div>
+                <div>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->format('F d, Y') }}</div>
+                <div class="font-bold text-xs">Check Out Date:</div>
+                <div>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->format('F d, Y') }}</div>
+
             </div>
 
 

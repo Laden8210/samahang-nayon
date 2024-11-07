@@ -49,15 +49,15 @@
                                 {{ $promotion->Discount }}%
                             </td>
                             <td class="py-2">
-                                {{ $promotion->StartDate }}
+                                {{ \Carbon\Carbon::parse($promotion->StartDate)->format('F d, Y') }}
                             </td>
                             <td class="py-2">
-                                {{ $promotion->EndDate }}
+                                {{ \Carbon\Carbon::parse($promotion->EndDate)->format('F d, Y') }}
+                            </td>
+                            <td class="py-2">
+                                {{ \Carbon\Carbon::parse($promotion->DateCreated)->format('F d, Y') }}
                             </td>
 
-                            <td class="py-2">
-                                {{ $promotion->DateCreated }}
-                            </td>
 
                             <td class="py-2 flex items-center gap-2 justify-center">
                                 <button type="button" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded "

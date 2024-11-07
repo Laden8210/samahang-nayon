@@ -10,6 +10,7 @@ class DisplayRoomNumber extends Component
 {
 
     public $displayRoomNumberModal = false;
+    public $deleteRoomModal = false;
     public $roomNumber;
 
     public $selectedRoom;
@@ -61,5 +62,19 @@ class DisplayRoomNumber extends Component
 
         // Optionally, you can set a success message
         session()->flash('success', 'Room number saved successfully.');
+    }
+
+    public function deleteRoom($id)
+    {
+        $this->deleteRoomModal = true;
+        $this->selectedRoom = $id;
+
+    }
+
+    public function confirmDelete()
+    {
+        RoomNumber::where('room_number_id', $this->selectedRoom)->delete();
+        $this->deleteRoomModal = false;
+        session()->flash('success', 'Room number deleted successfully.');
     }
 }

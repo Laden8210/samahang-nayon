@@ -38,18 +38,28 @@ class UpdateUser extends Component
 
     public function render()
     {
-        $this->fetchRegions();
+
         return view('livewire.user.update-user');
     }
 
     public function mount($userId)
     {
+        $this->fetchRegions();
+        sleep(1);
+
+        $this->fetchCities();
+        sleep(1);
+
+        $this->fetchBarangays();
+        sleep(1);
         $user = Employee::where('EmployeeId', $userId)->firstOrFail();
         $this->firstname = $user->FirstName;
         $this->middlename = $user->MiddleName;
         $this->lastname = $user->LastName;
         $this->contactNumber = $user->ContactNumber;
         $this->email = htmlentities($user->email, ENT_QUOTES, 'UTF-8');
+
+
 
         $this->street = $user->Street;
         $this->city = $user->City;
@@ -122,7 +132,10 @@ class UpdateUser extends Component
 
         session()->flash('message', 'User updated successfully!');
 
+
+
         $this->reset();
+        redirect()->route('user');
     }
 
 

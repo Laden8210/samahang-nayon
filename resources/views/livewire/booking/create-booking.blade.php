@@ -377,7 +377,7 @@
 
                                 </div>
                                 <div>
-                                    <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number"
+                                    <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number (XXX-OSCA-XXXX-XXXX)"
                                         type="text" model="idNumber" />
                                 </div>
                             </div>

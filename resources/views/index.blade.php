@@ -76,10 +76,7 @@
                     </div>
 
                     <div class="flex justify-between items-center mb-6 py-2 ">
-                        <div class="items-center flex"><input type="checkbox" name="" id=""
-                                class="mx-1 mt-1">
-                            <p>Remember me</p>
-                        </div>
+
                         <div><a href="{{ route('forget-password') }}" class="text-cyan-400">Forgot password?</a></div>
                     </div>
 

@@ -2,8 +2,7 @@
     <div class="grid grid-cols-4 gap-2">
         <div class="grid gap-4 col-span-3">
             <div class="shadow-lg">
-                <img id="topImage"
-                    class="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px] "
+                <img id="topImage" class="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px] "
                     src="data:image/png;base64,{{ base64_encode($topImage['PictureFile']) }}" alt="Top Image" />
 
             </div>
@@ -28,4 +27,6 @@
             </div>
         </div>
     </div>
+
+
 </div>

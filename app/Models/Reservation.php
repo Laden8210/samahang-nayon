@@ -57,8 +57,9 @@ class Reservation extends Model
 
     public function roomNumber()
     {
-        return $this->belongsTo(RoomNumber::class, 'room_number_id');
+        return $this->belongsTo(RoomNumber::class, 'room_number_id')->withTrashed();
     }
+
 
 
     public function reservationAmenities()

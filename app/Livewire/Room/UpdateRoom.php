@@ -41,13 +41,15 @@ class UpdateRoom extends Component
     {
         $this->validate(
             [
-                'rate' => 'required',
+                'rate' => 'required|min:100|max:10000',
                 'roomType' => 'required|unique:rooms,RoomType,' . $this->roomId . ',RoomId', // Specify the primary key column
                 'capacity' => 'required',
                 'description' => 'required',
             ],
             [
                 'rate.required' => 'The room rate field is required.',
+                'rate.min' => 'The room rate field must be at least 100.',
+                'rate.max' => 'The room rate field may not be greater than 10000.',
                 'roomType.required' => 'The room type field is required.',
                 'roomType.unique' => 'The room type must be unique.',
                 'capacity.required' => 'The capacity field is required.',

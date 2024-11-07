@@ -143,7 +143,6 @@ class CreateBooking extends Component
             $this->applyDiscount();
         }
     }
-
     public function addSubGuest()
     {
         $this->validate([
@@ -151,10 +150,15 @@ class CreateBooking extends Component
             'subguestsLastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
             'subguestsDob' => 'required|date',
             'subguestsGender' => 'required',
-
-            'subguestsContactnumber' => 'required|numeric',
+            'subguestsContactnumber' => ['required', 'regex:/^(09|\+639)\d{9}$/'],
+        ], [
+            'subguestsFirstname.required' => 'The first name is required.',
+            'subguestsLastname.required' => 'The last name is required.',
+            'subguestsDob.required' => 'The date of birth is required.',
+            'subguestsGender.required' => 'The gender is required.',
+            'subguestsContactnumber.required' => 'The contact number is required.',
+            'subguestsContactnumber.regex' => 'The contact number must be a valid Philippine number, starting with 09 or +639 and followed by 9 digits.',
         ]);
-
 
         $this->subguests[] = [
             'firstname' => $this->subguestsFirstname,
@@ -164,9 +168,11 @@ class CreateBooking extends Component
             'gender' => $this->subguestsGender,
             'contactnumber' => $this->subguestsContactnumber,
         ];
+
         session()->flash('subguest-message', 'Subguest added successfully.');
-        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender',  'subguestsContactnumber']);
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsContactnumber']);
     }
+
 
     public function removeSubGuest($index)
     {

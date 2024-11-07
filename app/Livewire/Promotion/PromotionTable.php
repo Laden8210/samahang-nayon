@@ -42,13 +42,14 @@ class PromotionTable extends Component
     public function addPromotion()
     {
         $this->validate([
-            'promotionName' => 'required',
+            'promotionName' => 'required|unique:promotions,Promotion',
             'description' => 'required',
             'discount' => 'required',
             'startingDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startingDate',
         ], [
             'promotionName.required' => 'The promotion name is required.',
+            'promotionName.unique' => 'The promotion name must be unique.',
             'description.required' => 'The description is required.',
             'discount.required' => 'The discount is required.',
             'startingDate.required' => 'The starting date is required.',

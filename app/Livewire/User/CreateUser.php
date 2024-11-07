@@ -78,11 +78,7 @@ class CreateUser extends Component
                 'selectedProvince' => 'required',
                 'selectedCity' => 'required',
                 'selectedBrgy' => 'required',
-                'dob' => [
-                    'required',
-                    'date',
-                    'before_or_equal:' . now()->subYears(18)->toDateString(), // Ensure at least 18 years old
-                ],
+                'dob' => ['required', 'date', new Age],
                 'gender' => ['required', Rule::in(['Male', 'Female'])],
                 'position' => ['required', Rule::in(['System Administrator', 'Manager', 'Receptionist'])],
             ]
@@ -155,31 +151,40 @@ class CreateUser extends Component
 
         session()->flash('message', 'User created successfully!');
         $this->isLoaderShown = false;
-        // $this->reset();
+        $this->reset();
 
     }
 
 
     public function fetchRegions()
     {
-        $this->apiProvince = Http::get('https://psgc.gitlab.io/api/provinces/')->json();
+        $this->apiProvince = collect(Http::get('https://psgc.gitlab.io/api/provinces/')->json())
+            ->sortBy('name') // assuming 'name' is the key for the region name
+            ->values()
+            ->toArray();
     }
+
 
     public function fetchCities()
     {
         if ($this->selectedProvince) {
-
-            $this->apiCity = Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json();
+            $this->apiCity = collect(Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json())
+                ->sortBy('name') // assuming 'name' is the key for the city name
+                ->values()
+                ->toArray();
         } else {
             $this->apiCity = [];
         }
     }
 
+
     public function fetchBarangays()
     {
         if ($this->selectedCity) {
-
-            $this->apiBrgy = Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json();
+            $this->apiBrgy = collect(Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json())
+                ->sortBy('name') // assuming 'name' is the key for the barangay name
+                ->values()
+                ->toArray();
         } else {
             $this->apiBrgy = [];
         }
