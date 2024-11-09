@@ -120,6 +120,9 @@ class ReceiptController extends Controller
         $amenityRow = 20;
 
         $lenghtOfStay = Carbon::parse($reservation->DateCheckIn)->diffInDays(Carbon::parse($reservation->DateCheckOut));
+        // set font size
+
+        $sheet->getStyle('A1')->getFont()->setSize(10);
 
         $sheet->setCellValue('B19', $reservation->roomNumber->room->RoomType);
         $sheet->setCellValue('G19', $lenghtOfStay);
