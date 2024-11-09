@@ -379,17 +379,18 @@ class GuestAPIController extends Controller
             'IdNumber' => $validatedData['id_number'] ?? null
         ]);
 
-        $message = "Thank you, {$guest->FirstName}!\n\n" .
-            "Your reservation has been created successfully with the following details:\n" .
-            "Room ID: {$validatedData['room_id']}\n" .
-            "Check-in Date: {$validatedData['check_in']}\n" .
-            "Check-out Date: {$validatedData['check_out']}\n" .
-            "Total Adults: {$validatedData['total_adult']}\n" .
-            "Total Children: {$validatedData['total_children']}\n" .
-            "Total Cost: {$totalCost}\n" .
-            "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
-            "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
-            "We look forward to welcoming you!";
+        $message = "Thank you for choosing Samahang Nayon Hotel, {$guest->FirstName}!\n\n" .
+        "Your reservation has been created successfully with the following details:\n" .
+        "Room ID: {$validatedData['room_id']}\n" .
+        "Check-in Date: {$validatedData['check_in']}\n" .
+        "Check-out Date: {$validatedData['check_out']}\n" .
+        "Total Adults: {$validatedData['total_adult']}\n" .
+        "Total Children: {$validatedData['total_children']}\n" .
+        "Total Cost: {$totalCost}\n" .
+        "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
+        "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
+        "We look forward to welcoming you to Samahang Nayon Hotel!";
+
 
 
         $response = Http::post('https://nasa-ph.com/api/send-sms', [

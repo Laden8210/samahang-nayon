@@ -44,16 +44,19 @@ class PromotionTable extends Component
         $this->validate([
             'promotionName' => 'required|unique:promotions,Promotion',
             'description' => 'required',
-            'discount' => 'required',
-            'startingDate' => 'required|date',
+            'discount' => 'required|numeric|max:50',  // Enforce max 50% discount
+           'startingDate' => 'required|date|after_or_equal:today',
             'endDate' => 'required|date|after_or_equal:startingDate',
         ], [
             'promotionName.required' => 'The promotion name is required.',
             'promotionName.unique' => 'The promotion name must be unique.',
             'description.required' => 'The description is required.',
             'discount.required' => 'The discount is required.',
+            'discount.numeric' => 'The discount must be a numeric value.',
+            'discount.max' => 'The maximum discount is 50%.',  // Custom error message
             'startingDate.required' => 'The starting date is required.',
             'startingDate.date' => 'The starting date must be a valid date.',
+            'startingDate.after_or_equal' => 'The starting date cannot be in the past.',
             'endDate.required' => 'The end date is required.',
             'endDate.date' => 'The end date must be a valid date.',
             'endDate.after_or_equal' => 'The end date must be after or equal to the starting date.',
@@ -142,14 +145,16 @@ class PromotionTable extends Component
         $this->validate([
             'promotionName' => 'required',
             'description' => 'required',
-            'discount' => 'required',
-            'startingDate' => 'required|date',
+          'discount' => 'required|numeric|max:50',
+          'startingDate' => 'required|date|after_or_equal:today',
             'endDate' => 'required|date|after_or_equal:startingDate',
         ], [
             'promotionName.required' => 'The promotion name is required.',
             'description.required' => 'The description is required.',
             'discount.required' => 'The discount is required.',
+            'discount.max' => 'The maximum discount is 50%.',
             'startingDate.required' => 'The starting date is required.',
+            'startingDate.after_or_equal' => 'The starting date cannot be in the past.',
             'startingDate.date' => 'The starting date must be a valid date.',
             'endDate.required' => 'The end date is required.',
             'endDate.date' => 'The end date must be a valid date.',
