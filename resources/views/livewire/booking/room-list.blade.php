@@ -17,7 +17,7 @@
                     }
                 @endphp
 
-                <div class="bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow duration-200">
+                <div class="bg-white min-w-30 shadow-md rounded-lg hover:shadow-lg transition-shadow duration-200">
                     <a
                     @if ($room && $room->isBooked == 'false')
                         href="{{ route('createBooking', $room->RoomId) }}"

@@ -273,12 +273,12 @@ class CreateBooking extends Component
                 'lastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
                 'dob' => 'required|date',
                 'gender' => 'required',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:guests,EmailAddress',
                 'street' => 'required',
                 'selectedBrgy' => 'required',
                 'selectedCity' => 'required',
                 'selectedProvince' => 'required',
-                'contactnumber' => ['required', 'regex:/^(09|\+639)[0-9]{9}$/'],
+                'contactnumber' => ['required', 'regex:/^(09|\+639)[0-9]{9}$/', 'unique:guests,ContactNumber'],
             ]);
             if (
                 $this->selectedGuestId || $this->firstname || $this->middlename || $this->lastname || $this->dob ||
