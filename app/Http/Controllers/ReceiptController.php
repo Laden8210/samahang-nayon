@@ -156,10 +156,10 @@ class ReceiptController extends Controller
         $sheet->setCellValue('O6', Carbon::now()->format('F j, Y'));
 
 
-        $sheet->setCellValue('F11', ucwords($amountInWords));
+        $sheet->setCellValue('F10', ucwords($amountInWords));
 
 
-        $sheet->setCellValue('F10', $totalPayment);
+        $sheet->setCellValue('F9', $totalPayment);
         $sheet->setCellValue('F14', $reservation->IdNumber ?? 'N/A');
 
         $writer = new Html($spreadsheet);
