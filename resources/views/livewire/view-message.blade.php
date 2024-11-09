@@ -21,7 +21,7 @@
                             <div class="flex justify-between items-center w-full">
                                 <div class="flex items-center gap-3">
                                     <!-- Placeholder for Profile Picture -->
-                                    <div class="bg-gray-300 rounded-full w-10 h-10 flex-shrink-0"></div>
+                                    <div class="rounded-full  h-10 flex-shrink-0"></div>
                                     <div>
                                         <h3 class="font-semibold text-gray-900">
                                             {{ $guest->FirstName . ' ' . $guest->LastName }}
