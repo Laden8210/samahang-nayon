@@ -75,6 +75,10 @@
             </tbody>
         </table>
 
+        <div class="flex items-center">
+            {{ $employees->links('vendor.livewire.tailwind') }}
+        </div>
+
 
     </div>
 
@@ -213,20 +217,7 @@
 
 
 
-    <div class="py-4 px-3">
-        <div class="flex justify-between items-center">
-            <div class="flex-1">
-                <p class="text-sm text-gray-700 dark:text-gray-400">
-                    Showing {{ $employees->firstItem() }} to {{ $employees->lastItem() }} of {{ $employees->total() }} User
-                </p>
-            </div>
-            <div class="flex items-center">
-                {{ $employees->links('vendor.livewire.tailwind') }}
-            </div>
-        </div>
 
-
-    </div>
 
 
 
