@@ -23,7 +23,7 @@ class ReportTable extends Component
     {
         return view('livewire.report-table', [
             'reports' => Report::search($this->search)->orderBy('ReportId', 'desc')->get(),
-            'guests' => Guest::all()
+            'guests' => Guest::orderBy('FirstName')->orderBy('LastName')->get()
         ]);
     }
 
