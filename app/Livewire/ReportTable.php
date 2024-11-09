@@ -14,6 +14,7 @@ class ReportTable extends Component
     public $startdate;
     public $enddate;
     public $isEndDateDisabled = false;
+    public $showGuest = false;
 
     public $search = '';
 
@@ -26,6 +27,7 @@ class ReportTable extends Component
             'guests' => Guest::orderBy('FirstName')->orderBy('LastName')->get()
         ]);
     }
+
 
 
     public function createReport()

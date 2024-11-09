@@ -1,5 +1,5 @@
 <!-- Navigation Bar with Notification Bell -->
-<nav class="flex drop-shadow h-auto bg-white p-3 justify-end z-50">
+<nav class="flex drop-shadow h-auto bg-white p-3 justify-end z-40 relative">
     <div class="grid grid-cols-2 gap-2 items-center px-2 my-1">
 
         <!-- Notification Button with Unread Count -->
@@ -54,8 +54,8 @@
 </nav>
 
 <!-- Full Message Modal -->
-<div id="fullMessageModal" class="fixed inset-0  flex items-center justify-center hidden z-60">
-    <div class="bg-white rounded-lg w-80 p-4 shadow-lg">
+<div id="fullMessageModal" class="fixed inset-0  flex items-center justify-center  z-50 hidden">
+    <div class="bg-white rounded-lg w-80 p-4 shadow-lg z-70">
         <h3 id="modalTitle" class="text-lg font-bold mb-2"></h3>
         <p id="modalMessage" class="text-sm text-gray-600"></p>
         <button onclick="closeFullMessageModal()" class="mt-4 bg-blue-500 text-white py-1 px-4 rounded-lg">Close</button>
@@ -68,7 +68,7 @@
         // Update modal content
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
-        document.getElementById('fullMessageModal').style.display = 'flex';
+        document.getElementById('fullMessageModal').classList.remove('hidden');
 
         // AJAX request to update notification status to 'read'
         fetch(`/notifications/${id}/mark-as-read`, {
@@ -92,7 +92,7 @@
 
     // Close Full Message Modal
     function closeFullMessageModal() {
-        document.getElementById('fullMessageModal').style.display = 'none';
+        document.getElementById('fullMessageModal').classList.add('hidden');
     }
 
     // Toggle Notification Dropdown

@@ -304,7 +304,7 @@ class CreateBooking extends Component
 
                 $guest->save();
 
-                Mail::to($this->email)->send(new GuestBooking($guest));
+                Mail::to($this->email)->send(new GuestBooking($guest, 'password'));
             } else {
                 session()->flash('message', 'Please select or enter the guest information.');
                 return;

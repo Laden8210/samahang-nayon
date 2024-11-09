@@ -61,18 +61,16 @@ class ViewBookingDetails extends Component
 
         $checkoutTime = Carbon::parse($this->reservation->DateCheckOut)->setTime(12, 0);
 
-
         if ($this->reservation->Status == 'Checked In' && now()->greaterThan($checkoutTime)) {
-
             $hoursLate = ceil($checkoutTime->diffInMinutes(now()) / 60);
             $penalty = $hoursLate * $penaltyRatePerHour;
-
 
             $this->reservation->penalty = $penalty;
             $this->reservation->save();
 
-            session()->flash('alert', "A late checkout penalty of ₱{$penalty} has been applied.");
+            session()->flash('alert', "A late checkout penalty of ₱{$penalty} has been applied for {$hoursLate} hour(s) of delay.");
         }
+
     }
 
 

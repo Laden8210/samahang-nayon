@@ -76,18 +76,14 @@
             <h1>Welcome to Samahang Nayon Hotel</h1>
         </div>
         <div class="content">
-            <p>Dear [User Name],</p>
-            {{-- <p>Congratulations on being selected for the position of <strong>{{$employee->Position}}</strong> at Samahang Nayon Hotel.</p> --}}
-            <p>Your account has been created, and you can now access our system using the following credentials:</p>
-            {{-- <p><strong>Email:</strong> {{$employee->email}} </p>
-            <p><strong>Password:</strong>{{$defaultPassword}}</p> --}}
-            <p>For your security, please change your password after logging in for the first time.</p>
-            <p>Please click the button below to verify your account:</p>
-            <p style="text-align: center;">
-                {{-- <a href="https://www.nasaph8210.online/verify-user={{$employee->verification_token}}" class="verify-button">Verify Account</a> --}}
-            </p>
-            <p>If you have any questions, feel free to reach out to us.</p>
-            <p>We look forward to working with you!</p>
+            <p>Dear {{ $guest->FirstName }},</p>
+            <p>Welcome! Your account has been successfully created at Samahang Nayon Hotel.</p>
+            <p>Here are your account details:</p>
+            <p><strong>Email:</strong> {{ $guest->EmailAddress }}</p>
+            <p><strong>Password:</strong> {{ $password }}</p>
+            <p>For security purposes, please change your password after logging in for the first time.</p>
+            <p>If you have any questions or need assistance, feel free to contact us.</p>
+            <p>We look forward to making your stay memorable!</p>
         </div>
         <div class="footer">
             <p>Samahang Nayon Hotel</p>

@@ -21,6 +21,21 @@ class CheckInOut extends Model
         'Type'
     ];
 
+    public function scopeSearch($query, $value)
+    {
+        if ($value) {
+            return $query->whereHas('guest', function ($q) use ($value) {
+                $q->where('FirstName', 'like', '%' . $value . '%')
+                  ->orWhere('LastName', 'like', '%' . $value . '%');
+            })
+            ->orWhereHas('reservation', function ($q) use ($value) {
+                $q->where('ReservationId', 'like', '%' . $value . '%');
+            });
+        }
+
+        return $query;
+    }
+
     public function reservation()
     {
         return $this->belongsTo(Reservation::class, 'ReservationId');

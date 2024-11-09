@@ -33,7 +33,7 @@
         </div>
 
         <main class="p-2 flex-grow ">
-            <div class=" mx-auto">
+            <div class=" mx-auto z-10">
                 @yield('content')
             </div>
         </main>

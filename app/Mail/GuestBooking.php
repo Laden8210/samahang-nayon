@@ -13,12 +13,13 @@ class GuestBooking extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    private $guest;
+    private $password;
+
+    public function __construct($guest, $password)
     {
-        //
+        $this->guest = $guest;
+        $this->password = $password;
     }
 
     /**
@@ -38,6 +39,10 @@ class GuestBooking extends Mailable
     {
         return new Content(
             view: 'mail.new-guest-booking',
+            with: [
+                'guest' => $this->guest,
+                'password' => $this->password
+            ]
         );
     }
 

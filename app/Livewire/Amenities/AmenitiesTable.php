@@ -91,7 +91,7 @@ class AmenitiesTable extends Component
     public function delete()
     {
         $this->selectedAmenities->delete();
-        session()->flash('message', 'Amenities deleted successfully.');
+        session()->flash('message', 'Amenity deleted successfully.');
         $this->dispatch('close-modal');
     }
 }
