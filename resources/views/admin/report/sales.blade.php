@@ -150,8 +150,9 @@
 
         </table>
     @elseif ($report->type === 'Arrival and Departure Report')
+        <h5>Scheduled Arrivals</h5>
         <table>
-            <h5>Scheduled Arrivals</h5>
+
             <thead>
                 <tr>
                     <th>Reservation Id</th>
@@ -166,7 +167,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($reservations as $reservation)
+                @foreach ($arrival as $reservation)
                     @if ($reservation->Status === 'Booked' || $reservation->Status === 'Reserved')
                         <tr>
                             <td>{{ $reservation->ReservationId }}</td>
@@ -209,9 +210,9 @@
 
         </table>
 
-
+        <h5>Scheduled Departures</h5>
         <table>
-            <h5>Scheduled Departures</h5>
+
             <thead>
                 <tr>
                     <th>Reservation Id</th>
@@ -227,39 +228,42 @@
             <tbody>
 
             <tbody>
-                @foreach ($reservations as $reservation)
-                    @foreach ($reservation->checkInOuts as $checkInOut)
-                        @if ($checkInOut->Type === 'Checked In')
-                            <tr>
-                                <td>{{ $reservation->ReservationId }}</td>
-                                <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
-                                </td>
-                                <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
-                                <td>{{ $reservation->roomNumber->room_number }}</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->timezone('Asia/Manila')->format('F j, Y') }}
-                                </td>
+                @if ($departure)
+                    @foreach ($departure as $reservation)
+                        @foreach ($reservation->checkInOuts as $checkInOut)
+                            @if ($checkInOut->Type === 'Checked In')
+                                <tr>
+                                    <td>{{ $reservation->ReservationId }}</td>
+                                    <td>{{ ucfirst($reservation->guest->FirstName) . ' ' . ucfirst($reservation->guest->LastName) }}
+                                    </td>
+                                    <td>{{ ucfirst($reservation->roomNumber->room->RoomType) }}</td>
+                                    <td>{{ $reservation->roomNumber->room_number }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($reservation->DateCheckOut)->timezone('Asia/Manila')->format('F j, Y') }}
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('h:i A') }}</td>
 
-                                <td>12:00 PM</td>
-                                <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
-                                </td>
-                                <td>
-                                    @switch($checkInOut->Type)
-                                        @case('Checked In')
-                                            Occupied
-                                        @break
+                                    <td>{{ \Carbon\Carbon::parse($reservation->DateCheckIn)->diffInDays(\Carbon\Carbon::parse($reservation->DateCheckOut)) }}
+                                    </td>
+                                    <td>
+                                        @switch($checkInOut->Type)
+                                            @case('Checked In')
+                                                Occupied
+                                            @break
 
-                                        @case('Checked Out')
-                                            Vacant
-                                        @break
+                                            @case('Checked Out')
+                                                Vacant
+                                            @break
 
-                                        @default
-                                            Unknown
-                                    @endswitch
-                                </td>
-                            </tr>
-                        @endif
+                                            @default
+                                                Unknown
+                                        @endswitch
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
                     @endforeach
-                @endforeach
+                @endif
+
             </tbody>
 
             </tbody>

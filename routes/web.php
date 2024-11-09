@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 Route::get('', [LoginController::class, 'index'])->name('index');
 Route::get('login', [LoginController::class, 'index']);
 Route::post('login', [LoginController::class, 'login'])->name('login');
+Route::post('/notifications/{id}/mark-as-read', [DashboardController::class, 'markAsRead']);
 
 Route::get('download-app', [DownloadAppController::class, 'index'])->name('download-app');
 

@@ -38,7 +38,7 @@
     {{-- Receptionist sidebar --}}
     @if (Auth::check() && Auth::user()->Position === 'Receptionist')
         <ul class="items-center pt-7">
-            <x-menu-item title="Dashboard" url="{{ route('dashboard') }}" icon="fas fa-home mx-2" active="true" />
+            <x-menu-item title="Dashboard" url="{{ route('dashboard') }}" icon="fas fa-home mx-2"  />
         </ul>
 
         <ul class="items-center pt-3 text-gray-700">
@@ -72,7 +72,7 @@
 
     @if (Auth::check() && Auth::user()->Position === 'Manager')
         <ul class="items-center pt-7">
-            <x-menu-item title="Dashboard" url="{{ route('dashboard') }}" icon="fas fa-home mx-2" active="true" />
+            <x-menu-item title="Dashboard" url="{{ route('dashboard') }}" icon="fas fa-home mx-2" />
         </ul>
 
         <ul class="items-center pt-3 text-gray-700">

@@ -22,7 +22,7 @@ class HeaderBar extends Component
         // Fetch the unread notifications ordered by created_at descending
         $this->notifications = Notification::where('status', 'unread')
             ->orderBy('created_at', 'desc') // Order by created_at
-            ->limit(5) // Limit to 5 notifications
+            ->limit(10) // Limit to 5 notifications
             ->get();
 
         $this->unreadCount = $this->notifications->count();

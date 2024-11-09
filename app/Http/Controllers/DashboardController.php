@@ -9,6 +9,8 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomNumber;
 use Carbon\Carbon; // Import Carbon for date handling
+use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class DashboardController extends Controller
 {
@@ -95,5 +97,17 @@ class DashboardController extends Controller
             'labels' => $labels,
             'roomOccupancyData' => $roomOccupancyData
         ]);
+    }
+
+    public function markAsRead($id)
+    {
+        $notification = Notification::find($id);
+
+        if ($notification) {
+            $notification->update(['status' => 'read']);
+            return response()->json(['status' => 'success']);
+        }
+
+        return response()->json(['status' => 'error'], 404);
     }
 }

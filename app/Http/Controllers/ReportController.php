@@ -41,6 +41,22 @@ class ReportController extends Controller
                             ->orWhereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
                     })
                     ->get();
+
+                $arrival = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
+                    ->where(function ($query) use ($report) {
+                        $query->whereBetween('DateCheckIn', [$report->Date, $report->EndDate]);
+                    })
+                    ->get();
+
+                    $departure = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
+                    ->where(function ($query) use ($report) {
+                        $query->whereBetween('DateCheckOut', [$report->Date, $report->EndDate]);
+                    })
+                    ->get();;
+
+                    $pdf = Pdf::loadView('admin.report.sales', compact('reservations', 'report', 'arrival', 'departure'));
+                    return $pdf->stream($report->type . '.pdf');
+
             } else {
                 // Only use the start date if EndDate is null, fetching reservations created on that date
                 $reservations = Reservation::with(['guest', 'roomNumber', 'reservationAmenities', 'checkInOuts'])
