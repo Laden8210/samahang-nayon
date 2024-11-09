@@ -16,20 +16,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-
-        // Get the current date
+        $totalRooms = RoomNumber::count();
         $today = Carbon::today();
 
-        $totalRooms = RoomNumber::count();
         $occupiedRooms = Reservation::where('DateCheckIn', $today)
-        ->whereIn('Status', ['Checked In', 'Booked', 'Reserved'])
-        ->count();
-
+            ->whereIn('Status', ['Checked In', 'Booked', 'Reserved'])
+            ->count();
 
         $availableRooms = $totalRooms - $occupiedRooms;
 
-        // Only count reservations created today
+        // Daily metrics
         $totalBooking = Reservation::where('Status', 'Booked')
             ->whereDate('DateCreated', $today)
             ->count();
@@ -51,26 +47,21 @@ class DashboardController extends Controller
             ->where('Type', 'Checked In')
             ->get();
 
-            $totalGuests = $user->sum(function ($checkInOut) {
+        $totalGuests = $user->sum(function ($checkInOut) {
+            $count = 1;
+            if ($checkInOut->reservation && $checkInOut->reservation->subGuests) {
+                $count += $checkInOut->reservation->subGuests->count();
+            }
+            return $count;
+        });
 
-                $count = 1;
-
-
-                if ($checkInOut->reservation && $checkInOut->reservation->subGuests) {
-                    $count += $checkInOut->reservation->subGuests->count();
-                }
-
-                return $count;
-            });
-
-
-
+        // Monthly labels
         $labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        // Initialize room occupancy data for all months with zeros
+        // Initialize occupancy rate data
         $roomOccupancyData = array_fill(0, 12, 0);
 
-        // Fetch occupancy data grouped by month
+        // Calculate occupancy rate per month as a percentage
         $occupancyByMonth = CheckInOut::selectRaw('MONTH(DateCreated) as month, COUNT(*) as total')
             ->where('Type', 'Checked In')
             ->whereYear('DateCreated', date('Y'))
@@ -78,12 +69,10 @@ class DashboardController extends Controller
             ->pluck('total', 'month')
             ->toArray();
 
-        // Fill roomOccupancyData with actual values where available
-        foreach ($occupancyByMonth as $month => $total) {
-            // Subtract 1 to match the zero-indexed array with the month number
-            $roomOccupancyData[$month - 1] = $total;
+        foreach ($occupancyByMonth as $month => $occupiedRoomsCount) {
+            $occupancyRate = ($occupiedRoomsCount / $totalRooms) * 100;
+            $roomOccupancyData[$month - 1] = $occupancyRate; // Month - 1 to match zero-indexed array
         }
-
 
         return view('admin.dashboard.index', [
             'totalRooms' => $totalRooms,
@@ -98,6 +87,7 @@ class DashboardController extends Controller
             'roomOccupancyData' => $roomOccupancyData
         ]);
     }
+
 
     public function markAsRead($id)
     {

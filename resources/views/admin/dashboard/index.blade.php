@@ -31,66 +31,52 @@
         const data = {
             labels: {!! json_encode($labels) !!},
             datasets: [{
-                label: 'Room Occupancy', // This is your dataset label
+                label: 'Occupancy Rate (%)',
                 data: {!! json_encode($roomOccupancyData) !!},
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 205, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(201, 203, 207, 0.2)'
+                    // Add other colors as needed
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 205, 86, 1)',
                     'rgba(75, 192, 192, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(201, 203, 207, 1)'
+                    // Add other colors as needed
                 ],
                 borderWidth: 1
             }]
         };
 
         const config = {
-            type: 'bar',  // Chart type (e.g., 'bar', 'line', 'pie', etc.)
+            type: 'bar',
             data: data,
             options: {
                 maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 30, // Set the maximum value to 30
+                        max: 100,
                         ticks: {
-                            color: '#333',
                             callback: function(value) {
-                                return Math.floor(value); // Ensure labels are whole numbers
+                                return value + '%';
                             },
-                            stepSize: 5 // Set step size to 5 to avoid repetition
+                            stepSize: 20
                         },
                         title: {
                             display: true,
-                            text: 'Occupancy Count', // Y-axis label
+                            text: 'Occupancy Rate (%)',
                             color: '#333',
                         }
                     },
                     x: {
-                        ticks: {
-                            color: '#333',
-                        },
                         title: {
                             display: true,
-                            text: 'Months', // X-axis label
+                            text: 'Months',
                             color: '#333',
                         }
                     }
                 },
                 plugins: {
                     legend: {
-                        display: true, // Ensure the legend is displayed
+                        display: true,
                         labels: {
                             color: '#333',
                         }
@@ -99,7 +85,6 @@
             }
         };
 
-        // Render the chart
         const myChart = new Chart(
             document.getElementById('myChart'),
             config
