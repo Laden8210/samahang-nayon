@@ -145,8 +145,8 @@ class ReceiptController extends Controller
         $amountInWords = $this->convertNumberToWords($payment->AmountPaid);
 
         $sheet->setCellValue('O7',  Carbon::now()->toDateString());
-        $sheet->setCellValue('f9',  "with address at ". $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
-        $sheet->setCellValue('f8', "Received from: ". $reservation->guest->FirstName . ' ' . $reservation->guest->LastName);
+        $sheet->setCellValue('f8',  "with address at ". $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
+        $sheet->setCellValue('f7', "Received from: ". $reservation->guest->FirstName . ' ' . $reservation->guest->LastName);
         $employee = Auth::user();
 
         $sheet->setCellValue('O14', $employee->FirstName . ' ' . $employee->LastName);
