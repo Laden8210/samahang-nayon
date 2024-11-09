@@ -35,7 +35,7 @@
             <tr class="text-center">
                     <th  scope="col" class="px-2 py-3">Transaction Id{{ $filterPayment }}</th>
                     <th  scope="col" class="px-2 py-3">Payee Name</th>
-                    <th  scope="col" class="px-2 py-3">Purpose</th>
+
                     <th  scope="col" class="px-2 py-3">Date</th>
                     <th  scope="col" class="px-2 py-3">Payment Method</th>
                     <th  scope="col" class="px-2 py-3">Amount</th>
@@ -52,7 +52,7 @@
                             {{ ($payment->guest->FirstName ?? '') . ' ' . ($payment->guest->LastName ?? '') }}
                         </td>
 
-                        <td class="px-2 py-3">{{ $payment->Purpose }}</td>
+
                         <td class="px-2 py-3">{{ $payment->DateCreated }}</td>
                         <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
                         <td cclass="px-2 py-2">{{ $payment->AmountPaid }}</td>
@@ -113,36 +113,37 @@
 
     </div>
 
-    <x-modal name="payment-details-modal" title="Payment Detals">
+    <x-modal name="payment-details-modal" title="Payment Details">
         @slot('body')
-            <div class="p-4 md:p-5 text-center">
-                <div class="grid grid-cols-3">
-                    <div class="text-start font-bold">
-                        <p class="text-sm ">Transaction Id</p>
-                        <p class="text-sm ">Payee Name</p>
-                        <p class="text-sm ">Purpose</p>
-                        <p class="text-sm ">Date</p>
-                        <p class="text-sm ">Payment Method</p>
-                        <p class="text-sm ">Amount</p>
-                        <p class="text-sm ">Status</p>
+            <div class="p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg">
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Labels Column -->
+                    <div class="font-semibold text-gray-700 space-y-4">
+                        <p class="text-sm">Transaction ID:</p>
+                        <p class="text-sm">Payee Name:</p>
+                        <p class="text-sm">Date:</p>
+                        <p class="text-sm">Payment Method:</p>
+                        <p class="text-sm">Amount:</p>
+                        <p class="text-sm">Status:</p>
                     </div>
-                    <div class="col-span-2 text-start">
-                        @if ($selectPayment)
-                            <p class="text-sm font-semibold">{{ $selectPayment->ReferenceNumber }}</p>
-                            <p class="text-sm font-semibold">
-                                {{ $selectPayment->guest->FirstName . ' ' . $selectPayment->guest->MiddleName[0] . '. ' . $selectPayment->guest->LastName }}
-                            </p>
-                            <p class="text-sm font-semibold">{{ $selectPayment->Purpose }}</p>
-                            <p class="text-sm font-semibold">{{ $selectPayment->DateCreated }}</p>
-                            <p class="text-sm font-semibold">{{ $selectPayment->PaymentType }}</p>
-                            <p class="text-sm font-semibold">{{ $selectPayment->AmountPaid }}</p>
-                            <p class="text-sm font-semibold">{{ $selectPayment->Status }}</p>
-                        @endif
 
+                    <!-- Values Column -->
+                    <div class="space-y-4 text-gray-800">
+                        @if ($selectPayment)
+                            <p class="text-sm font-medium">{{ $selectPayment->ReferenceNumber }}</p>
+                            <p class="text-sm font-medium">
+                                {{ ucwords($selectPayment->guest->FirstName) . ' ' . ($selectPayment->guest->MiddleName ? strtoupper($selectPayment->guest->MiddleName[0]) . '. ' : '') . ucwords($selectPayment->guest->LastName) }}
+                            </p>
+                            <p class="text-sm font-medium">{{ \Carbon\Carbon::parse($selectPayment->DateCreated)->format('F d, Y') }}</p>
+                            <p class="text-sm font-medium">{{ $selectPayment->PaymentType }}</p>
+                            <p class="text-sm font-medium">₱{{ number_format($selectPayment->AmountPaid, 2) }}</p>
+                            <p class="text-sm font-medium">{{ $selectPayment->Status }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
         @endslot
     </x-modal>
+
 
 </div>

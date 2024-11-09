@@ -230,9 +230,6 @@
                                                 <td class="px-6 py-3">
                                                     {{ $subguest['gender'] }}
                                                 </td>
-                                                <td class="px-6 py-3">
-                                                    {{ $subguest['contactnumber'] }}
-                                                </td>
 
                                                 <td class="px-6 py-3">
                                                     {{ $subguest['contactnumber'] }}
@@ -377,8 +374,13 @@
 
                                 </div>
                                 <div>
-                                    <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number (XXX-OSCA-XXXX-XXXX)"
+                                    <x-text-field1 -field1 name="idNumber" placeholder="Enter ID Number"
                                         type="text" model="idNumber" />
+
+                                    <ul class="list-disc list-inside text-xs text-gray-500 mt-2">
+                                        <li>Senior ID Format: <strong>XXX-OSCA-XXXX-XXXXX</strong></li>
+                                        <li>PWD ID Format: <strong>XXX-XX-XXXX-XXXXXX</strong></li>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -396,7 +398,7 @@
                             @if (!$selectedRoom)
                                 <p>No Room Selected</p>
                             @else
-                                <p>{{ $selectedRoom->RoomType.' - ₱'.$selectedRoom->RoomPrice  }}</p>
+                                <p>{{ $selectedRoom->RoomType . ' - ₱' . $selectedRoom->RoomPrice }}</p>
                                 <p>₱{{ $selectedRoom->RoomPrice * $lengthOfStay }}</p>
                             @endif
 
@@ -408,18 +410,14 @@
                             @if ($discount)
                                 <p>Discount({{ $discount->Discount }}%)</p>
                                 <p>₱
-                                    {{
-
-                                        (($selectedRoom->RoomPrice * $lengthOfStay) * ($discount->Discount / 100))
-                                    }}
+                                    {{ $selectedRoom->RoomPrice * $lengthOfStay * ($discount->Discount / 100) }}
                                 </p>
-
                             @else
                                 @if ($discountType == 'Senior Citizen' || $discountType == 'PWD')
                                     <p>{{ $discountType }} Discount(10%)</p>
 
                                     @if ($selectedRoom)
-                                        <p>₱{{ (($selectedRoom->RoomPrice  * $lengthOfStay )* (10 / 100)) }}</p>
+                                        <p>₱{{ $selectedRoom->RoomPrice * $lengthOfStay * (10 / 100) }}</p>
                                     @endif
 
                                 @endif
@@ -480,6 +478,16 @@
     <x-modal title="Select Amenities" name="select-amenities-modal">
         @slot('body')
             <div class="my-2" wire:ignore.self>
+
+                @if (session()->has('error'))
+                    <span
+                        class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm font-semibold inline-block w-full">
+                        {{ session('error') }}
+                    </span>
+                @endif
+
+
+
                 <div class="grid grid-cols-1 gap-2">
 
 
@@ -503,27 +511,23 @@
                             <p class="text-slate-800">{{ $amenity->Name }}</p>
                         </div>
                         <div class="flex justify-evenly gap-2 w-1/3 items-center">
-                            {{-- <div>
-                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }}, -1)"
-                                    type="button"
-                                    class="bg-red-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-red-900 duration-75 transition-all hover:text-slate-950">
-                                    <i class="fa fa-minus" aria-hidden="true"></i>
-                                </button>
-                            </div> --}}
+
                             <div>
                                 <input wire:model.defer="quantity.{{ $amenity->AmenitiesId }}" type="number"
                                     name="quantity[{{ $amenity->AmenitiesId }}]" min="0"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" />
                             </div>
-                            <div>
-                                <button wire:click="updateAmenityQuantity({{ $amenity->AmenitiesId }},1)" type="button"
-                                    class="bg-green-700 text-white px-2 py-1 rounded hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">
-                                    Confirm
-                                </button>
-                            </div>
+
+
                         </div>
                     </div>
                 @endforeach
+                <div class="flex justify-end mt-4">
+                    <button wire:click="updateAmenityQuantityAll" type="button"
+                        class="bg-green-700 text-white px-4 py-2 rounded hover:bg-white hover:border hover:border-green-900 duration-75 transition-all hover:text-slate-950">
+                        Add All
+                    </button>
+                </div>
 
             </div>
         @endslot
@@ -667,7 +671,7 @@
             <form wire:submit.prevent="addSubGuest">
 
 
-                <div class="grid grid-cols-2 gap-5" wire:ignore>
+                <div class="grid grid-cols-2 gap-5">
                     <div>
                         <x-text-field1 field1 name="firstname" placeholder="First Name" model="subguestsFirstname"
                             label="First Name" />
@@ -729,8 +733,6 @@
 
 
     <div wire:loading>
-        <x-loader/>
+        <x-loader />
     </div>
 </div>
-
-

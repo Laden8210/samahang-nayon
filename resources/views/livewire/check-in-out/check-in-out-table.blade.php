@@ -31,8 +31,9 @@
                     <td  class="px-2 py-3">{{ $checkInOut->CheckInOutId }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
                     <td  class="px-2 py-3">{{ $checkInOut->reservation->roomNumber->room_number ?? '' }}</td>
-                    <td  class="px-2 py-3">{{ $checkInOut->DateCreated }}</td>
-                    <td  class="px-2 py-3">{{ $checkInOut->TimeCreated }}</td>
+                    <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->format('F d, Y') }}</td>
+                    <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('g:i A') }}</td>
+
                     <td  class="px-2 py-3">{{ $checkInOut->Type }}</td>
                     <td  class="px-2 py-3">
                         <a href="{{route('bookingDetails', $checkInOut->reservation->ReservationId ?? '')}}"
@@ -47,6 +48,12 @@
 
 
     </div>
+
+    <div class="py-4 px-3">
+        {{ $checkInOuts->links("vendor.livewire.tailwind") }}
+
+    </div>
+
 
 
 

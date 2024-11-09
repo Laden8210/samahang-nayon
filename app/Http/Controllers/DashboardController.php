@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Guest;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\RoomNumber;
 use Carbon\Carbon; // Import Carbon for date handling
 
 class DashboardController extends Controller
@@ -18,7 +19,7 @@ class DashboardController extends Controller
         // Get the current date
         $today = Carbon::today();
 
-        $totalRooms = Room::count();
+        $totalRooms = RoomNumber::count();
         $occupiedRooms = Reservation::where('DateCheckIn', $today)
         ->whereIn('Status', ['Checked In', 'Booked', 'Reserved'])
         ->count();

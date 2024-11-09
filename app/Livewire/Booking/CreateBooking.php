@@ -135,7 +135,6 @@ class CreateBooking extends Component
 
         if (in_array($propertyName, ['checkOut', 'totalChildren', 'totalGuests'])) {
             $this->roomNumbers = $this->getAvailableRooms();
-
         }
 
         if (in_array($propertyName, ['discountType'])) {
@@ -145,6 +144,7 @@ class CreateBooking extends Component
     }
     public function addSubGuest()
     {
+        // Validation rules
         $this->validate([
             'subguestsFirstname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
             'subguestsLastname' => ['required', 'regex:/^[a-zA-Z\s]+$/', 'max:255'],
@@ -193,11 +193,11 @@ class CreateBooking extends Component
         $bookedRooms = Reservation::whereIn('Status', ['Checked In', 'Reserved', 'Booked'])
             ->where(function ($query) use ($checkIn, $checkOut) {
                 $query->whereBetween('DateCheckIn', [$checkIn, $checkOut])
-                      ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
-                      ->orWhere(function ($query) use ($checkIn, $checkOut) {
-                          $query->where('DateCheckIn', '<=', $checkIn)
-                                ->where('DateCheckOut', '>=', $checkOut);
-                      });
+                    ->orWhereBetween('DateCheckOut', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('DateCheckIn', '<=', $checkIn)
+                            ->where('DateCheckOut', '>=', $checkOut);
+                    });
             })
             ->pluck('room_number_id'); // Only get room_number_id
 
@@ -348,28 +348,33 @@ class CreateBooking extends Component
         $reservation->TotalChildren = $this->totalChildren ?? 0;
         $reservation->Source = 'Walk In';
 
-        if($this->discount){
+        if ($this->discount) {
             $reservation->DiscountType = "Event Promotion";
-        }else{
+        } else {
             $reservation->DiscountType =   $this->discountType;
         }
 
 
 
-        if($this->paymentAmount == 0){
+        if ($this->paymentAmount == 0) {
             session()->flash('message', 'Please enter the payment amount');
             return;
         }
 
 
-        if($this->paymentAmount < $this->discountedRoomRate){
+        if ($this->paymentAmount < $this->discountedRoomRate) {
             session()->flash('message', 'Payment amount is less than the total amount');
+            return;
+        }
+
+        if ($this->paymentAmount > $this->discountedRoomRate) {
+            session()->flash('message', 'Payment amount is greater than the total amount');
             return;
         }
 
         $purpose = "";
 
-      if ($this->discountType == 'Senior Citizen' || $this->discountType == 'PWD') {
+        if ($this->discountType == 'Senior Citizen' || $this->discountType == 'PWD') {
             $purpose = ($this->discountType == 'Senior Citizen') ? "Senior Citizen Discount" : "PWD Discount";
 
             if (empty($this->idNumber)) {
@@ -377,14 +382,28 @@ class CreateBooking extends Component
                 return;
             }
 
-            // Check if ID Number matches the format 13-5416-000-001
-            if (!preg_match('/^\d{2}-\d{4}-\d{3}-\d{3}$/', $this->idNumber)) {
-                session()->flash('message', 'Invalid ID Number format. Please use 13-5416-000-001');
-                return;
+
+            if ($this->discountType == 'Senior Citizen') {
+                $idPattern = '/^[A-Z]{3}-OSCA-\d{4}-\d{5}$/';
+                $purpose = "Senior Citizen Discount";
+
+                if (!preg_match($idPattern, $this->idNumber)) {
+                    session()->flash('message', 'Invalid Senior Citizen ID format. Use "XXX-OSCA-XXXX-XXXXX"');
+                    return;
+                }
+            }
+
+            if ($this->discountType == 'PWD') {
+                $idPattern = '/^[A-Z]{2,3}-\d{2}-\d{4}-\d{6}$/';
+                $purpose = "PWD Discount";
+
+                if (!preg_match($idPattern, $this->idNumber)) {
+                    session()->flash('message', 'Invalid PWD ID format. Use "XXX-XX-XXXX-XXXXXX"');
+                    return;
+                }
             }
 
             $reservation->IdNumber = $this->idNumber;
-
         } else if ($this->discountType == 'None') {
             $purpose = "No Discount";
         }
@@ -419,17 +438,32 @@ class CreateBooking extends Component
 
 
 
+
         if ($this->paymentAmount != 0) {
-            $reservation->payments()->create([
-                'GuestId' => $guest->GuestId,
-                'AmountPaid' => $this->paymentAmount ?? 0,
-                'DateCreated' => date('Y-m-d'),
-                'TimeCreated' => date('H:i:s'),
-                'Status' => 'Pending',
-                'PaymentType' => $this->paymentType,
-                'ReferenceNumber' => $this->generateReferenceNumber(),
-                'Purpose' => $purpose,
-            ]);
+
+            if ($this->paymentType == 'Gcash') {
+
+                $reservation->payments()->create([
+                    'GuestId' => $guest->GuestId,
+                    'AmountPaid' => $this->paymentAmount ?? 0,
+                    'DateCreated' => date('Y-m-d'),
+                    'TimeCreated' => date('H:i:s'),
+                    'Status' => 'Pending',
+                    'PaymentType' => $this->paymentType,
+                    'ReferenceNumber' => $this->generateReferenceNumber(),
+                    'Purpose' => $purpose,
+                ]);
+            } else {
+                $reservation->payments()->create([
+                    'GuestId' => $guest->GuestId,
+                    'AmountPaid' => $this->paymentAmount ?? 0,
+                    'DateCreated' => date('Y-m-d'),
+                    'TimeCreated' => date('H:i:s'),
+                    'Status' => 'Paid',
+                    'PaymentType' => $this->paymentType,
+                    'ReferenceNumber' => $this->generateReferenceNumber(),
+                    'Purpose' => $purpose,
+                ]);}
         }
 
 
@@ -493,37 +527,48 @@ class CreateBooking extends Component
         }
     }
 
-    public function updateAmenityQuantity($amenityId)
+    public function updateAmenityQuantityAll()
     {
-        $amenity = Amenities::find($amenityId);
+        foreach ($this->quantity as $amenityId => $newQuantity) {
+            $amenity = Amenities::find($amenityId);
 
-        if ($amenity) {
-            $currentQuantity = $this->quantity[$amenityId] ?? 0;
-            $newQuantity = $currentQuantity;
+            if ($amenity) {
 
-            if ($newQuantity > 0) {
-                $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
-
-                if ($index !== false) {
-                    $this->selectedAmenities[$index]['quantity'] = $newQuantity;
+                if ($newQuantity > 10) {
+                    $newQuantity = 10;
+                    session()->flash('error', 'The maximum quantity for each amenity is 10.');
                 } else {
-                    $this->selectedAmenities[] = [
-                        'id' => $amenityId,
-                        'name' => $amenity->Name,
-                        'price' => $amenity->Price,
-                        'quantity' => $newQuantity,
-                    ];
+                    $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
+
+                    if ($newQuantity > 0) {
+                        // Update or add the amenity with the capped quantity
+                        if ($index !== false) {
+                            $this->selectedAmenities[$index]['quantity'] = $newQuantity;
+                        } else {
+                            $this->selectedAmenities[] = [
+                                'id' => $amenityId,
+                                'name' => $amenity->Name,
+                                'price' => $amenity->Price,
+                                'quantity' => $newQuantity,
+                            ];
+                        }
+                    } else {
+                        // Remove the amenity if quantity is zero
+                        if ($index !== false) {
+                            unset($this->selectedAmenities[$index]);
+                            $this->selectedAmenities = array_values($this->selectedAmenities); // Reindex the array
+                        }
+                    }
+                    // Update the total after adding all selected amenities
+                    $this->total = $this->computeTotal();
+
+                    session()->flash('message', 'Amenities updated successfully.');
+                    $this->dispatch('close-modal');
                 }
-            } else {
-                $this->selectedAmenities = array_filter($this->selectedAmenities, fn($item) => $item['id'] !== $amenityId);
             }
-
-            $this->quantity[$amenityId] = $newQuantity > 0 ? $newQuantity : null;
-            $this->total = $this->computeTotal();
-
-            $this->dispatch('close-modal');
         }
     }
+
 
     public function applyDiscount()
     {
