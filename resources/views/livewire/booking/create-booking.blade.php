@@ -446,6 +446,7 @@
 
                         <div class="flex justify-between ">
                             <p class="font-bold text-blue-950">Total</p>
+
                             <p>₱{{ ($discountedRoomRate ?? 0) + ($totalAmenitiesCost ?? 0) }}</p>
                         </div>
                         <div>

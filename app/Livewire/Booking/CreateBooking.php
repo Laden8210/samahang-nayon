@@ -323,9 +323,6 @@ class CreateBooking extends Component
         }
 
 
-
-
-
         $room = Room::find($this->selectedRoomId);
 
         $totalAmenities = 0;
@@ -355,22 +352,18 @@ class CreateBooking extends Component
         }
 
 
-
         if ($this->paymentAmount == 0) {
             session()->flash('message', 'Please enter the payment amount');
             return;
         }
 
 
-        if ($this->paymentAmount < $this->discountedRoomRate) {
-            session()->flash('message', 'Payment amount is less than the total amount');
+
+        if($this->paymentAmount != ($this->discountedRoomRate + $totalAmenities)){
+            session()->flash('message', 'Payment amount does not match the total amount'. $this->paymentAmount . ' ' . $this->discountedRoomRate + $totalAmenities);
             return;
         }
 
-        if ($this->paymentAmount > $this->discountedRoomRate) {
-            session()->flash('message', 'Payment amount is greater than the total amount');
-            return;
-        }
 
         $purpose = "";
 
@@ -526,49 +519,56 @@ class CreateBooking extends Component
             }
         }
     }
-
     public function updateAmenityQuantityAll()
     {
+        $maxQuantityExceeded = false; // Track if any quantity exceeds the limit
+
         foreach ($this->quantity as $amenityId => $newQuantity) {
             $amenity = Amenities::find($amenityId);
 
             if ($amenity) {
-
+                // Cap the quantity at 10 and set a flag for a flash message if exceeded
                 if ($newQuantity > 10) {
                     $newQuantity = 10;
-                    session()->flash('error', 'The maximum quantity for each amenity is 10.');
-                } else {
-                    $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
+                    $maxQuantityExceeded = true;
+                }
 
-                    if ($newQuantity > 0) {
-                        // Update or add the amenity with the capped quantity
-                        if ($index !== false) {
-                            $this->selectedAmenities[$index]['quantity'] = $newQuantity;
-                        } else {
-                            $this->selectedAmenities[] = [
-                                'id' => $amenityId,
-                                'name' => $amenity->Name,
-                                'price' => $amenity->Price,
-                                'quantity' => $newQuantity,
-                            ];
-                        }
+                // Search for the amenity in the selected amenities
+                $index = collect($this->selectedAmenities)->search(fn($item) => $item['id'] === $amenityId);
+
+                if ($newQuantity > 0) {
+                    // If the amenity already exists in selectedAmenities, update it; otherwise, add it
+                    if ($index !== false) {
+                        $this->selectedAmenities[$index]['quantity'] = $newQuantity;
                     } else {
-                        // Remove the amenity if quantity is zero
-                        if ($index !== false) {
-                            unset($this->selectedAmenities[$index]);
-                            $this->selectedAmenities = array_values($this->selectedAmenities); // Reindex the array
-                        }
+                        $this->selectedAmenities[] = [
+                            'id' => $amenityId,
+                            'name' => $amenity->Name,
+                            'price' => $amenity->Price,
+                            'quantity' => $newQuantity,
+                        ];
                     }
-                    // Update the total after adding all selected amenities
-                    $this->total = $this->computeTotal();
-
-                    session()->flash('message', 'Amenities updated successfully.');
-                    $this->dispatch('close-modal');
+                } else {
+                    // Remove the amenity if quantity is zero
+                    if ($index !== false) {
+                        unset($this->selectedAmenities[$index]);
+                        $this->selectedAmenities = array_values($this->selectedAmenities); // Reindex the array
+                    }
                 }
             }
         }
-    }
 
+        // Recalculate the total cost after processing all amenities
+        $this->total = $this->computeTotal();
+
+        // Show messages
+        if ($maxQuantityExceeded) {
+            session()->flash('error', 'The maximum quantity for each amenity is 10.');
+        }
+        session()->flash('message', 'Amenities updated successfully.');
+
+        $this->dispatch('close-modal');
+    }
 
     public function applyDiscount()
     {
@@ -669,6 +669,8 @@ class CreateBooking extends Component
 
         $room = Room::find($this->selectedRoomId);
 
+        $this->total = 0;
+        $this->totalAmenitiesCost = 0;
         if ($room) {
             $this->total = $room->RoomPrice * $this->lengthOfStay;
         }

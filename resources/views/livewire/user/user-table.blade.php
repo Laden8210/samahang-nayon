@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $u)
+                @foreach ($employees as $u)
                     <tr class="bg-white border-b text-xs text-center">
                         <td class="px-2 py-3">{{ $u->EmployeeId }}</td>
 
@@ -215,9 +215,13 @@
 
     <div class="py-4 px-3" wire:ignore>
         <div class="flex justify-between items-center">
-
+            <div class="flex-1">
+                <p class="text-sm text-gray-700 dark:text-gray-400">
+                    Showing {{ $employees->firstItem() }} to {{ $employees->lastItem() }} of {{ $employees->total() }} User
+                </p>
+            </div>
             <div class="flex items-center">
-                {{ $users->links('vendor.livewire.tailwind') }}
+                {{ $employees->links('vendor.livewire.tailwind') }}
             </div>
         </div>
 

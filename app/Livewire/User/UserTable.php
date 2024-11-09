@@ -25,7 +25,7 @@ class UserTable extends Component
     {
         $current_user = Auth::user()->EmployeeId;
         return view('livewire.user.user-table', [
-            'users' => Employee::search($this->search)
+            'employees' => Employee::search($this->search)
             ->where('EmployeeId' , '!=' ,$current_user)->paginate(10)
         ]);
     }
