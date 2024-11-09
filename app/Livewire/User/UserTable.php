@@ -14,11 +14,15 @@ class UserTable extends Component
     public $search = '';
 
     public $user;
-    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public $deleteUserModal = false;
     public $viewUserModal = false;
     use WithPagination;
+
+    public function search()
+    {
+        $this->resetPage();
+    }
 
 
     public function render()

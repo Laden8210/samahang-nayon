@@ -213,7 +213,7 @@
 
 
 
-    <div class="py-4 px-3" wire:ignore>
+    <div class="py-4 px-3">
         <div class="flex justify-between items-center">
             <div class="flex-1">
                 <p class="text-sm text-gray-700 dark:text-gray-400">
