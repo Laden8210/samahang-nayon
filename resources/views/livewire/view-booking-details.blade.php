@@ -119,9 +119,10 @@
                 <div class="font-bold  text-xs">Date</div>
                 <div>{{ \Carbon\Carbon::parse($reservation->DateCreated)->format('F d, Y') }}</div>
 
-                <div class="font-bold text-xs">Guest</div>
+                <div class="font-bold text-xs">Guest Name</div>
                 <div>
-                    {{ $reservation->guest->FirstName ?? ('' . ' ' . $reservation->guest->LastName ?? '') }}
+                    {{ ucwords(strtolower($reservation->guest->FirstName)) . ' ' . ucwords(strtolower($reservation->guest->LastName)) }}
+
                 </div>
                 <div class="font-bold  text-xs">Contact Number</div>
                 <div>
@@ -179,7 +180,7 @@
 
                 <div class="font-bold  text-xs">Penalty</div>
                 <div>
-                    ₱ 0</div>
+                    ₱ {{$reservation->penalty}}</div>
 
 
                 <div class="font-bold  text-xs">Total Payment</div>
@@ -199,7 +200,7 @@
 
                 <div class="font-bold  text-xs">Balance</div>
                 <div>
-                    ₱{{ $reservation->TotalCost + $totalAmenities - $totalPayment }}
+                    ₱{{ $reservation->TotalCost  + $reservation->penalty+ $totalAmenities - $totalPayment }}
                 </div>
 
             </div>
@@ -267,7 +268,8 @@
                                 <td>
                                     <button class="bg-red-600 px-2 py-1 rounded text-white hover:bg-red-900"
                                         type="button"
-                                        wire:click="removeAmenity({{ $amenity->ReservationAmenitiesId }})"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                        wire:click="removeAmenity({{ $amenity->ReservationAmenitiesId }})"><i
+                                            class="fa fa-trash" aria-hidden="true"></i></button>
 
                                 </td>
 
@@ -317,7 +319,7 @@
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
                                 <td class="px-2 py-3"> ₱{{ $payment->AmountPaid }}</td>
                                 <td>
-                                    @if ($payment->PaymentType === 'Gcash' && $payment->Status === 'Pending')
+                                    @if ( $payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
                                             type="button"
                                             wire:click="confirmPayment({{ $payment->PaymentId }})">Confirm
@@ -352,9 +354,11 @@
                     @foreach ($reservation->subGuests as $guest)
                         <tr class="border-b border-slate-100 text-center">
                             <td class="px-2 py-3">
-                                {{ $guest->FirstName . ' ' . ($guest->MiddleName ? $guest->MiddleName . ' ' : '') . $guest->LastName }}
+                                {{ ucwords(strtolower($guest->FirstName)) . ' ' . ($guest->MiddleName ? ucwords(strtolower($guest->MiddleName)) . ' ' : '') . ucwords(strtolower($guest->LastName)) }}
                             </td>
-                            <td class="px-2 py-3">{{ $guest->Birthdate }}</td>
+
+                            <td class="px-2 py-3">{{ \Carbon\Carbon::parse($guest->Birthdate)->format('F d, Y') }}</td>
+
                             <td class="px-2 py-3">{{ $guest->Gender }}</td>
                             <td class="px-2 py-3">{{ $guest->ContactNumber }}</td>
 
@@ -445,5 +449,30 @@
     <div wire:loading>
         <x-loader />
     </div>
+
+    @if (session()->has('alert'))
+        <div id="toast-bottom-right"
+            class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow right-5 bottom-5 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800"
+            role="alert">
+            <div
+                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-800 dark:text-blue-200">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
+                </svg>
+                <span class="sr-only">Warning icon</span>
+            </div>
+            <div class="ms-3 text-sm font-normal">{{ session('alert') }}</div>
+            <button type="button"
+                class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                data-dismiss-target="#toast-bottom-right" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
+    @endif
 
 </div>

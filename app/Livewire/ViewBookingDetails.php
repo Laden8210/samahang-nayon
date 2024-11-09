@@ -39,7 +39,9 @@ class ViewBookingDetails extends Component
         $this->ReservationId = $ReservationId;
         $this->reservation = Reservation::find($ReservationId);
         $this->Amenities = Amenities::all();
-        $remainingBalance = $this->reservation->TotalCost;
+        $remainingBalance = $this->reservation->TotalCost + $this->reservation->penalty;
+
+
 
         foreach ($this->reservation->reservationAmenities as $amenity) {
             $remainingBalance += $amenity->TotalCost;
@@ -50,55 +52,66 @@ class ViewBookingDetails extends Component
             }
         }
 
+
+
         $this->payment = $remainingBalance;
 
-        $penaltyRatePerHour = 100;
+
+        $penaltyRatePerHour = 50;
+
+        $checkoutTime = Carbon::parse($this->reservation->DateCheckOut)->setTime(12, 0);
 
 
-        $checkoutTime = Carbon::parse($this->reservation->DateCheckOut)->setTime(14, 0);
+        if ($this->reservation->Status == 'Checked In' && now()->greaterThan($checkoutTime)) {
 
-        if ($this->reservation->Status == 'Checked In') {
-            if (now()->greaterThan($checkoutTime)) {
-                $hoursLate = $checkoutTime->diffInHours(now());
-                $this->reservation->TotalCost += $hoursLate * $penaltyRatePerHour;
-            }
+            $hoursLate = ceil($checkoutTime->diffInMinutes(now()) / 60);
+            $penalty = $hoursLate * $penaltyRatePerHour;
+
+
+            $this->reservation->penalty = $penalty;
+            $this->reservation->save();
+
+            session()->flash('alert', "A late checkout penalty of ₱{$penalty} has been applied.");
         }
     }
 
 
     public function addSubGuest()
     {
-
         $this->validate([
             'subguestsFirstname' => 'required',
-            'subguestsMiddlename' => 'required',
+            'subguestsMiddlename' => 'nullable', // Make middle name optional
             'subguestsLastname' => 'required',
-            'subguestsDob' => 'required',
+            'subguestsDob' => 'required|date',
             'subguestsGender' => 'required',
-
-            'subguestsContactnumber' => 'required',
+            'subguestsContactnumber' => [
+                'required',
+                'regex:/^(09\d{9}|\+639\d{9})$/',
+            ],
+        ], [
+            'subguestsContactnumber.regex' => 'The contact number must be a valid Philippine number, starting with 09 or +639 and followed by 9 digits.',
         ]);
 
         $this->reservation->subguests()->create([
-            'FirstName' => $this->subguestsFirstname,
-            'MiddleName' => $this->subguestsMiddlename,
-            'LastName' => $this->subguestsLastname,
+            'FirstName' => ucwords(strtolower($this->subguestsFirstname)),
+            'MiddleName' => $this->subguestsMiddlename ? ucwords(strtolower($this->subguestsMiddlename)) : null,
+            'LastName' => ucwords(strtolower($this->subguestsLastname)),
             'Birthdate' => $this->subguestsDob,
             'Gender' => $this->subguestsGender,
-
             'ContactNumber' => $this->subguestsContactnumber,
         ]);
 
         session()->flash('subguest-message', 'Subguest added successfully.');
-        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender',  'subguestsContactnumber']);
+        $this->reset(['subguestsFirstname', 'subguestsMiddlename', 'subguestsLastname', 'subguestsDob', 'subguestsGender', 'subguestsContactnumber']);
     }
+
     public function addPayment()
     {
         $this->validate([
             'payment' => 'required|numeric|min:1',
         ]);
 
-        $remainingBalance = $this->reservation->TotalCost;
+        $remainingBalance = $this->reservation->TotalCost + $this->reservation->penalty;
 
         foreach ($this->reservation->reservationAmenities as $amenity) {
             $remainingBalance += $amenity->TotalCost;
@@ -108,11 +121,14 @@ class ViewBookingDetails extends Component
             $remainingBalance -= $payment->AmountPaid;
         }
 
-        if ($this->payment >= $remainingBalance) {
+
+        if ($this->payment > $remainingBalance) {
             session()->flash('message', 'Payment Exceeds Remaining Balance');
             $this->payment = '';
             return;
         }
+
+
 
         $this->reservation->payments()->create([
             'GuestId' => $this->reservation->GuestId,
@@ -205,6 +221,13 @@ class ViewBookingDetails extends Component
             return;
         }
 
+        $currentDate = now()->toDateString();
+        $currentTime = now()->format('H:i');
+
+        if ($currentTime < '14:00') {
+            session()->flash('message', 'Check-in is only allowed after 2:00 PM.');
+            return;
+        }
 
         $this->reservation->Status = 'Checked In';
         $this->reservation->save();

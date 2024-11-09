@@ -29,6 +29,12 @@ class ViewMessage extends Component
     public function selectGuest($id)
     {
         $this->selectedGuest = Guest::find($id);
+
+        $message = Message::where('GuestId', $id)->get();
+        foreach ($message as $msg) {
+            $msg->IsReadEmployee = true;
+            $msg->save();
+        }
     }
 
     public function sendMessage(){

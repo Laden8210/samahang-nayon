@@ -29,7 +29,8 @@ class Reservation extends Model
         'Source',
         'DateCancelled',
         'DiscountType',
-        'IdNumber'
+        'IdNumber',
+        'penalty'
     ];
 
     public function scopeSearch($query, $value){
