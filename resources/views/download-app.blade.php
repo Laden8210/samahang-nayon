@@ -33,7 +33,7 @@
             breathtaking views, top-notch facilities, and exceptional service, we ensure that your stay is comfortable
             and memorable.
         </p>
-        <img src="https://scontent.fdvo2-2.fna.fbcdn.net/v/t39.30808-6/251812038_403610324789782_3574069820819899217_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHLdnur_m8EX3IfXhxJGNA9TVhfm02YQtxNWF-bTZhC3NY8-doMc-6VgEO3Xd805Xcu4YnozWfCtwsEy-CgG9h-&_nc_ohc=sLM6LkuCTscQ7kNvgEV0fQv&_nc_zt=23&_nc_ht=scontent.fdvo2-2.fna&_nc_gid=A1V880UlKgSdkXPrC0kYvGK&oh=00_AYAM0P1TzDXJl0BN-dbUOziL5thwuMuYA6p9qlR0lABBtA&oe=672784FC"
+        <img src="https://scontent.fmnl13-1.fna.fbcdn.net/v/t39.30808-6/251812038_403610324789782_3574069820819899217_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeHLdnur_m8EX3IfXhxJGNA9TVhfm02YQtxNWF-bTZhC3NY8-doMc-6VgEO3Xd805Xcu4YnozWfCtwsEy-CgG9h-&_nc_ohc=W572H5A21TYQ7kNvgHvvBqI&_nc_zt=23&_nc_ht=scontent.fmnl13-1.fna&_nc_gid=AD768U296ghLfL3RFFt1k7L&oh=00_AYC6cxhSVjXInRohvfhb1Bc8Obf_BJ9wqPs_0-YbEEIgjQ&oe=6735247C"
             alt="Beautiful view of Samahang Nayon hotel" class="rounded-lg shadow-lg mx-auto">
     </section>
 
