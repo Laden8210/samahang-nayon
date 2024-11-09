@@ -25,47 +25,47 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                @foreach ($users as $u)
                     <tr class="bg-white border-b text-xs text-center">
-                        <td class="px-2 py-3">{{ $user->EmployeeId }}</td>
+                        <td class="px-2 py-3">{{ $u->EmployeeId }}</td>
 
                         <td class="px-2 py-3">
-                            {{ $user->FirstName . (empty($user->MiddleName) ? ' ' : ' ' . $user->MiddleName[0] . '. ') . $user->LastName }}
+                            {{ $u->FirstName . (empty($u->MiddleName) ? ' ' : ' ' . $u->MiddleName[0] . '. ') . $u->LastName }}
                         </td>
-                        <td class="px-2 py-3">{{ $user->Position }}</td>
-                        <td class="px-2 py-3">{{ utf8_encode($user->email) }}</td>
-                        <td class="px-2 py-3">{{ $user->ContactNumber }}</td>
+                        <td class="px-2 py-3">{{ $u->Position }}</td>
+                        <td class="px-2 py-3">{{ utf8_encode($u->email) }}</td>
+                        <td class="px-2 py-3">{{ $u->ContactNumber }}</td>
                         <td class="px-2 py-3">
-                            @if ($user->Status == 'Active')
+                            @if ($u->Status == 'Active')
                                 <span
-                                    class="px-2 py-1 bg-green-500  text-white rounded-full text-xs">{{ $user->Status }}</span>
+                                    class="px-2 py-1 bg-green-500  text-white rounded-full text-xs">{{ $u->Status }}</span>
                             @else
                                 <span
-                                    class="px-2 py-1 bg-red-500 text-white rounded-full text-xs">{{ $user->Status }}</span>
+                                    class="px-2 py-1 bg-red-500 text-white rounded-full text-xs">{{ $u->Status }}</span>
                             @endif
                         <td class="px-2 py-3 flex justify-center gap-2">
 
-                            <button wire:click.prevent="viewUser({{ $user->EmployeeId }})"
+                            <button wire:click.prevent="viewUser({{ $u->EmployeeId }})"
                                 class="block p-2 bg-blue-600 hover:bg-blue-500 text-white rounded"><i class="fa fa-eye"
                                     aria-hidden="true"></i></button>
 
-                            <a href="{{ route('updateUser', $user->EmployeeId) }}"
+                            <a href="{{ route('updateUser', $u->EmployeeId) }}"
                                 class="block p-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded"><i
                                     class="fa fa-edit" aria-hidden="true"></i></a>
 
 
-                            @if ($user->Status == 'Active')
-                                <button wire:click="changeStatus({{ $user->EmployeeId }})"
+                            @if ($u->Status == 'Active')
+                                <button wire:click="changeStatus({{ $u->EmployeeId }})"
                                     class="block p-2 bg-orange-600  hover:bg-orange-500 text-white rounded">
                                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                                 @else
-                                    <button wire:click="changeStatus({{ $user->EmployeeId }})"
+                                    <button wire:click="changeStatus({{ $u->EmployeeId }})"
                                         class="block p-2 bg-green-600  hover:bg-green-500 text-white rounded">
                                         <i class="fa fa-check-circle" aria-hidden="true"></i>
                             @endif
                             </button>
 
-                            <button wire:click.prevent="selectUser({{ $user->EmployeeId }})"
+                            <button wire:click.prevent="selectUser({{ $u->EmployeeId }})"
                                 class="block p-2 bg-red-600  hover:bg-red-500 text-white rounded"><i class="fa fa-trash"
                                     aria-hidden="true"></i></button>
 
@@ -215,11 +215,7 @@
 
     <div class="py-4 px-3" wire:ignore>
         <div class="flex justify-between items-center">
-            <div class="flex-1">
-                <p class="text-sm text-gray-700 dark:text-gray-400">
-                    Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} User
-                </p>
-            </div>
+
             <div class="flex items-center">
                 {{ $users->links('vendor.livewire.tailwind') }}
             </div>

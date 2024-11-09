@@ -20,11 +20,6 @@ class UserTable extends Component
     public $viewUserModal = false;
     use WithPagination;
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
 
     public function render()
     {
