@@ -117,15 +117,15 @@ class ReceiptController extends Controller
         $totalPayment = 0;
 
 
-        $amenityRow = 20;
+        $amenityRow = 19;
 
         $lenghtOfStay = Carbon::parse($reservation->DateCheckIn)->diffInDays(Carbon::parse($reservation->DateCheckOut));
 
 
-        $sheet->setCellValue('B19', $reservation->roomNumber->room->RoomType);
-        $sheet->setCellValue('G19', $lenghtOfStay);
-        $sheet->setCellValue('K19', "₱".$reservation->roomNumber->room->RoomPrice);
-        $sheet->setCellValue('P19', "₱".$reservation->roomNumber->room->RoomPrice * $lenghtOfStay);
+        $sheet->setCellValue('B18', $reservation->roomNumber->room->RoomType);
+        $sheet->setCellValue('G18', $lenghtOfStay);
+        $sheet->setCellValue('K18', "₱".$reservation->roomNumber->room->RoomPrice);
+        $sheet->setCellValue('P18', "₱".$reservation->roomNumber->room->RoomPrice * $lenghtOfStay);
 
         foreach ($reservation->reservationAmenities as $reservationAmenity) {
 
