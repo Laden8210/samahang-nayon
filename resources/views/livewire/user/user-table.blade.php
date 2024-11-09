@@ -75,12 +75,14 @@
             </tbody>
         </table>
 
-        <div class="flex items-center">
-            {{ $employees->links('vendor.livewire.tailwind') }}
-        </div>
 
 
     </div>
+
+    <div class="flex items-center">
+        {{ $employees->links('vendor.livewire.tailwind') }}
+    </div>
+
 
     @if ($viewUserModal)
         <div class="fixed z-50 inset-0 flex items-center justify-center">
