@@ -14,7 +14,8 @@
 
         <!-- Notifications dropdown -->
         <div id="notificationDropdown"
-            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg drop-shadow-sm w-52 dark:bg-gray-700 p-1">
+            class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-lg drop-shadow-sm w-52 dark:bg-gray-700 p-1"
+            style="z-index: 100">
             @forelse ($notifications as $notification)
                 <div class="p-2 rounded-lg hover:bg-slate-100">
                     <p class="text-xs font-semibold truncate">{{ $notification->title }}</p>

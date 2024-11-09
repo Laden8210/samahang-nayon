@@ -13,19 +13,20 @@ class Employee extends Authenticatable
     public $table = 'employees';
 
 
+    public function scopeSearch($query, $value)
+    {
 
-    public function scopeSearch($query, $value){
-        return $query->where(function($q) use ($value) {
+        return $query->where(function ($q) use ($value) {
             $q->where('FirstName', 'like', '%' . $value . '%')
-              ->orWhere('LastName', 'like', '%' . $value . '%')
-              ->orWhere('MiddleName', 'like', '%' . $value . '%')
-              ->orWhere('Position', 'like', '%' . $value . '%')
-              ->orWhere('Status', 'like', '%' . $value . '%')
-              ->orWhere('ContactNumber', 'like', '%' . $value . '%')
-              ->orWhere('Gender', 'like', '%' . $value . '%')
-              ->orWhere('email', 'like', '%' . $value . '%');
+                ->orWhere('LastName', 'like', '%' . $value . '%')
+
+                ->orWhere('Position', 'like', '%' . $value . '%')
+                ->orWhere('ContactNumber', 'like', '%' . $value . '%')
+                ->orWhere('Gender', 'like', '%' . $value . '%')
+                ->orWhere('email', 'like', '%' . $value . '%');
         });
     }
+
 
     protected $primaryKey = 'EmployeeId';
 
