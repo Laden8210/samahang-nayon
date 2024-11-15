@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Request as FacadesRequest;
 use App\Models\SystemLog;
 use App\Models\SubGuest;
 use App\Models\Payment;
+use App\Mail\VerificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class GuestAPIController extends Controller
 {
@@ -1001,4 +1003,56 @@ class GuestAPIController extends Controller
 
         return response()->json($reservation);
     }
+
+    public function verifyLogin(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+
+
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized Access.'], 200);
+        }
+
+
+        $request->validate([
+            'type' => 'required|string',
+        ]);
+
+        $type = $request->type;
+
+
+        $otpCode = random_int(100000, 999999);
+
+        if ($type === 'SMS') {
+            $message = "Dear user, your one-time verification code is: $otpCode. Please enter this code to complete your verification. Do not share this code with anyone.";
+
+            $response = Http::post('https://nasa-ph.com/api/send-sms', [
+                'phone_number' => $guest->ContactNumber,
+                'message' => $message
+            ]);
+
+            if ($response->successful()) {
+                return response()->json(['message' => 'Verification code has been sent via SMS.', 'otp' => $otpCode], 200);
+            } else {
+                return response()->json(['message' => 'Failed to send the verification code via SMS. Please try again later.'], 500);
+            }
+        } elseif ($type === 'EMAIL') {
+            $subject = 'Your One-Time Verification Code';
+            $body = "Dear user,\n\nYour one-time verification code is: $otpCode.\nPlease enter this code to complete your verification. Do not share this code with anyone.\n\nThank you.";
+
+
+            try {
+                Mail::to($guest->EmailAddress)->send(new VerificationMail($body));
+                return response()->json(['message' => 'Verification code has been sent via email.', 'otp' => $otpCode], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Failed to send the verification code via email. Please try again later.', 'error' => $e->getMessage()], 200);
+            }
+        } else {
+
+            return response()->json(['message' => 'Invalid verification type specified.'], 400);
+        }
+
+        return response()->json(['message' => 'Unauthorized access.'], 401);
+    }
+
 }

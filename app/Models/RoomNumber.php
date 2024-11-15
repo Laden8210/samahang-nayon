@@ -20,6 +20,6 @@ class RoomNumber extends Model
 
     public function room()
     {
-        return $this->belongsTo(Room::class, 'RoomId');
+        return $this->belongsTo(Room::class, 'RoomId')->withTrashed();
     }
 }

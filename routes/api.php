@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('create-reservation', [GuestAPIController::class, 'createReservation']);
     Route::get('user/users', [GuestAPIController::class, 'getAllUser']);
+    Route::post('verify-login', [GuestAPIController::class, 'verifyLogin']);
 });
 
 Route::post('amenities', [GuestAPIController::class, 'getAmenities']);

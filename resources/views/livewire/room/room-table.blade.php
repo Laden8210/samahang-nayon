@@ -65,13 +65,7 @@
                                         class=" text-xs block px-2 py-2 hover:bg-green-500 bg-green-600 rounded"><i
                                             class="fa fa-edit" aria-hidden="true"></i></a>
                                 </div>
-                                <div>
-                                    <button wire:click.prevent="confirmDelete({{ $room->RoomId }})"
-                                        class="w-full block px-2 py-2 hover:bg-red-500 bg-red-600  text-xs rounded"
-                                        type="button">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                    </button>
-                                </div>
+
 
                             </div>
                         </div>
