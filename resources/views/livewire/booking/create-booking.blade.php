@@ -540,6 +540,14 @@
             <div class="flex justify-normal gap-5 rounded-lg shadow-lg p-2 mt-5">
 
                 <div class="w-1/2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">Check In</label>
+                    <input name="checkout" placeholder="Check Out" type="date"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+                        wire:model.live="checkIn" />
+                </div>
+
+
+                <div class="w-1/2">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">Check Out</label>
                     <input name="checkout" placeholder="Check Out" type="date"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"

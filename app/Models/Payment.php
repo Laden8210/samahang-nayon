@@ -22,7 +22,8 @@ class Payment extends Model
         'Status',
         'PaymentType',
         'ReferenceNumber',
-        'Purpose'
+        'Purpose',
+        'Attachment'
     ];
 
     public function scopeSearch($query, $val)

@@ -37,7 +37,8 @@
                         </td>
 
                         <td class="py-3 px-2">
-                            {{ $booking->roomNumber->room->RoomType . ' - #' . $booking->roomNumber->room_number }}</td>
+                            {{ ($booking->roomNumber->room->RoomType ?? '') . ' - #' . ($booking->roomNumber->room_number ?? '') }}
+
                         <td class="py-3 px-2">{{ Carbon::parse($booking->DateCreated)->format('F j, Y') }}</td>
                         <td class="py-3 px-2">{{ Carbon::parse($booking->DateCheckIn)->format('F j, Y') }}</td>
                         <td class="py-3 px-2">{{ Carbon::parse($booking->DateCheckOut)->format('F j, Y') }}</td>

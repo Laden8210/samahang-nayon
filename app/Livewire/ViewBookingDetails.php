@@ -70,7 +70,6 @@ class ViewBookingDetails extends Component
 
             session()->flash('alert', "A late checkout penalty of ₱{$penalty} has been applied for {$hoursLate} hour(s) of delay.");
         }
-
     }
 
 
@@ -241,8 +240,26 @@ class ViewBookingDetails extends Component
     public function checkOut()
     {
 
+
+        $remainingBalance = $this->reservation->TotalCost + $this->reservation->penalty;
+
+        foreach ($this->reservation->reservationAmenities as $amenity) {
+            $remainingBalance += $amenity->TotalCost;
+        }
+
+        foreach ($this->reservation->payments as $payment) {
+            $remainingBalance -= $payment->AmountPaid;
+        }
+
+        if ($remainingBalance !== 0) {
+            session()->flash('message', 'Checkout unsuccessful: Payments do not match the remaining balance. Please settle the balance before proceeding.');
+            $this->payment = '';
+            return;
+        }
+
         $this->reservation->Status = 'Checked Out';
         $this->reservation->save();
+
         $this->reservation->checkInOuts()->create([
             'GuestId' => $this->reservation->GuestId,
             'DateCreated' => now(),
@@ -250,7 +267,7 @@ class ViewBookingDetails extends Component
             'Type' => 'Checked Out'
         ]);
 
-        session()->flash('message', 'Guest Checked Out');
+        session()->flash('message', 'Checkout completed successfully. Thank you for staying with us!');
     }
 
 

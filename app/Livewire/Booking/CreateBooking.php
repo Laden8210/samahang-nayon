@@ -132,16 +132,35 @@ class CreateBooking extends Component
 
     public function updated($propertyName)
     {
+        if ($propertyName === 'checkIn') {
+            // Adjust the checkOut date when checkIn changes
+            $this->adjustCheckOutDate();
+        }
 
-        if (in_array($propertyName, ['checkOut', 'totalChildren', 'totalGuests'])) {
+        if (in_array($propertyName, ['checkIn', 'checkOut', 'totalChildren', 'totalGuests'])) {
             $this->roomNumbers = $this->getAvailableRooms();
         }
 
-        if (in_array($propertyName, ['discountType'])) {
-
+        if ($propertyName === 'discountType') {
             $this->applyDiscount();
         }
     }
+
+    /**
+     * Adjust the checkOut date to maintain the same duration.
+     */
+    private function adjustCheckOutDate()
+    {
+        if ($this->checkIn) {
+            // Parse the checkIn date
+            $checkInDate = Carbon::parse($this->checkIn);
+
+            // Adjust the checkOut date to be one day after the new checkIn date
+            $this->checkOut = $checkInDate->addDay()->toDateString();
+        }
+    }
+
+
     public function addSubGuest()
     {
         // Validation rules

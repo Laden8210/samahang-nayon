@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('subguest', function (Blueprint $table) {
-        //     $table->dropColumn('EmailAddress');
-        // });
+        Schema::table('payments', function (Blueprint $table) {
+            $table->longText('Attachment')->charset('binary')->nullable()->change();
+        });
     }
 
     /**
@@ -21,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+
     }
 };

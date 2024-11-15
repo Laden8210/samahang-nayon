@@ -22,6 +22,8 @@ use App\Models\SubGuest;
 use App\Models\Payment;
 use App\Mail\VerificationMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 
 class GuestAPIController extends Controller
 {
@@ -448,10 +450,12 @@ class GuestAPIController extends Controller
             }
         }
 
+        if ($validatedData['payment_option'] == 'pay later'){
+
+        }
 
 
-
-        if ($validatedData['payment_option'] == 'partial') {
+        elseif ($validatedData['payment_option'] == 'partial') {
             $reservation->payments()->create([
                 'GuestId' => $guest->GuestId,
                 'AmountPaid' => $partialPaymentAmount ?? 0,
@@ -487,7 +491,7 @@ class GuestAPIController extends Controller
                                 'amount' => (int)($partialPaymentAmount * 100),
 
                                 'description' => 'Room Reservation Partial Payment',
-                                'name' => $reservation->Room->RoomType,
+                                'name' => $reservation->roomNumber->room->RoomType,
                                 'quantity' => 1
                             ],
 
@@ -1053,6 +1057,66 @@ class GuestAPIController extends Controller
         }
 
         return response()->json(['message' => 'Unauthorized access.'], 401);
+    }
+
+    public function getPaymentHistory(Request $request)
+    {
+        $guest = Auth::guard('api')->user();
+
+        $request->validate([
+            'ReservationId' => 'required|string'
+        ]);
+
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized Access.'], 200);
+        }
+
+        $payments = Payment::where('GuestId', $guest->GuestId)->where('ReservationId', $request->ReservationId)->get();
+
+        return response()->json($payments);
+    }
+
+
+    public function uploadProofPayment(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|integer|exists:reservations,id',
+            'proof_image' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+
+            $proofImageBase64 = $request->input('proof_image');
+
+            $payment = Payment::where('PaymentId', $request->input('payment_id'))->first();
+
+            if ($payment) {
+                $payment->Attachment = $proofImageBase64;
+                $payment->save();
+
+                return response()->json([
+                    'message' => 'Proof of payment uploaded successfully!',
+                    'PaymentId' => $payment->PaymentId,
+                    'Attachment' => $payment->Attachment
+                ], 200);
+            } else {
+
+                return response()->json(['message' => 'Payment record not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while uploading the proof of payment.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

@@ -24,6 +24,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('create-reservation', [GuestAPIController::class, 'createReservation']);
     Route::get('user/users', [GuestAPIController::class, 'getAllUser']);
     Route::post('verify-login', [GuestAPIController::class, 'verifyLogin']);
+
+    Route::post('paymentHistory', [GuestAPIController::class, 'getPaymentHistory']);
+    Route::post('uploadProofPayment', [GuestAPIController::class, 'uploadProofPayment']);
 });
 
 Route::post('amenities', [GuestAPIController::class, 'getAmenities']);
