@@ -328,12 +328,13 @@
                                            rel="noopener noreferrer">
                                             <img src="data:image/jpeg;base64,{{ base64_encode($payment->Attachment) }}"
                                                  alt="Proof of Payment"
-                                                 class="w-16 h-16 object-cover mx-auto rounded shadow-md">
+                                                 class="w-auto h-16 mx-auto rounded shadow-md">
                                         </a>
                                     @else
                                         <span class="text-gray-500 italic">No Attachment</span>
                                     @endif
                                 </td>
+
 
 
                                 <td>
