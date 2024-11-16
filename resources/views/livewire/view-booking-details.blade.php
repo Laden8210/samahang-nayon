@@ -180,7 +180,7 @@
 
                 <div class="font-bold  text-xs">Penalty</div>
                 <div>
-                    ₱ {{$reservation->penalty}}</div>
+                    ₱ {{ $reservation->penalty }}</div>
 
 
                 <div class="font-bold  text-xs">Total Payment</div>
@@ -200,7 +200,7 @@
 
                 <div class="font-bold  text-xs">Balance</div>
                 <div>
-                    ₱{{ $reservation->TotalCost  + $reservation->penalty+ $totalAmenities - $totalPayment }}
+                    ₱{{ $reservation->TotalCost + $reservation->penalty + $totalAmenities - $totalPayment }}
                 </div>
 
             </div>
@@ -319,20 +319,25 @@
 
 
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
-                                <td class="px-2 py-3">{{$payment->Purpose}}</td>
+                                <td class="px-2 py-3">{{ $payment->Purpose }}</td>
                                 <td class="px-2 py-3"> ₱{{ $payment->AmountPaid }}</td>
                                 <td class="px-2 py-3">
                                     @if (!empty($payment->Attachment))
-                                        <a href="{{ $payment->Attachment }}" target="_blank">
-                                            <img src="{{ $payment->Attachment }}" alt="Proof of Payment" class="w-16 h-16 object-cover mx-auto rounded shadow-md">
+                                        <a href="data:image/jpeg;base64,{{ base64_encode($payment->Attachment) }}"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+                                            <img src="data:image/jpeg;base64,{{ base64_encode($payment->Attachment) }}"
+                                                 alt="Proof of Payment"
+                                                 class="w-16 h-16 object-cover mx-auto rounded shadow-md">
                                         </a>
                                     @else
                                         <span class="text-gray-500 italic">No Attachment</span>
                                     @endif
                                 </td>
 
+
                                 <td>
-                                    @if ( $payment->Status === 'Pending')
+                                    @if ($payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
                                             type="button"
                                             wire:click="confirmPayment({{ $payment->PaymentId }})">Confirm
@@ -370,7 +375,8 @@
                                 {{ ucwords(strtolower($guest->FirstName)) . ' ' . ($guest->MiddleName ? ucwords(strtolower($guest->MiddleName)) . ' ' : '') . ucwords(strtolower($guest->LastName)) }}
                             </td>
 
-                            <td class="px-2 py-3">{{ \Carbon\Carbon::parse($guest->Birthdate)->format('F d, Y') }}</td>
+                            <td class="px-2 py-3">{{ \Carbon\Carbon::parse($guest->Birthdate)->format('F d, Y') }}
+                            </td>
 
                             <td class="px-2 py-3">{{ $guest->Gender }}</td>
                             <td class="px-2 py-3">{{ $guest->ContactNumber }}</td>
@@ -469,8 +475,10 @@
             role="alert">
             <div
                 class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-800 dark:text-blue-200">
-                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
                 </svg>
                 <span class="sr-only">Warning icon</span>
             </div>

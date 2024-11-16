@@ -1079,10 +1079,9 @@ class GuestAPIController extends Controller
 
     public function uploadProofPayment(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'payment_id' => 'required|integer',
-            'proof_image' => 'required|string'
+            'payment_id' => 'required|integer|exists:payments,PaymentId',
+            'proof_image' => 'required|file|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -1093,22 +1092,19 @@ class GuestAPIController extends Controller
         }
 
         try {
-
-            $proofImageBase64 = $request->input('proof_image');
+            $fileData = file_get_contents($request->file('proof_image')->getRealPath());
 
             $payment = Payment::where('PaymentId', $request->input('payment_id'))->first();
 
             if ($payment) {
-                $payment->Attachment = $proofImageBase64;
+                $payment->Attachment = $fileData;
                 $payment->save();
 
                 return response()->json([
                     'message' => 'Proof of payment uploaded successfully!',
-                    'PaymentId' => $payment->PaymentId,
-                    'Attachment' => $payment->Attachment
+                    'PaymentId' => $payment->PaymentId
                 ], 200);
             } else {
-
                 return response()->json(['message' => 'Payment record not found'], 404);
             }
         } catch (\Exception $e) {
@@ -1118,5 +1114,7 @@ class GuestAPIController extends Controller
             ], 500);
         }
     }
+
+
 
 }
