@@ -1081,7 +1081,7 @@ class GuestAPIController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'payment_id' => 'required|integer|exists:reservations,id',
+            'payment_id' => 'required|integer',
             'proof_image' => 'required|string'
         ]);
 

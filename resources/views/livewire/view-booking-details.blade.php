@@ -293,7 +293,9 @@
                             <th class="px-2 py-3">Time</th>
                             <th class="px-2 py-3">Date</th>
                             <th class="px-2 py-3">Payment Method</th>
+                            <th class="px-2 py-3">Remark</th>
                             <th class="px-2 py-3">Amount</th>
+                            <th class="px-2 py-3">Attachment</th>
                             <th class="px-2 py-2">Action</th>
                         </tr>
                     </thead>
@@ -317,7 +319,18 @@
 
 
                                 <td class="px-2 py-3">{{ $payment->PaymentType }}</td>
+                                <td class="px-2 py-3">{{$payment->Purpose}}</td>
                                 <td class="px-2 py-3"> ₱{{ $payment->AmountPaid }}</td>
+                                <td class="px-2 py-3">
+                                    @if (!empty($payment->Attachment))
+                                        <a href="{{ $payment->Attachment }}" target="_blank">
+                                            <img src="{{ $payment->Attachment }}" alt="Proof of Payment" class="w-16 h-16 object-cover mx-auto rounded shadow-md">
+                                        </a>
+                                    @else
+                                        <span class="text-gray-500 italic">No Attachment</span>
+                                    @endif
+                                </td>
+
                                 <td>
                                     @if ( $payment->Status === 'Pending')
                                         <button class="bg-cyan-600 px-2 py-2 rounded text-white hover:bg-cyan-900"
