@@ -266,7 +266,7 @@ class ViewBookingDetails extends Component
 
         dd($remainingBalance);
 
-        if ($remainingBalance >= 0) {
+        if ($remainingBalance !== 0.0) {
             session()->flash('message', 'The customer has a remaining balance. Please settle the balance before proceeding');
             $this->payment = '';
             return;
