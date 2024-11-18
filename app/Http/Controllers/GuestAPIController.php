@@ -264,7 +264,7 @@ class GuestAPIController extends Controller
         ]);
 
         $guest = Guest::where('EmailAddress', $validatedData['emailaddress'])
-        ->orWhere('ContactNumber',  $validatedData['emailaddress'])->first();
+            ->orWhere('ContactNumber',  $validatedData['emailaddress'])->first();
 
         if (!$guest) {
             return response()->json(['error' => 'Guest not found'], 200);
@@ -313,7 +313,7 @@ class GuestAPIController extends Controller
             'amenities.*.price' => 'required_with:amenities|numeric',
             'amenities.*.quantity' => 'required_with:amenities|integer',
             'sub_guests' => 'nullable|array',
-            'payment_option' => 'required|string|in:full,partial',
+            'payment_option' => 'required|string|in:full,partial,pay_later',
             'total_adult' => 'required|integer',
             'total_children' => 'required|integer',
             'discountType' => 'nullable|string',
@@ -384,16 +384,16 @@ class GuestAPIController extends Controller
         ]);
 
         $message = "Thank you for choosing Samahang Nayon Hotel, {$guest->FirstName}!\n\n" .
-        "Your reservation has been created successfully with the following details:\n" .
-        "Room ID: {$validatedData['room_id']}\n" .
-        "Check-in Date: {$validatedData['check_in']}\n" .
-        "Check-out Date: {$validatedData['check_out']}\n" .
-        "Total Adults: {$validatedData['total_adult']}\n" .
-        "Total Children: {$validatedData['total_children']}\n" .
-        "Total Cost: {$totalCost}\n" .
-        "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
-        "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
-        "We look forward to welcoming you to Samahang Nayon Hotel!";
+            "Your reservation has been created successfully with the following details:\n" .
+            "Room ID: {$validatedData['room_id']}\n" .
+            "Check-in Date: {$validatedData['check_in']}\n" .
+            "Check-out Date: {$validatedData['check_out']}\n" .
+            "Total Adults: {$validatedData['total_adult']}\n" .
+            "Total Children: {$validatedData['total_children']}\n" .
+            "Total Cost: {$totalCost}\n" .
+            "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
+            "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
+            "We look forward to welcoming you to Samahang Nayon Hotel!";
 
 
 
@@ -450,12 +450,44 @@ class GuestAPIController extends Controller
             }
         }
 
-        if ($validatedData['payment_option'] == 'pay later'){
+        if ($validatedData['payment_option'] == 'pay_later') {
 
-        }
+            $notification = new Notification();
+            $notification->isForGuest = false;
+            $notification->Title = 'New Reservation';
+            $notification->Type = 'Reservation';
+            $notification->Message = 'A new reservation has been created for ' . $guest->FirstName . ' ' . $guest->LastName . '. Please confirm and proceed with the necessary actions.';
+            $notification->save();
 
+            SystemLog::create([
+                'log' => 'Reservation created successfully from IP: ' . FacadesRequest::ip() .
+                    ' for email: ' . $request->email .
+                    ' on ' . date('Y-m-d H:i:s'),
+                'action' => 'Create Reservation',
+                'date_created' => date('Y-m-d')
+            ]);
 
-        elseif ($validatedData['payment_option'] == 'partial') {
+            $guest = Guest::find($guest->GuestId);
+
+            // Prepare success message
+            $message = "Dear {$guest->FirstName},\n\n" .
+                "Your reservation has been successfully created. Please note that payment must be completed within 24 hours to secure your booking.\n\n" .
+                "Reservation Details:\n" .
+
+                "Amount Due: {$partialPaymentAmount}\n" .
+
+                "Date: " . now()->toDateString() . "\n" .
+                "Status: Pending Payment\n\n" .
+                "Thank you for choosing us. We look forward to serving you!";
+
+            // Send SMS notification
+            $response = Http::post('https://nasa-ph.com/api/send-sms', [
+                'phone_number' => $guest->ContactNumber,
+                'message' => $message
+            ]);
+
+            return response()->json($response->json());
+        } elseif ($validatedData['payment_option'] == 'partial') {
             $reservation->payments()->create([
                 'GuestId' => $guest->GuestId,
                 'AmountPaid' => $partialPaymentAmount ?? 0,
@@ -1114,7 +1146,126 @@ class GuestAPIController extends Controller
             ], 500);
         }
     }
+    public function addPayment(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            "reservation_id" => "required|exists:reservations,ReservationId",
+            "payment_option" => "required|in:full,down",
+        ]);
+
+
+        $guest = Auth::guard('api')->user();
+
+        if (!$guest) {
+            return response()->json(['message' => 'Unauthorized Access.'], 401);
+        }
+
+        $reservation = Reservation::where("ReservationId", $validatedData['reservation_id'])->first();
+
+        if (!$reservation) {
+            return response()->json(['message' => 'Reservation not found.'], 404);
+        }
+
+
+        $guestDetails = Guest::where("GuestId", $guest->GuestId)->first();
+
+        if (!$guestDetails) {
+            return response()->json(['message' => 'Guest details not found.'], 404);
+        }
 
 
 
+        if (!$reservation || !$guest) {
+            return response()->json(['error' => 'Invalid reservation or guest.'], 404);
+        }
+
+        // Payment configuration
+        $this->apiKey = 'c2tfdGVzdF80OE1nWVk3U0dLdDY5dkVQZnRnZGpmS286';
+
+        try {
+            if ($validatedData['payment_option'] === 'down') {
+                $partialPaymentAmount = $reservation->TotalCost * 0.30; // Example: 30% downpayment
+
+                $payment = $reservation->payments()->create([
+                    'GuestId' => $guest->GuestId,
+                    'AmountPaid' => $partialPaymentAmount,
+                    'DateCreated' => now()->toDateString(),
+                    'TimeCreated' => now()->toTimeString(),
+                    'Status' => 'Pending',
+                    'PaymentType' => 'Gcash',
+                    'ReferenceNumber' => $this->generateReferenceNumber(),
+                    'Purpose' => "Room Reservation Down Payment",
+                ]);
+
+                $response = $this->createCheckoutSession($payment, $guest, $partialPaymentAmount, "Room Reservation Partial Payment");
+            } else {
+                $totalCost = $reservation->TotalCost;
+                $payment = $reservation->payments()->create([
+                    'GuestId' => $guest->GuestId,
+                    'AmountPaid' => $totalCost,
+                    'DateCreated' => now()->toDateString(),
+                    'TimeCreated' => now()->toTimeString(),
+                    'Status' => 'Pending',
+                    'PaymentType' => 'Gcash',
+                    'ReferenceNumber' => $this->generateReferenceNumber(),
+                    'Purpose' => "Room Reservation Full Payment",
+                ]);
+
+                $response = $this->createCheckoutSession($payment, $guest, $totalCost, "Room Reservation Full Payment");
+            }
+
+            if ($response->successful()) {
+                return response()->json($response->json(), 200);
+            } else {
+                return response()->json([
+                    'error' => $response->body(),
+                    'status' => $response->status()
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function createCheckoutSession($payment, $guest, $amount, $description)
+    {
+        $reservation = $payment->reservation;
+        $data = [
+            'data' => [
+                'attributes' => [
+                    'cancel_url' => url('/cancel/' . $payment->ReferenceNumber),
+                    'success_url' => url('/success/' . $payment->ReferenceNumber),
+                    'billing' => [
+                        'name' => $guest->FirstName . ' ' . $guest->LastName,
+                        'email' => $guest->EmailAddress,
+                        'phone' => $guest->ContactNumber,
+                    ],
+                    'send_email_receipt' => true,
+                    'show_description' => true,
+                    'show_line_items' => true,
+                    'description' => $description,
+                    'line_items' => [
+                        [
+                            'currency' => 'PHP',
+                            'amount' => (int)($amount * 100),
+                            'description' => $description,
+                            'name' => $reservation->roomNumber->room->RoomType,
+                            'quantity' => 1,
+                        ],
+                    ],
+                    'payment_method_types' => ['gcash'],
+                    'reference_number' => $payment->ReferenceNumber,
+                ]
+            ]
+        ];
+
+        return Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Authorization' => 'Basic ' . $this->apiKey,
+        ])->post('https://api.paymongo.com/v1/checkout_sessions', $data);
+    }
 }

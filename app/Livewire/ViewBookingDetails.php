@@ -221,10 +221,23 @@ class ViewBookingDetails extends Component
         $currentDate = now()->toDateString();
         $currentTime = now()->format('H:i');
 
-        if ($currentTime < '14:00') {
-            session()->flash('message', 'Check-in is only allowed after 2:00 PM.');
+
+
+        if ($this->reservation->payments->isEmpty()) {
+            session()->flash('message', 'No payment has been made. Please ensure the balance is settled before check-in.');
+            $this->payment = '';
             return;
         }
+
+        foreach ($this->reservation->payments as $payment) {
+            if ($payment->Status === 'Pending') {
+                session()->flash('message', 'The customer has a pending balance that must be settled before check-in.');
+                $this->payment = '';
+                return;
+            }
+        }
+
+
 
         $this->reservation->Status = 'Checked In';
         $this->reservation->save();
@@ -252,7 +265,7 @@ class ViewBookingDetails extends Component
         }
 
         if ($remainingBalance !== 0) {
-            session()->flash('message', 'Checkout unsuccessful: Payments do not match the remaining balance. Please settle the balance before proceeding.');
+            session()->flash('message', 'The customer has a remaining balance. Please settle the balance before proceeding');
             $this->payment = '';
             return;
         }

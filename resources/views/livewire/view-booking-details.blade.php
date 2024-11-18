@@ -34,9 +34,11 @@
                     Additional guest</button>
 
 
-                <a href="{{ route('printReceipt', $reservation->ReservationId) }}" target="_blank"
-                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Print
-                    Receipt</a>
+                    <a href="{{ route('printTransaction', ['reservation_id' => $reservation->ReservationId]) }}" target="_blank"
+                        class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">
+                        Print Receipt
+                    </a>
+
 
                 {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
                         class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">Generate Receipt</a>

@@ -18,10 +18,9 @@ class ReceiptController extends Controller
 {
     public function index(Request $request)
     {
-        // Retrieve the payment record based on the reference number
+
         $payment = Payment::where('ReferenceNumber', $request->view)->first();
 
-        // Generate the PDF using the payment details
         if ($payment != null) {
             $amountInWords = $this->convertNumberToWords($payment->AmountPaid);
             $pdf = Pdf::loadView('receipt.index', compact('payment', 'amountInWords'));
@@ -30,6 +29,21 @@ class ReceiptController extends Controller
         }
 
         return redirect()->route('index');
+    }
+
+
+    public function printTotalTransaction(Request $request){
+
+        $request->validate([
+            "reservation_id" => 'required'
+        ]);
+
+        $reservation = Reservation::where("ReservationId", $request->reservation_id)->first();
+
+        $customPaper = [0, 0, 65 * 2.83465, 200 * 2.83465];
+
+        $pdf = Pdf::loadView("receipt.transaction", compact('reservation'));
+        return $pdf->stream($reservation->ReservationId.'.pdf' );
     }
 
     function convertNumberToWords($number)

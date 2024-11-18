@@ -369,19 +369,28 @@ class CreateBooking extends Component
         } else {
             $reservation->DiscountType =   $this->discountType;
         }
-
+        $minPayment = 0.3 * ($this->discountedRoomRate + $totalAmenities);
+        $totalPayment = $this->discountedRoomRate + $totalAmenities;
 
         if ($this->paymentAmount == 0) {
             session()->flash('message', 'Please enter the payment amount');
             return;
         }
 
-
-
-        if($this->paymentAmount != ($this->discountedRoomRate + $totalAmenities)){
-            session()->flash('message', 'Payment amount does not match the total amount'. $this->paymentAmount . ' ' . $this->discountedRoomRate + $totalAmenities);
+        if ($this->paymentAmount < $minPayment || $this->paymentAmount > $totalPayment) {
+            session()->flash('message', 'Payment amount must be at least 30% (' . number_format($minPayment, 2) . ') or the full payment (' . number_format($totalPayment, 2) . ').');
             return;
         }
+
+
+        if ($this->paymentAmount == $totalPayment) {
+            $reservation->Status = 'Booked';
+        } else {
+            $reservation->Status = 'Reserved';
+        }
+
+
+
 
 
         $purpose = "";

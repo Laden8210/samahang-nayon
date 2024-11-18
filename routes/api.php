@@ -60,3 +60,5 @@ Route::post('user/updatePassword', [GuestAPIController::class, 'updatePassword']
 
 
 Route::post('getPaymentInformation', [GuestAPIController::class, 'getPaymentInformation']);
+
+Route::post('addPayment', [GuestAPIController::class, 'addPayment']);

@@ -114,3 +114,5 @@ Route::get('failed/{reference}', [ReceiptController::class, 'failed'])->name('fa
 
 
 Route::get('/verify-user', [LoginController::class, 'verifyUser'])->name('verify.user');
+
+Route::get('printTransaction',[ReceiptController::class, "printTotalTransaction"])->name("printTransaction");
