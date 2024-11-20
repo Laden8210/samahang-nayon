@@ -1,14 +1,29 @@
 <div class="bg-gray-50 rounded">
     <h5 class="mx-2 font-bold px-2 pt-2">Search</h5>
-    <div class="relative mb-4 w-1/3 mx-3">
+    <div class="w-full md:w-1/3 grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <!-- Search Input -->
+        <div class="relative mb-4">
+            <input type="text" wire:model.live.debounce.300ms="search"
+                class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 w-full rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Search . . . ">
+            <span class="absolute inset-y-0 right-3 flex items-center">
+                <i class="fas fa-search text-gray-400"></i>
+            </span>
+        </div>
 
-        <input type="text" wire:model.live.debounce.300ms = "search"
-            class="bg-gray-100 text-gray-900 placeholder-gray-400 px-2 py-1  w-full outline-none focus:outline-none"
-            placeholder="Search . . . ">
-        <span class="absolute inset-y-0 right-0 flex items-center pr-3">
-            <i class="fas fa-search text-gray-400"></i>
-        </span>
+        <!-- Status Dropdown -->
+        <div class="mb-4">
+            <select wire:model.live="status"
+                class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 w-full rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">View all</option>
+                @foreach ($statuses as $status)
+                    <option value="{{$status->Status}}">{{$status->Status}}</option>
+                @endforeach
+
+            </select>
+        </div>
     </div>
+
 
     <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
         <table class="w-full h-full">
@@ -70,6 +85,11 @@
                                 <span
                                     class="bg-red-200 text-red-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
                             @endif
+
+                            @if ($booking->Status == 'Unconfirmed Reservation')
+                            <span
+                                class="bg-violet-200 text-white-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                        @endif
                             @if ($booking->Status == 'No Show')
                                 <span
                                     class="bg-gray-200 text-gray-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
