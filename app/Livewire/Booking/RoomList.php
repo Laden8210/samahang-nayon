@@ -11,18 +11,28 @@ use Carbon\Carbon;
 
 class RoomList extends Component
 {
+
+    public $date;
+
+
+
+    public function mount()
+    {
+
+        $this->date = Carbon::today()->format('Y-m-d');
+    }
     public function render()
     {
-        // Fetch all room numbers
+
+
+
         $roomNumbers = RoomNumber::all();
 
-        // Get the current date using Carbon
-        $currentDate = Carbon::today();
 
-        // Find the current promotion that is active
-        $promotion = Promotion::where('StartDate', '<=', $currentDate)
-                                ->where('EndDate', '>=', $currentDate)
-                                ->first();
+        $promotion = Promotion::where('StartDate', '<=', $this->date)
+                              ->where('EndDate', '>=',$this->date)
+                              ->with('discountedRooms')
+                              ->first();
 
 
         if ($promotion && $promotion->discountedRooms) {
@@ -36,8 +46,8 @@ class RoomList extends Component
         }
 
 
-        $reservation = Reservation::where('DateCheckIn', '<=', $currentDate)
-                                    ->where('DateCheckOut', '>=', $currentDate)
+        $reservation = Reservation::where('DateCheckIn', '<=', $this->date)
+                                    ->where('DateCheckOut', '>=', $this->date)
                                     ->get();
 
         foreach ($roomNumbers as $roomNumber) {
@@ -48,6 +58,7 @@ class RoomList extends Component
                 }
             }
         }
+
         return view('livewire.booking.room-list', [
             'roomNumbers' => $roomNumbers
         ]);

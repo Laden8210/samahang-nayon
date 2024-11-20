@@ -1,4 +1,13 @@
 <div class="space-y-4 mt-1">
+
+    <div class="w-1/2">
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Date</label>
+        <input name="date" placeholder="Select Date" type="date"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-50"
+            wire:model.live="date" />
+    </div>
+
+
     <div class="grid grid-cols-10 gap-2">
         @for ($i = 0; $i < 3; $i++)
             @for ($x = 0; $x < 10; $x++)
@@ -104,5 +113,9 @@
                 </div>
             @endfor
         @endfor
+    </div>
+
+    <div wire:loading>
+        <x-loader />
     </div>
 </div>
