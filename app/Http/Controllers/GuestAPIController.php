@@ -370,7 +370,12 @@ class GuestAPIController extends Controller
             'room_number_id' => $validatedData['room_number_id'],
             'DateCheckIn' => $validatedData['check_in'],
             'DateCheckOut' => $validatedData['check_out'],
-            'Status' => $validatedData['payment_option'] == 'partial' ? 'Reserved' : 'Booked',
+            'Status' => $validatedData['payment_option'] == 'partial'
+                ? 'Reserved'
+                : ($validatedData['payment_option'] == 'pay_later'
+                    ? 'Unconfirmed Reservation'
+                    : 'Booked'),
+
             'TotalCost' => $totalCost,
             'DateCreated' => now()->toDateString(),
             'TimeCreated' => now()->toTimeString(),
@@ -383,17 +388,33 @@ class GuestAPIController extends Controller
             'IdNumber' => $validatedData['id_number'] ?? null
         ]);
 
-        $message = "Thank you for choosing Samahang Nayon Hotel, {$guest->FirstName}!\n\n" .
-            "Your reservation has been created successfully with the following details:\n" .
-            "Room ID: {$validatedData['room_id']}\n" .
-            "Check-in Date: {$validatedData['check_in']}\n" .
-            "Check-out Date: {$validatedData['check_out']}\n" .
-            "Total Adults: {$validatedData['total_adult']}\n" .
-            "Total Children: {$validatedData['total_children']}\n" .
-            "Total Cost: {$totalCost}\n" .
-            "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
-            "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
-            "We look forward to welcoming you to Samahang Nayon Hotel!";
+        if ($validatedData['payment_option'] == 'pay_later') {
+            $message = "Thank you for choosing Samahang Nayon Hotel, {$guest->FirstName}!\n\n" .
+                "Your reservation has been created successfully with the following details:\n" .
+                "Room ID: {$validatedData['room_id']}\n" .
+                "Check-in Date: {$validatedData['check_in']}\n" .
+                "Check-out Date: {$validatedData['check_out']}\n" .
+                "Total Adults: {$validatedData['total_adult']}\n" .
+                "Total Children: {$validatedData['total_children']}\n" .
+                "Total Cost: {$totalCost}\n" .
+                "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
+                "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
+                "Your reservation is currently marked as 'Pay Later'. Please ensure payment is completed before check-in to confirm your booking.\n\n" .
+                "We look forward to welcoming you to Samahang Nayon Hotel!";
+        } else {
+            $message = "Thank you for choosing Samahang Nayon Hotel, {$guest->FirstName}!\n\n" .
+                "Your reservation has been created successfully with the following details:\n" .
+                "Room ID: {$validatedData['room_id']}\n" .
+                "Check-in Date: {$validatedData['check_in']}\n" .
+                "Check-out Date: {$validatedData['check_out']}\n" .
+                "Total Adults: {$validatedData['total_adult']}\n" .
+                "Total Children: {$validatedData['total_children']}\n" .
+                "Total Cost: {$totalCost}\n" .
+                "Original Cost: " . ($room->RoomPrice * $lengthOfStay) . "\n" .
+                "Discount Applied: " . ($validatedData['discountType'] != '' ? 10 : ($promotion->Discount ?? 0)) . "\n\n" .
+                "We look forward to welcoming you to Samahang Nayon Hotel!";
+        }
+
 
 
 
