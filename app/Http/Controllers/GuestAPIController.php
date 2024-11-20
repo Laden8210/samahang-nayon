@@ -691,7 +691,7 @@ class GuestAPIController extends Controller
         $reservations = Reservation::where('GuestId', $guest->GuestId)
             ->when($status, function ($query, $status) {
                 if (in_array($status, ['Booked', 'Reserved'])) {
-                    return $query->whereIn('Status', ['Booked', 'Reserved']);
+                    return $query->whereIn('Status', ['Booked', 'Reserved', 'Unconfirmed Reservation']);
                 }
                 return $query->where('Status', $status);
             })
