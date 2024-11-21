@@ -40,12 +40,8 @@ class CreateUser extends Component
 
     public $isLoaderShown = false;
 
-
-
     public function createUser()
     {
-
-
         $this->validate(
             [
                 'firstname' => [
@@ -71,7 +67,7 @@ class CreateUser extends Component
                     'string',
                     'max:12',
                     'regex:/^(?:\+63|0)9\d{9}$/',
-                    'unique:employees,ContactNumber', // Ensure unique contact number
+                    'unique:employees,ContactNumber',
                 ],
                 'email' => 'required|email|unique:employees,email',
                 'street' => 'required|string|max:255',
@@ -84,17 +80,12 @@ class CreateUser extends Component
             ]
         );
 
-
-
         $birthdate = new \DateTime($this->dob);
         $month = $birthdate->format('m');
         $day = $birthdate->format('d');
         $year = $birthdate->format('Y');
 
         $defaultPassword = Str::lower($this->lastname) . $month . $day . $year;
-
-
-
 
         $province = "";
         $city = "";
@@ -106,23 +97,18 @@ class CreateUser extends Component
                 break;
             }
         }
-
         foreach ($this->apiCity as $cit) {
             if ($cit['code'] == $this->selectedCity) {
                 $city = $cit['name'];
                 break;
             }
         }
-
         foreach ($this->apiBrgy as $b) {
             if ($b['code'] == $this->selectedBrgy) {
                 $brgy = $b['name'];
                 break;
             }
         }
-
-
-
 
         $employee = Employee::create([
             'FirstName' => $this->firstname,
@@ -152,47 +138,36 @@ class CreateUser extends Component
         session()->flash('message', 'User created successfully!');
         $this->isLoaderShown = false;
         $this->reset();
-
     }
-
-
     public function fetchRegions()
     {
         $this->apiProvince = collect(Http::get('https://psgc.gitlab.io/api/provinces/')->json())
-            ->sortBy('name') // assuming 'name' is the key for the region name
+            ->sortBy('name')
             ->values()
             ->toArray();
     }
-
-
     public function fetchCities()
     {
         if ($this->selectedProvince) {
             $this->apiCity = collect(Http::get("https://psgc.gitlab.io/api/provinces/{$this->selectedProvince}/cities-municipalities/")->json())
-                ->sortBy('name') // assuming 'name' is the key for the city name
+                ->sortBy('name')
                 ->values()
                 ->toArray();
         } else {
             $this->apiCity = [];
         }
     }
-
-
     public function fetchBarangays()
     {
         if ($this->selectedCity) {
             $this->apiBrgy = collect(Http::get("https://psgc.gitlab.io/api/cities-municipalities/{$this->selectedCity}/barangays/")->json())
-                ->sortBy('name') // assuming 'name' is the key for the barangay name
+                ->sortBy('name')
                 ->values()
                 ->toArray();
         } else {
             $this->apiBrgy = [];
         }
     }
-
-
-
-
     public function render()
     {
         $this->fetchRegions();

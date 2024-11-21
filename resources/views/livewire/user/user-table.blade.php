@@ -210,19 +210,9 @@
             </div>
         </div>
     @endif
-
-
     @if (session()->has('message'))
         <x-modal.success-message-modal message="{{ session('message') }}" />
     @endif
-
-
-
-
-
-
-
-
     <div wire:loading>
         <x-loader />
     </div>

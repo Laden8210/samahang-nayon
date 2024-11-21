@@ -24,7 +24,6 @@ class UserTable extends Component
         $this->resetPage();
     }
 
-
     public function render()
     {
         $current_user = Auth::user()->EmployeeId;
@@ -56,7 +55,6 @@ class UserTable extends Component
         $this->deleteUserModal = true;
 
     }
-
 
     public function viewUser($id)
     {

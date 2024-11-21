@@ -1,8 +1,6 @@
 <div>
-
     <form wire:submit.prevent="createUser">
         @csrf
-
         <div class="flex justify-between ">
 
             <div class="p-2 bg-white rounded w-full shadow mx-2">
@@ -54,8 +52,6 @@
                     </div>
 
                 </div>
-
-
                 <div class="grid grid-cols-3 p-2 w-full">
 
                     <div class=" mx-2">
@@ -69,7 +65,6 @@
                         @enderror
 
                     </div>
-
                     <div class="mx-2">
 
                         <x-text-field1 name="email" placeholder="Enter Email Address" model="email"
@@ -81,8 +76,6 @@
                         @enderror
 
                     </div>
-
-
                     <div class="mx-2">
                         <label
                             class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
@@ -99,8 +92,6 @@
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
-
-
                     <div class="mx-2">
                         <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">City</label>
                         <select wire:model="selectedCity" wire:change="fetchBarangays"
@@ -143,13 +134,7 @@
                         @enderror
 
                     </div>
-
                 </div>
-
-
-
-
-
                 <div class="grid grid-cols-3 p-2 w-full">
                     <div class="mx-2">
 
@@ -162,9 +147,6 @@
                         @enderror
 
                     </div>
-
-
-
                     <div class=" mx-2">
                         <x-combobox name="gender" model="gender" placeholder="Select Gender" :options="['Male', 'Female']" />
 
@@ -174,7 +156,6 @@
                             </p>
                         @enderror
                     </div>
-
                     <div class=" mx-2">
                         <x-combobox name="position" model="position" placeholder="Select Position" :options="['System Administrator', 'Manager', 'Receptionist']" />
 
@@ -184,37 +165,25 @@
                             </p>
                         @enderror
                     </div>
-
-
                 </div>
-
                 <div class="flex items-end justify-end mx-2 mt-5">
                     <div class="flex gap-2">
                         <a href="{{ route('user') }}" class="bg-red-400 font-medium text-white px-2 py-1 rounded">
                             Cancel
                         </a>
-                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded"
-                        x-data  x-on:click="$dispatch('open-loader', {name: 'delete-modal'})">
+                        <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded" x-data
+                            x-on:click="$dispatch('open-loader', {name: 'delete-modal'})">
                             Create
                         </button>
                     </div>
                 </div>
             </div>
-
-
-
             @if (session()->has('message'))
                 <x-success-message-modal message="{{ session('message') }}" />
             @endif
-
-
     </form>
-
     <div wire:loading>
         <x-loader />
 
     </div>
-
-
-
 </div>

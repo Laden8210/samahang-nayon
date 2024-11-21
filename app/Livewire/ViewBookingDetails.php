@@ -53,6 +53,10 @@ class ViewBookingDetails extends Component
         }
 
 
+        if($this->reservation->Status == 'Unconfirmed Reservation' && $this->reservation->DateCheckIn->greaterThan(now())){
+            $this->reservation->Status == 'Cancelled';
+            $this->reservation->save();
+        }
 
         $this->payment = $remainingBalance;
 

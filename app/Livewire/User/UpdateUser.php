@@ -23,19 +23,13 @@ class UpdateUser extends Component
     public $gender;
     public $position;
     public $brgy;
-
     public $userId;
-
-
     public $apiProvince = [];
     public $apiCity = [];
     public $apiBrgy = [];
     public $selectedProvince = null;
     public $selectedCity = null;
-
     public $selectedBrgy = null;
-
-
     public function render()
     {
 
@@ -58,9 +52,6 @@ class UpdateUser extends Component
         $this->lastname = $user->LastName;
         $this->contactNumber = $user->ContactNumber;
         $this->email = htmlentities($user->email, ENT_QUOTES, 'UTF-8');
-
-
-
         $this->street = $user->Street;
         $this->city = $user->City;
         $this->province = $user->Province;
@@ -131,9 +122,6 @@ class UpdateUser extends Component
         ]);
 
         session()->flash('message', 'User updated successfully!');
-
-
-
         $this->reset();
         redirect()->route('user');
     }
