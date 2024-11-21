@@ -699,8 +699,16 @@ class GuestAPIController extends Controller
             ->orderBy('DateCheckIn', 'desc')
             ->get();
 
+        // Ensure UTF-8 encoding and avoid invalid characters
+        $reservations = $reservations->map(function ($reservation) {
+            return array_map(function ($value) {
+                return is_string($value) ? utf8_encode($value) : $value;
+            }, $reservation->toArray());
+        });
+
         return response()->json($reservations);
     }
+
 
 
     public function cancelReservation(Request $request)
