@@ -678,7 +678,6 @@ class GuestAPIController extends Controller
             }
         }
     }
-
     public function getReservation(Request $request)
     {
         $guest = Auth::guard('api')->user();
@@ -699,15 +698,19 @@ class GuestAPIController extends Controller
             ->orderBy('DateCheckIn', 'desc')
             ->get();
 
-        // Ensure UTF-8 encoding and avoid invalid characters
+        // Convert the collection to array and recursively encode strings to UTF-8
         $reservations = $reservations->map(function ($reservation) {
             return array_map(function ($value) {
-                return is_string($value) ? utf8_encode($value) : $value;
+                if (is_string($value)) {
+                    return mb_convert_encoding($value, 'UTF-8', 'auto');
+                }
+                return $value;
             }, $reservation->toArray());
         });
 
         return response()->json($reservations);
     }
+
 
 
 
