@@ -54,7 +54,7 @@ class ViewBookingDetails extends Component
 
         if (
             $this->reservation->Status == 'Unconfirmed Reservation' &&
-            Carbon::parse($this->reservation->DateCheckIn)->greaterThan(now())
+            Carbon::parse($this->reservation->DateCheckIn)->lessThan(now())
         ) {
             $this->reservation->Status = 'Cancelled';
             $this->reservation->save();
