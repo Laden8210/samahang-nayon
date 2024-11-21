@@ -52,9 +52,11 @@ class ViewBookingDetails extends Component
             }
         }
 
-
-        if($this->reservation->Status == 'Unconfirmed Reservation' && $this->reservation->DateCheckIn->greaterThan(now())){
-            $this->reservation->Status == 'Cancelled';
+        if (
+            $this->reservation->Status == 'Unconfirmed Reservation' &&
+            Carbon::parse($this->reservation->DateCheckIn)->greaterThan(now())
+        ) {
+            $this->reservation->Status = 'Cancelled';
             $this->reservation->save();
         }
 
