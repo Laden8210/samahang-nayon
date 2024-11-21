@@ -708,7 +708,7 @@ class GuestAPIController extends Controller
             }, $reservation->toArray());
         });
 
-        return response()->json($reservations);
+        return $reservations;
     }
 
 
