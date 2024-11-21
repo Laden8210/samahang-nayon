@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Html;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Guest;
 use Illuminate\Support\Facades\Http;
+
 class ReceiptController extends Controller
 {
     public function index(Request $request)
@@ -32,7 +33,8 @@ class ReceiptController extends Controller
     }
 
 
-    public function printTotalTransaction(Request $request){
+    public function printTotalTransaction(Request $request)
+    {
 
         $request->validate([
             "reservation_id" => 'required'
@@ -43,7 +45,7 @@ class ReceiptController extends Controller
         $customPaper = [0, 0, 65 * 2.83465, 200 * 2.83465];
 
         $pdf = Pdf::loadView("receipt.transaction", compact('reservation'));
-        return $pdf->stream($reservation->ReservationId.'.pdf' );
+        return $pdf->stream($reservation->ReservationId . '.pdf');
     }
 
     function convertNumberToWords($number)
@@ -138,20 +140,20 @@ class ReceiptController extends Controller
 
         $sheet->setCellValue('B18', $reservation->roomNumber->room->RoomType);
         $sheet->setCellValue('G18', $lenghtOfStay);
-        $sheet->setCellValue('K18', "₱".$reservation->roomNumber->room->RoomPrice);
-        $sheet->setCellValue('P18', "₱".$reservation->roomNumber->room->RoomPrice * $lenghtOfStay);
+        $sheet->setCellValue('K18', "₱" . $reservation->roomNumber->room->RoomPrice);
+        $sheet->setCellValue('P18', "₱" . $reservation->roomNumber->room->RoomPrice * $lenghtOfStay);
 
         foreach ($reservation->reservationAmenities as $reservationAmenity) {
 
             $sheet->setCellValue("B$amenityRow", $reservationAmenity->amenity->Name);
             $sheet->setCellValue("G$amenityRow", $reservationAmenity->Quantity);
-            $sheet->setCellValue("k$amenityRow", "₱".$reservationAmenity->amenity->Price);
-            $sheet->setCellValue("p$amenityRow", "₱".$reservationAmenity->TotalCost);
+            $sheet->setCellValue("k$amenityRow", "₱" . $reservationAmenity->amenity->Price);
+            $sheet->setCellValue("p$amenityRow", "₱" . $reservationAmenity->TotalCost);
 
             $amenityRow++;
         }
 
-        foreach($reservation->payments as $payment){
+        foreach ($reservation->payments as $payment) {
             $totalPayment += $payment->AmountPaid;
         }
 
@@ -159,8 +161,8 @@ class ReceiptController extends Controller
         $amountInWords = $this->convertNumberToWords($payment->AmountPaid);
 
         $sheet->setCellValue('O7',  Carbon::now()->toDateString());
-        $sheet->setCellValue('f8',  "with address at ". $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
-        $sheet->setCellValue('f7', "                 ". $reservation->guest->FirstName . ' ' . $reservation->guest->LastName);
+        $sheet->setCellValue('f8',  "with address at " . $reservation->guest->Street . ', ' . $reservation->guest->Brgy . ', ' . $reservation->guest->City . ', ' . $reservation->guest->Province);
+        $sheet->setCellValue('f7', "                 " . $reservation->guest->FirstName . ' ' . $reservation->guest->LastName);
         $employee = Auth::user();
 
         $sheet->setCellValue('O14', $employee->FirstName . ' ' . $employee->LastName);
@@ -203,7 +205,7 @@ class ReceiptController extends Controller
         $reservation = Reservation::where("ReservationId", $payment->ReservationId)->first();
 
         $reservation->Status = "Booked";
-
+        $reservation->save();
         // Prepare success message
         $message = "Dear {$guest->FirstName},\n\n" .
             "Your payment has been confirmed successfully!\n" .
@@ -251,5 +253,4 @@ class ReceiptController extends Controller
 
         return view('receipt.failed', compact('reference'));
     }
-
 }
