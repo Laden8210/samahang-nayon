@@ -197,7 +197,12 @@ class ReceiptController extends Controller
     public function success($reference)
     {
         $payment = Payment::where('ReferenceNumber', $reference)->first();
-        $guest = Guest::find($payment->GuestId); // Assuming you can fetch the guest's details based on GuestId
+        $guest = Guest::find($payment->GuestId);
+
+
+        $reservation = Reservation::where("ReservationId", $payment->ReservationId)->first();
+
+        $reservation->Status = "Booked";
 
         // Prepare success message
         $message = "Dear {$guest->FirstName},\n\n" .
