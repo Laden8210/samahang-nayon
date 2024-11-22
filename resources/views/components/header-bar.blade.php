@@ -1,20 +1,20 @@
-<!-- Navigation Bar with Notification Bell -->
+
 <nav class="flex drop-shadow h-auto bg-white p-3 justify-end z-40 relative">
     <div class="grid grid-cols-2 gap-2 items-center px-2 my-1">
 
-        <!-- Notification Button with Unread Count -->
+
         <div class="relative">
             <button data-dropdown-toggle="notificationDropdown" class="rounded-full w-6 h-6 overflow-hidden align-middle items-center mx-1">
                 <i class="far fa-bell mx-1 text-slate-500"></i>
             </button>
 
-            <!-- Unread Count Badge -->
+
             @if ($unreadCount > 0)
                 <span class="absolute left-4 rounded-full bg-red-700 px-1.5 text-white font-semibold notification-count-badge"
                       style="font-size: 10px">{{ $unreadCount }}</span>
             @endif
 
-            <!-- Notifications Dropdown -->
+
             <div id="notificationDropdown"
                  class="z-50 absolute top-10 right-0 bg-white divide-y divide-gray-100 rounded-lg shadow-lg drop-shadow-sm w-64 p-2 dark:bg-gray-700 hidden">
                 @forelse ($notifications as $notification)

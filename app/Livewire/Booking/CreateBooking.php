@@ -484,7 +484,8 @@ class CreateBooking extends Component
                     'PaymentType' => $this->paymentType,
                     'ReferenceNumber' => $this->generateReferenceNumber(),
                     'Purpose' => $purpose,
-                ]);}
+                ]);
+            }
         }
 
 

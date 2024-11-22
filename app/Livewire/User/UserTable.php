@@ -8,6 +8,7 @@ use App\Models\PersonalInformation;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+
 class UserTable extends Component
 {
 
@@ -29,7 +30,7 @@ class UserTable extends Component
         $current_user = Auth::user()->EmployeeId;
         return view('livewire.user.user-table', [
             'employees' => Employee::search($this->search)
-            ->where('EmployeeId' , '!=' ,$current_user)->paginate(20)
+                ->where('EmployeeId', '!=', $current_user)->paginate(20)
         ]);
     }
 
@@ -45,15 +46,13 @@ class UserTable extends Component
                 'Status' => 'Active'
             ]);
         }
-        session()->flash('message', 'Successfully '.$user->Status.' successfully!');
-
+        session()->flash('message', 'Successfully ' . $user->Status . ' successfully!');
     }
 
     public function selectUser($id)
     {
         $this->user = Employee::where('EmployeeId', $id)->firstOrFail();
         $this->deleteUserModal = true;
-
     }
 
     public function viewUser($id)

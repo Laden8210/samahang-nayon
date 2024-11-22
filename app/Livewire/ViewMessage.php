@@ -19,12 +19,11 @@ class ViewMessage extends Component
         return view('livewire.view-message', [
             "guests" => Guest::whereHas('messages')
                 ->with(['messages' => function ($query) {
-                    $query->orderBy('DateSent', 'desc')->orderBy('TimeSent', 'desc'); // Sort by DateSent and TimeSent
+                    $query->orderBy('DateSent', 'desc')->orderBy('TimeSent', 'desc');
                 }])->search($this->search)
                 ->get(),
         ]);
     }
-
 
     public function selectGuest($id)
     {
@@ -37,9 +36,10 @@ class ViewMessage extends Component
         }
     }
 
-    public function sendMessage(){
+    public function sendMessage()
+    {
 
-        if($this->selectedGuest == null){
+        if ($this->selectedGuest == null) {
             return;
         }
         $message = new Message();
@@ -55,6 +55,4 @@ class ViewMessage extends Component
 
         $this->message = "";
     }
-
-
 }

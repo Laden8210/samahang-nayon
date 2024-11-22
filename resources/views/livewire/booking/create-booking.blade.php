@@ -473,9 +473,6 @@
         <x-success-message-modal message="{{ session('message') }}" />
     @endif
 
-
-
-
     <x-modal title="Select Amenities" name="select-amenities-modal">
         @slot('body')
             <div class="my-2" wire:ignore.self>

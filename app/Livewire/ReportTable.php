@@ -27,9 +27,6 @@ class ReportTable extends Component
             'guests' => Guest::orderBy('FirstName')->orderBy('LastName')->get()
         ]);
     }
-
-
-
     public function createReport()
     {
         if ($this->type === 'Daily Revenue Report') {
@@ -47,17 +44,15 @@ class ReportTable extends Component
                 'type' => 'required|string',
                 'startdate' => 'required|date|before_or_equal:today',
             ]);
-        } else if($this->type === 'Guest History Report') {
+        } else if ($this->type === 'Guest History Report') {
 
 
-                $this->validate([
-                    'type' => 'required|string',
-                    'startdate' => 'required|date',
-                    'enddate' => 'nullable|date|before_or_equal:today|after:startdate',
-                ]);
-
-
-        }else {
+            $this->validate([
+                'type' => 'required|string',
+                'startdate' => 'required|date',
+                'enddate' => 'nullable|date|before_or_equal:today|after:startdate',
+            ]);
+        } else {
             $this->validate([
                 'type' => 'required|string',
                 'startdate' => 'required|date',

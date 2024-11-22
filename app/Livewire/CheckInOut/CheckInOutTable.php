@@ -16,9 +16,9 @@ class CheckInOutTable extends Component
         return view('livewire.check-in-out.check-in-out-table', [
             'checkInOuts' => CheckInOut::with('reservation', 'guest')
             ->search($this->search)
-                ->where('Type', 'Checked In') // Filter only check-ins
-                ->orderBy('DateCreated', 'desc') // Sort by latest date
-                ->orderBy('TimeCreated', 'desc') // Then by latest time
+                ->where('Type', 'Checked In')
+                ->orderBy('DateCreated', 'desc')
+                ->orderBy('TimeCreated', 'desc')
                 ->paginate(10)
         ]);
     }

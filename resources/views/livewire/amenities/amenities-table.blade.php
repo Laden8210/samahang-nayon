@@ -57,14 +57,13 @@
                 </thead>
                 <tbody>
                     @foreach ($amenities as $amenity)
-                    <tr class="bg-white border-b text-xs text-center">
+                        <tr class="bg-white border-b text-xs text-center">
 
                             <td class="px-2 py-3">{{ $amenity->Name }}</td>
                             <td class="px-2 py-3">
                                 ₱{{ $amenity->Price }}</td>
                             <td class="py-3 px-2 flex justify-center">
-                                <button x-data
-                                    x-on:click="$dispatch('open-modal', {name: 'delete-modal'})"
+                                <button x-data x-on:click="$dispatch('open-modal', {name: 'delete-modal'})"
                                     wire:click="setAmenitiesId({{ $amenity->AmenitiesId }})"
                                     class=" block px-4 py-2 hover:rounded-full hover:bg-red-100 text-red-600"
                                     type="button">
@@ -77,8 +76,6 @@
                                 </button>
                             </td>
                         </tr>
-
-
                     @endforeach
                 </tbody>
             </table>
@@ -92,8 +89,8 @@
             <div class="p-4 md:p-5 text-center">
                 <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you
                     sure
@@ -102,9 +99,7 @@
                     class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                     Yes, I'm sure
                 </button>
-                <button
-                    x-on:click="$dispatch('close-modal', {name: 'delete-modal'})"
-                    type="button"
+                <button x-on:click="$dispatch('close-modal', {name: 'delete-modal'})" type="button"
                     class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
                     cancel</button>
             </div>
@@ -141,8 +136,6 @@
             </form>
         @endslot
     </x-modal>
-
-
 
     @if (session()->has('message'))
         <x-success-message-modal message="{{ session('message') }}" />

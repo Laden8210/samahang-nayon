@@ -68,21 +68,15 @@
                             <button wire:click.prevent="selectUser({{ $u->EmployeeId }})"
                                 class="block p-2 bg-red-600  hover:bg-red-500 text-white rounded"><i class="fa fa-trash"
                                     aria-hidden="true"></i></button>
-
-
                         </td>
                 @endforeach
             </tbody>
         </table>
-
-
-
     </div>
 
     <div class="flex items-center">
         {{ $employees->links('vendor.livewire.tailwind') }}
     </div>
-
 
     @if ($viewUserModal)
         <div class="fixed z-50 inset-0 flex items-center justify-center">

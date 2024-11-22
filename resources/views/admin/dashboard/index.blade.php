@@ -19,12 +19,12 @@
         </div>
 
         <div class="grid grid-cols-1 w-full h-96 bg-white p-4 mt-10 rounded shadow">
-            <!-- Adjusted canvas element -->
+
             <canvas id="myChart" class="w-full h-full"></canvas>
         </div>
     </div>
 
-    <!-- Include Chart.js from CDN -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>

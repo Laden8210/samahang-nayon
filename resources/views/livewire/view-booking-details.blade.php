@@ -5,9 +5,6 @@
                 <h1 class="text-2xl font-bold">Booking Details</h1>
             </div>
             <div class="flex justify-end gap-2">
-
-
-
                 @if ($reservation->Status == 'Checked In')
                     <button wire:click="checkOut"
                         class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">
@@ -34,10 +31,11 @@
                     Additional guest</button>
 
 
-                    <a href="{{ route('printTransaction', ['reservation_id' => $reservation->ReservationId]) }}" target="_blank"
-                        class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">
-                        Print Receipt
-                    </a>
+                <a href="{{ route('printTransaction', ['reservation_id' => $reservation->ReservationId]) }}"
+                    target="_blank"
+                    class="bg-green-800 text-white px-2 py-3 rounded-lg border hover:border-green-800 hover:text-slate-950 hover:bg-white">
+                    Print Receipt
+                </a>
 
 
                 {{-- <a //href="{{ route('receipt', ['view' => Crypt::encrypt($payment->ReferenceNumber)]) }}" target="_blank"
@@ -326,11 +324,9 @@
                                 <td class="px-2 py-3">
                                     @if (!empty($payment->Attachment))
                                         <a href="data:image/jpeg;base64,{{ base64_encode($payment->Attachment) }}"
-                                           target="_blank"
-                                           rel="noopener noreferrer">
+                                            target="_blank" rel="noopener noreferrer">
                                             <img src="data:image/jpeg;base64,{{ base64_encode($payment->Attachment) }}"
-                                                 alt="Proof of Payment"
-                                                 class="w-auto h-16 mx-auto rounded shadow-md">
+                                                alt="Proof of Payment" class="w-auto h-16 mx-auto rounded shadow-md">
                                         </a>
                                     @else
                                         <span class="text-gray-500 italic">No Attachment</span>

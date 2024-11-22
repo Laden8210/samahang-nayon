@@ -13,9 +13,6 @@
                 </button>
             </div>
         </div>
-
-
-
         <div class="flex justify-between ">
             <div class="p-2 bg-white h-fit rounded w-2/3 shadow mx-2">
 
@@ -25,13 +22,13 @@
 
                     <div class="w-1/2 mx-2">
                         <x-text-field1 name="roomType" placeholder="Room Name" model="roomType"
-                        label="Enter the room name" type="text" />
+                            label="Enter the room name" type="text" />
 
-                    @error('roomType')
-                        <p class="text-red-500 text-xs italic mt-1"><i
-                                class="fas fa-exclamation-circle"></i></i>{{ $message }}
-                        </p>
-                    @enderror
+                        @error('roomType')
+                            <p class="text-red-500 text-xs italic mt-1"><i
+                                    class="fas fa-exclamation-circle"></i></i>{{ $message }}
+                            </p>
+                        @enderror
 
                     </div>
 
@@ -148,7 +145,5 @@
         </div>
 
     </form>
-
-
 
 </div>

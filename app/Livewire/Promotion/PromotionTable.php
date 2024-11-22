@@ -44,8 +44,8 @@ class PromotionTable extends Component
         $this->validate([
             'promotionName' => 'required|unique:promotions,Promotion',
             'description' => 'required',
-            'discount' => 'required|numeric|max:50',  // Enforce max 50% discount
-           'startingDate' => 'required|date|after_or_equal:today',
+            'discount' => 'required|numeric|max:50',
+            'startingDate' => 'required|date|after_or_equal:today',
             'endDate' => 'required|date|after_or_equal:startingDate',
         ], [
             'promotionName.required' => 'The promotion name is required.',
@@ -65,7 +65,7 @@ class PromotionTable extends Component
         // Check for overlapping promotions
         $overlappingPromotion = Promotion::where(function ($query) {
             $query->whereBetween('StartDate', [$this->startingDate, $this->endDate])
-                  ->orWhereBetween('EndDate', [$this->startingDate, $this->endDate]);
+                ->orWhereBetween('EndDate', [$this->startingDate, $this->endDate]);
         })->first();
 
         if ($overlappingPromotion) {
@@ -99,7 +99,6 @@ class PromotionTable extends Component
         $this->selectedPromotion = Promotion::find($promotionId);
 
         if (!$this->selectedPromotion) {
-            // Handle case where promotion is not found
             session()->flash('error', 'Promotion not found.');
             return;
         }
@@ -145,8 +144,8 @@ class PromotionTable extends Component
         $this->validate([
             'promotionName' => 'required',
             'description' => 'required',
-          'discount' => 'required|numeric|max:50',
-          'startingDate' => 'required|date|after_or_equal:today',
+            'discount' => 'required|numeric|max:50',
+            'startingDate' => 'required|date|after_or_equal:today',
             'endDate' => 'required|date|after_or_equal:startingDate',
         ], [
             'promotionName.required' => 'The promotion name is required.',
@@ -170,22 +169,19 @@ class PromotionTable extends Component
             'EndDate' => $this->endDate,
         ]);
 
-        // Array to store the RoomIds of selected rooms
         $selectedRoomIds = [];
 
         foreach ($this->updateSelectRoom as $s) {
-            // Get all rooms of the selected type
+
             $rooms = Room::where('RoomType', $s)->get();
 
             foreach ($rooms as $room) {
-                $selectedRoomIds[] = $room->RoomId; // Collect selected RoomIds
+                $selectedRoomIds[] = $room->RoomId;
 
-                // Check if this discounted room already exists
                 $roomExist = DiscountedRoom::where('RoomId', $room->RoomId)
                     ->where('PromotionId', $this->selectedPromotion->PromotionId)
                     ->first();
 
-                // Create DiscountedRoom if it does not exist
                 if (!$roomExist) {
                     $this->selectedPromotion->discountedRooms()->create([
                         'RoomId' => $room->RoomId,
@@ -194,12 +190,10 @@ class PromotionTable extends Component
             }
         }
 
-        // Delete any DiscountedRoom records that are not in the selected room IDs
         DiscountedRoom::where('PromotionId', $this->selectedPromotion->PromotionId)
             ->whereNotIn('RoomId', $selectedRoomIds)
             ->delete();
 
-        // Dispatch close modal event and reset form
         $this->dispatch('close-modal', name: 'update-modal');
         $this->reset();
 

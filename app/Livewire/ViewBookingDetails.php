@@ -41,8 +41,6 @@ class ViewBookingDetails extends Component
         $this->Amenities = Amenities::all();
         $remainingBalance = $this->reservation->TotalCost + $this->reservation->penalty;
 
-
-
         foreach ($this->reservation->reservationAmenities as $amenity) {
             $remainingBalance += $amenity->TotalCost;
         }

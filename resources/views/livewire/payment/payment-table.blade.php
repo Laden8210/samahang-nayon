@@ -25,10 +25,6 @@
     </div>
 </div>
 
-
-
-
-
 <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
     <table class="w-full h-full">
         <thead class="text-xs uppercase bg-gray-50">

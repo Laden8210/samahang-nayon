@@ -15,8 +15,6 @@ class AmenitiesTable extends Component
     public $updatePrice;
     public $updateName;
 
-
-
     public function render()
     {
         return view('livewire.amenities.amenities-table', [
@@ -24,7 +22,8 @@ class AmenitiesTable extends Component
         ]);
     }
 
-    public function placeholder(){
+    public function placeholder()
+    {
         return view('loader');
     }
 

@@ -1,6 +1,4 @@
 <div class="z-10">
-
-
     <div class="justify-between flex p-1">
         <h1 class="text-2xl font-bold p-2">Report</h1>
         <div class="p-2">
@@ -12,7 +10,7 @@
             <x-modal title="Generate Report" name="generate-report-modal" wire:ignore.self>
 
                 @slot('body')
-                    <form wire:submit.prevent="createReport" >
+                    <form wire:submit.prevent="createReport">
                         <div class="grid grid-cols-2">
                             <div class="col-span-2">
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Report
@@ -39,25 +37,24 @@
                                 @enderror
                             </div>
                             @if ($type === 'Guest History Report')
-                            <div class="col-span-2" id="guestField">
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
-                                    Guest</label>
-                                <select name="guest" wire:model="guest"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                    <option value="">Select Guest</option>
-                                    @foreach ($guests as $guest)
-                                        <option value="{{ $guest->GuestId }}">
-                                            {{ $guest->FirstName . ' ' . $guest->LastName }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('guest')
-                                    <p class="text-red-500 text-xs italic mt-1">
-                                        <i class="fas fa-exclamation-circle"></i>{{ $message }}
-                                    </p>
-                                @enderror
-                            </div>
-
+                                <div class="col-span-2" id="guestField">
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
+                                        Guest</label>
+                                    <select name="guest" wire:model="guest"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                        <option value="">Select Guest</option>
+                                        @foreach ($guests as $guest)
+                                            <option value="{{ $guest->GuestId }}">
+                                                {{ $guest->FirstName . ' ' . $guest->LastName }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('guest')
+                                        <p class="text-red-500 text-xs italic mt-1">
+                                            <i class="fas fa-exclamation-circle"></i>{{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
                             @endif
                             <div class="col-span-2" id="dateFields">
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start
@@ -98,11 +95,7 @@
     </div>
 
     <div>
-
-
         <div class="bg-gray-50 rounded">
-
-
             <h5 class="mx-2 font-bold px-2 pt-2">Report</h5>
             <div class="relative mb-4 w-1/3 mx-3">
 
@@ -178,10 +171,8 @@
                         }
                     }
 
-                    // Attach event listener for when report type is changed
                     reportType.addEventListener('change', toggleDateFields);
 
-                    // Run on page load in case a value is already selected
                     toggleDateFields();
                 });
             </script>

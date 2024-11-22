@@ -11,15 +11,14 @@
     @livewireStyles
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="
-    https://cdn.jsdelivr.net/npm/animate-js@0.3.2/src/index.min.js
-    "></script>
+        https://cdn.jsdelivr.net/npm/animate-js@0.3.2/src/index.min.js
+        "></script>
 
 </head>
 
 <body>
 
-    <aside
-        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar">
 
         <x-sidebar />

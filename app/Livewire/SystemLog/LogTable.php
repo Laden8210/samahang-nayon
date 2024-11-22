@@ -12,10 +12,11 @@ class LogTable extends Component
     public $search = '';
     public function render()
     {
-        return view('livewire.system-log.log-table',
-        [
-          'logs' => SystemLog::search($this->search)->orderBy('created_at', 'desc')->get()
-        ]
-    );
+        return view(
+            'livewire.system-log.log-table',
+            [
+                'logs' => SystemLog::search($this->search)->orderBy('created_at', 'desc')->get()
+            ]
+        );
     }
 }

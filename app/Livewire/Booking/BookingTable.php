@@ -25,8 +25,4 @@ class BookingTable extends Component
             'statuses' => Reservation::select('Status')->distinct()->get()
         ]);
     }
-
-
-
-
 }

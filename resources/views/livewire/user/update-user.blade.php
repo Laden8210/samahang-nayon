@@ -14,46 +14,57 @@
 
                     <div class="grid grid-cols-3 p-2 w-full">
                         <div class="mx-2">
-                            <x-text-field1 name="firstname" placeholder="Enter First Name" model="firstname" label="First Name" />
+                            <x-text-field1 name="firstname" placeholder="Enter First Name" model="firstname"
+                                label="First Name" />
                             @error('firstname')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="mx-2">
-                            <x-text-field1 name="middlename" placeholder="Enter Middle Name" model="middlename" label="Middle Name" />
+                            <x-text-field1 name="middlename" placeholder="Enter Middle Name" model="middlename"
+                                label="Middle Name" />
                             @error('middlename')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="mx-2">
-                            <x-text-field1 name="lastname" placeholder="Enter Last Name" model="lastname" label="Last Name" />
+                            <x-text-field1 name="lastname" placeholder="Enter Last Name" model="lastname"
+                                label="Last Name" />
                             @error('lastname')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 p-2 w-full">
                         <div class="mx-2">
-                            <x-text-field1 name="contactNumber" placeholder="Enter Contact Number" model="contactNumber" label="Contact Number" />
+                            <x-text-field1 name="contactNumber" placeholder="Enter Contact Number" model="contactNumber"
+                                label="Contact Number" />
                             @error('contactNumber')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="mx-2">
-                            <x-text-field1 name="email" placeholder="Enter Email Address" model="email" label="Email Address" />
+                            <x-text-field1 name="email" placeholder="Enter Email Address" model="email"
+                                label="Email Address" />
                             @error('email')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="mx-2">
                             <x-text-field1 name="street" placeholder="Enter Street" model="street" label="Street" />
                             @error('street')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -61,7 +72,8 @@
                     <div class="grid grid-cols-3 p-2 w-full">
 
                         <div class="mx-2">
-                            <label class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                            <label
+                                class="block mb-2 mt-1 text-sm font-medium text-gray-900 dark:text-white">Province</label>
                             <select wire:model="selectedProvince" wire:change="fetchCities"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
 
@@ -69,9 +81,7 @@
                                     {{ $province }}
                                 </option>
                                 @foreach ($apiProvince as $region)
-                                    <option value="{{ $region['code'] }}"
-
-                                    >
+                                    <option value="{{ $region['code'] }}">
                                         {{ $region['name'] }}
                                     </option>
                                 @endforeach
@@ -92,8 +102,7 @@
                                     {{ $city }}
                                 </option>
                                 @foreach ($apiCity as $city)
-                                    <option value="{{ $city['code'] }}"
-                                    >
+                                    <option value="{{ $city['code'] }}">
                                         {{ $city['name'] }}
                                     </option>
                                 @endforeach
@@ -129,22 +138,27 @@
                     <div class="grid grid-cols-3 p-2 w-full">
 
                         <div class="mx-2">
-                            <x-text-field1 name="dob" type="date" placeholder="Enter Birthdate" model="dob" label="Birthdate" />
+                            <x-text-field1 name="dob" type="date" placeholder="Enter Birthdate" model="dob"
+                                label="Birthdate" />
                             @error('dob')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="mx-2">
                             <x-combobox name="gender" model="gender" placeholder="Select Gender" :options="['Male', 'Female']" />
                             @error('gender')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="mx-2">
-                            <x-combobox name="position" model="position" placeholder="Select Position" :options="['System Administrator', 'Manager', 'Receptionist']" />
+                            <x-combobox name="position" model="position" placeholder="Select Position"
+                                :options="['System Administrator', 'Manager', 'Receptionist']" />
                             @error('position')
-                                <p class="text-red-500 text-xs italic mt-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                                <p class="text-red-500 text-xs italic mt-1"><i
+                                        class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -152,8 +166,10 @@
                     </div>
                     <div class="flex items-end justify-end mx-2">
                         <div class="flex gap-2">
-                            <a href="{{ route('user') }}" class="bg-red-400 font-medium text-white px-2 py-1 rounded">Cancel</a>
-                            <button type="submit" class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">Update</button>
+                            <a href="{{ route('user') }}"
+                                class="bg-red-400 font-medium text-white px-2 py-1 rounded">Cancel</a>
+                            <button type="submit"
+                                class="bg-cyan-400 font-medium text-white px-2 py-1 rounded">Update</button>
                         </div>
                     </div>
                 </div>

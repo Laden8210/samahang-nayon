@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Room;
 
 use Livewire\WithPagination;
+
 class RoomTable extends Component
 {
     public $search = '';
@@ -18,14 +19,17 @@ class RoomTable extends Component
 
     public function render()
     {
-        return view('livewire.room.room-table'
-        , [
-            'rooms' => Room::search($this->search)->get()
-        ]);
+        return view(
+            'livewire.room.room-table',
+            [
+                'rooms' => Room::search($this->search)->get()
+            ]
+        );
     }
 
 
-    public function placeholder(){
+    public function placeholder()
+    {
         return view('placeholder.room');
     }
 
@@ -40,7 +44,6 @@ class RoomTable extends Component
     {
         $this->deleteRoomModal = true;
         $this->selectedRoom = Room::findOrFail($id);
-
     }
 
     public function cancelDelete()
@@ -64,5 +67,4 @@ class RoomTable extends Component
 
         session()->flash('message', 'Room deleted.');
     }
-
 }

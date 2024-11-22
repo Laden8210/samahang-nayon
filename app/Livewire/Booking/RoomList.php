@@ -30,9 +30,9 @@ class RoomList extends Component
 
 
         $promotion = Promotion::where('StartDate', '<=', $this->date)
-                              ->where('EndDate', '>=',$this->date)
-                              ->with('discountedRooms')
-                              ->first();
+            ->where('EndDate', '>=', $this->date)
+            ->with('discountedRooms')
+            ->first();
 
 
         if ($promotion && $promotion->discountedRooms) {
@@ -45,10 +45,9 @@ class RoomList extends Component
             }
         }
 
-
         $reservation = Reservation::where('DateCheckIn', '<=', $this->date)
-                                    ->where('DateCheckOut', '>=', $this->date)
-                                    ->get();
+            ->where('DateCheckOut', '>=', $this->date)
+            ->get();
 
         foreach ($roomNumbers as $roomNumber) {
             $roomNumber->isBooked = false;

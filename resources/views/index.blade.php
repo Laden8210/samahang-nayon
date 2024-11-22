@@ -11,8 +11,6 @@
 
 <body>
 
-
-
     <nav class="flex drop-shadow h-auto bg-white p-2 justify-between">
         <div class="flex justify-normal items-center">
             <img src="{{ asset('img/logo.jpg') }}" class="mx-2 w-10">
@@ -24,7 +22,6 @@
             <i class="fa-solid fa-circle-question"></i>
         </div>
     </nav>
-
     <main class="p-2 flex justify-center items-center h-screen">
         <div class="flex flex-col justify-center items-center w-1/2">
             <img src="{{ asset('img/logo.jpg') }}" class="h-80 max-w-none">
@@ -32,12 +29,7 @@
 
         <div class="flex flex-col justify-center items-center w-2/3">
 
-
-
             <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-
-
-
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <h1 class="text-2xl font-bold mb-2">Welcome back</h1>
@@ -82,16 +74,10 @@
 
                     <button type="submit"
                         class="bg-cyan-400 text-white px-4 py-2 rounded-lg w-full hover:bg-cyan-500 hover:text-gray-100">Continue</button>
-
-
                 </form>
-
             </div>
-
-
         </div>
     </main>
-
 </body>
 
 
@@ -99,12 +85,8 @@
     document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eye-icon');
-
-        // Toggle the type attribute
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-
-        // Toggle the eye icon
         eyeIcon.classList.toggle('fa-eye');
         eyeIcon.classList.toggle('fa-eye-slash');
     });

@@ -17,14 +17,12 @@
                 class="bg-gray-100 text-gray-900 placeholder-gray-400 px-3 py-2 w-full rounded-md outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">View all</option>
                 @foreach ($statuses as $status)
-                    <option value="{{$status->Status}}">{{$status->Status}}</option>
+                    <option value="{{ $status->Status }}">{{ $status->Status }}</option>
                 @endforeach
 
             </select>
         </div>
     </div>
-
-
     <div class="w-full flex p-2 justify-center rounded-lg drop-shadow">
         <table class="w-full h-full">
             <thead class="text-xs uppercase bg-gray-50">
@@ -87,9 +85,9 @@
                             @endif
 
                             @if ($booking->Status == 'Unconfirmed Reservation')
-                            <span
-                                class="bg-violet-200 text-white-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
-                        @endif
+                                <span
+                                    class="bg-violet-200 text-white-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
+                            @endif
                             @if ($booking->Status == 'No Show')
                                 <span
                                     class="bg-gray-200 text-gray-800 px-2 py-1 rounded-full">{{ $booking->Status }}</span>
@@ -110,7 +108,7 @@
 
     </div>
     <div class="py-4 px-3">
-        {{ $bookings->links("vendor.livewire.tailwind") }}
+        {{ $bookings->links('vendor.livewire.tailwind') }}
 
     </div>
 

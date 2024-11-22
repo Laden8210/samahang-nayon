@@ -17,20 +17,20 @@ class MessageController extends Controller
 
     public function sendGuestMessage(Request $request)
     {
-        // Get the authenticated guest user
+
         $guest = Auth::guard('api')->user();
 
-        // Check if the user is authenticated
+
         if (!$guest) {
-            return response()->json(['error' => 'Unauthorized'], 401);  // Return 401 for unauthorized
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // Validate the incoming request
+
         $request->validate([
             'Message' => 'required|string'
         ]);
 
-        // Create and save the guest's message
+
         $message = new Message();
         $message->GuestId = $guest->GuestId;
         $message->IsReadEmployee = false;
@@ -41,10 +41,9 @@ class MessageController extends Controller
         $message->TimeSent = now()->toTimeString();
         $message->save();
 
-        // Check if any previous messages exist for the guest
         $hasPreviousMessages = Message::where('GuestId', $guest->GuestId)->exists();
 
-        // If there are previous messages, send an automated response
+
         if (!$hasPreviousMessages) {
             $response = new Message();
             $response->GuestId = $guest->GuestId;
@@ -57,11 +56,11 @@ class MessageController extends Controller
             $response->save();
         }
 
-        // Check if the message was successfully saved
+
         if ($message) {
             return response()->json(['message' => 'Message sent successfully'], 200);
         } else {
-            return response()->json(['message' => 'Failed to send message'], 500);  // Use 500 for server errors
+            return response()->json(['message' => 'Failed to send message'], 500);
         }
     }
 
@@ -88,9 +87,8 @@ class MessageController extends Controller
             ->orderBy('TimeSent', 'desc')
             ->get();
 
-        // Group messages by EmployeeId
         $groupedMessages = $messages->groupBy('EmployeeId')->map(function ($employeeMessages) {
-            $latestMessage = $employeeMessages->first(); // Get the latest message for this employee
+            $latestMessage = $employeeMessages->first();
             return [
                 'message_id' => $latestMessage->MessageId,
                 'message' => $latestMessage->Message,
@@ -104,15 +102,14 @@ class MessageController extends Controller
             ];
         });
 
-        // Prepare the response to include all employees
+
         $response = $employees->map(function ($employee) use ($groupedMessages, $messages) {
-            // Count total unread messages for the current employee
+
             $totalUnreadMessages = $messages->where('EmployeeId', $employee->EmployeeId)
                 ->where('IsReadGuest', false)
                 ->where('isGuestMessage', true)
                 ->count();
 
-            // Handle both employees with and without messages
             return [
                 'employee_id' => $employee->EmployeeId,
                 'employee_name' => $employee->FirstName . " " . $employee->LastName,
@@ -128,8 +125,6 @@ class MessageController extends Controller
 
         return response()->json($response->values()->all(), 200);
     }
-
-
 
     public function retrieveUserMessage(Request $request)
     {
@@ -149,8 +144,4 @@ class MessageController extends Controller
 
         return response()->json($message, 200);
     }
-
-
-
-
 }

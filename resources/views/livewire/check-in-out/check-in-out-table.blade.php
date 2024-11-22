@@ -26,21 +26,22 @@
             </thead>
             <tbody>
                 @foreach ($checkInOuts as $checkInOut)
+                    <tr class="bg-white border-b text-xs text-center">
+                        <td class="px-2 py-3">{{ $checkInOut->CheckInOutId }}</td>
+                        <td class="px-2 py-3">
+                            {{ $checkInOut->guest->FirstName ?? ('' . ' ' . $checkInOut->guest->LastName ?? '') }}</td>
+                        <td class="px-2 py-3">{{ $checkInOut->reservation->roomNumber->room_number ?? '' }}</td>
+                        <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->format('F d, Y') }}
+                        </td>
+                        <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('g:i A') }}
+                        </td>
 
-                <tr class="bg-white border-b text-xs text-center">
-                    <td  class="px-2 py-3">{{ $checkInOut->CheckInOutId }}</td>
-                    <td  class="px-2 py-3">{{ $checkInOut->guest->FirstName ?? '' ." " . $checkInOut->guest->LastName ?? '' }}</td>
-                    <td  class="px-2 py-3">{{ $checkInOut->reservation->roomNumber->room_number ?? '' }}</td>
-                    <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->DateCreated)->format('F d, Y') }}</td>
-                    <td class="px-2 py-3">{{ \Carbon\Carbon::parse($checkInOut->TimeCreated)->format('g:i A') }}</td>
+                        <td class="px-2 py-3">{{ $checkInOut->Type }}</td>
+                        <td class="px-2 py-3">
+                            <a href="{{ route('bookingDetails', $checkInOut->reservation->ReservationId ?? '') }}"
+                                class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
 
-                    <td  class="px-2 py-3">{{ $checkInOut->Type }}</td>
-                    <td  class="px-2 py-3">
-                        <a href="{{route('bookingDetails', $checkInOut->reservation->ReservationId ?? '')}}"
-                            class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</a>
-
-                    </td>
-
+                        </td>
                 @endforeach
             <tbody>
 
@@ -50,11 +51,7 @@
     </div>
 
     <div class="py-4 px-3">
-        {{ $checkInOuts->links("vendor.livewire.tailwind") }}
+        {{ $checkInOuts->links('vendor.livewire.tailwind') }}
 
     </div>
-
-
-
-
 </div>

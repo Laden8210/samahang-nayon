@@ -15,7 +15,6 @@
                     $roomNumber = ($i + 1) * 100 + $x + 1;
                     $room = null;
 
-                    // Find the room matching the current room number
                     if ($roomNumbers) {
                         foreach ($roomNumbers as $r) {
                             if ($r->room_number == $roomNumber) {

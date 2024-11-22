@@ -8,7 +8,7 @@ use App\Models\Guest;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\RoomNumber;
-use Carbon\Carbon; // Import Carbon for date handling
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Notification;
 
@@ -25,7 +25,6 @@ class DashboardController extends Controller
 
         $availableRooms = $totalRooms - $occupiedRooms;
 
-        // Daily metrics
         $totalBooking = Reservation::where('Status', 'Booked')
             ->whereDate('DateCreated', $today)
             ->count();
@@ -55,13 +54,11 @@ class DashboardController extends Controller
             return $count;
         });
 
-        // Monthly labels
+
         $labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        // Initialize occupancy rate data
         $roomOccupancyData = array_fill(0, 12, 0);
 
-        // Calculate occupancy rate per month as a percentage
         $occupancyByMonth = CheckInOut::selectRaw('MONTH(DateCreated) as month, COUNT(*) as total')
             ->where('Type', 'Checked In')
             ->whereYear('DateCreated', date('Y'))
@@ -71,7 +68,7 @@ class DashboardController extends Controller
 
         foreach ($occupancyByMonth as $month => $occupiedRoomsCount) {
             $occupancyRate = ($occupiedRoomsCount / $totalRooms) * 100;
-            $roomOccupancyData[$month - 1] = $occupancyRate; // Month - 1 to match zero-indexed array
+            $roomOccupancyData[$month - 1] = $occupancyRate;
         }
 
         return view('admin.dashboard.index', [
